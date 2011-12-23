@@ -1,0 +1,473 @@
+<?xml version="1.0" encoding="WINDOWS-1251"?>
+
+<algorithm>
+
+
+
+    <variable 
+    	description="Экземпляр апплета"
+    	name="visualizer"
+    	type="SegmentsTreeVisualizer"
+    	value="null"
+    />
+
+    <variable 
+    	description="Левая граница поиска"
+    	name="left"
+    	type="int"
+    	value="0"
+    />
+
+    <variable
+    	description="Правая граница поиска"
+    	name="right"
+    	type="int"
+    	value="0"
+    />
+
+    <variable 
+    	description="Массив дла поиска"
+    	name="h"
+    	type="int[]"
+    	value="null"
+    />
+
+    <variable 
+    	description="Текущая левая граница поиска"
+    	name="l"
+    	type="int"
+    	value="0"
+    />
+
+    <variable
+    	description="Текущая правая граница поиска"
+    	name="r"
+    	type="int"
+    	value="0"
+    />
+
+    <variable 
+    	description="Текущий минимум"
+    	name="a"
+    	type="int"
+    	value="0"
+    />
+        
+    <variable
+    	description="Нижняя граница для элементов дерева"
+    	name="lowCellsBound"
+    	type="int"
+    	value="0"
+    />
+
+    <variable 
+    	description="Нижняя граница минимумов" 
+    	name="lowMinBound"
+    	type="int"
+    	value="0"
+    />
+
+    <variable
+    	description="Высота дерева"
+    	name="height"
+    	type="int"
+    	value="0"
+    />
+
+    <variable
+    	description="Символ, обозначающий текущий минимум"
+        name="minim"
+        type="String"
+        value="\u0022\u221E\u0022"
+    />
+
+    <variable
+    	description="Значок бесконечности"
+        name="infinity"
+        type="String"
+        value="\u0022\u221E\u0022"
+    />
+
+    <variable
+    	description="Левый элемент массива"
+        name="tl"
+        type="String"
+        value="\u0022\u221E\u0022"
+    />
+
+    <variable
+    	description="Правый элемент массива"
+        name="tr"
+        type="String"
+        value="\u0022\u221E\u0022"
+    />
+
+    <data>
+        <toString>
+            return "" + @a;
+        </toString>
+    </data>
+
+    <auto id="Main" description="Ищет минимум в массиве, используя структуру данных - дерево отрезков">
+        <start
+            comment-en="There is an array on the display"
+            comment-ru="На экране изображен массив, в котором будет осуществляться поиск минимума среди элементов {0} - {1}"
+            comment-args="new Integer(@left - @h.length / 2 + 1), new Integer(@right - @h.length / 2 + 1)"
+        >
+            <draw>
+                @visualizer.drawBrackets(0, 0, false, false);
+                @visualizer.drawCells(@h.length / 2, 0, 0, 0, 0, @h.length, false);
+                @visualizer.drawMin(false);
+            </draw>
+        </start>
+
+        <step
+        	id="initial"
+			description="Инициализация"        	
+			level="-1"
+        >
+        	<action>
+                @lowCellsBound @= @h.length / 2;
+        	</action>
+        </step>
+
+        <step
+        	id="treeBuilding1"
+        	description="Приступаем к построение дерева отрезков"
+        	comment-ru="Строим дерево отрезков"
+        	comment-en="Built the tree"
+        >
+        	<draw>
+            	@visualizer.drawBrackets(0, 0, false, false);                
+            	@visualizer.drawCells(@h.length / 2, 0, 0, 0, 0, @h.length, false);
+            	@visualizer.drawMin(false);
+        	</draw>
+
+        	<action>
+        	</action>
+        </step>
+
+        <step
+        	id="move"
+        	description="Сдвигаем массив"
+        	comment-ru="Сдвигаем массив на {0} элементов вправо ({0} - минимальная степень двойки без 1, которая не меньше длины исходного массива) и вводим новую индексацию элементов по правилу: i-ый элемент становится (i + {0})-ым. Нижний ряд индексов показывает старую индексацию."
+        	comment-en="Move the array"        	
+        	comment-args="new Integer(@h.length / 2 - 1)"
+        >
+        	<draw>
+            	@visualizer.drawBrackets(0, 0, false, false);                
+            	@visualizer.drawCells(@h.length / 2, 0, 0, 0, 0, @h.length, true);
+            	@visualizer.drawMin(false);
+        	</draw>
+
+        	<action>
+        	</action>
+        </step>
+
+        <if
+        	description="Надо ли визуализировать построение дерева"
+        	test="@visualizer.showBuilding()"
+        	level="-1"
+        >
+        	<then>
+                <while
+                	id="tree"
+                	description="Построение дерева"
+                	test="@lowCellsBound &gt;= 2"
+                    level="-1"
+                >
+                	<step
+                    	id="buildStep"
+                        description="Строим новый элемент"
+                        level="-1"
+                    >
+                    	<action>
+                        	@lowCellsBound @= @lowCellsBound - 1;
+                        </action>
+                    </step>
+                	<if
+                    	id="infinityTest1"
+                    	description="Заменяем бесконечность"
+						test="@h[2 * @lowCellsBound] == Integer.MAX_VALUE"
+                        level="-1"
+                    >
+                    	<then>
+                        	<step
+                            	id="then1"
+                                description="В комментарии кладем значок бесконечности"
+                            	level="-1"
+                            >
+                            	<action>
+                                	@tl @= @infinity;
+                                </action>
+                            </step>
+                        </then>
+                        <else>
+                        	<step
+                            	id="else1"
+                                description="В комментарии кладем значение элемента"
+                            	level="-1"
+                            >
+                            	<action>
+                                	@tl @= Integer.toString(@h[2 * @lowCellsBound]);
+                                </action>
+                            </step>
+                        </else>
+                    </if>
+
+                	<if
+                    	id="infinityTest2"
+                    	description="Заменяем бесконечность"
+						test="@h[2 * @lowCellsBound + 1] == Integer.MAX_VALUE"
+                        level="-1"
+                    >
+                    	<then>
+                        	<step
+                            	id="then2"
+                                description="В комментарии кладем значок бесконечности"
+                            	level="-1"
+                            >
+                            	<action>
+                                	@tr @= @infinity;
+                                </action>
+                            </step>
+                        </then>
+                        <else>
+                        	<step
+                            	id="else2"
+                                description="В комментарии кладем значение элемента"
+                            	level="-1"
+                            >
+                            	<action>
+                                	@tr @= Integer.toString(@h[2 * @lowCellsBound + 1]);
+                                </action>
+                            </step>
+                        </else>
+                    </if>
+
+                	<step
+                		id="tree"
+                		description="Визуализация построения дерева"
+                		comment-ru="Находим минимум между {0} элементом ({1}) и {2} элементом ({3})"
+                		comment-en="Find minimum between {0} element ({1}) and {2} element ({3})"
+                        comment-args="new Integer(2 * @lowCellsBound), @tl, new Integer(2 * @lowCellsBound + 1), @tr"
+                	>
+                		<draw>
+                        	@visualizer.drawCells(@lowCellsBound, 0, 0, 0, 0, @h.length, true);
+                        	@visualizer.drawBrackets(0, 0, false, false);
+                        	@visualizer.drawMin(false);
+                		</draw>
+
+                		<action>
+
+                		</action>
+                	</step>
+                </while>
+        	</then>
+        </if>
+
+        <step
+        	id="treeBuilded"
+            description="Дерево уже построено"
+            comment-ru="Дерево отрезков построено"
+            comment-en="Tree have been built"
+        >
+            <draw>
+                @visualizer.drawCells(0, 0, 0, 0, 0, @h.length, true);
+                @visualizer.drawBrackets(0, 0, false, false);
+                @visualizer.drawMin(false);
+            </draw>
+
+            <action>
+            </action>
+        </step>
+
+        <step
+            id="initialization"
+            description="Инициализация минимума"
+            comment-en="Initialize minimum by \u221E"
+            comment-ru="Инициализируем минимум \u221E"
+            level="1"
+        >
+            <draw>
+            	@visualizer.drawBrackets(0, 0, false, false);                
+            	@visualizer.drawCells(0, 0, 0, 0, 0, @h.length, true);
+            	@visualizer.drawMin(true);
+            </draw>
+
+            <action>
+                @a @= Integer.MAX_VALUE;
+                @minim @= "\u221E";
+            </action>
+        </step>
+
+        <step
+            id="firstRise"
+            description="Сжатие границ поиска"
+            comment-en="Install search's bounds"
+            comment-ru="Ставим границы поиска. Левую границу поиска ставим в {1}, а правую в {2} потому что массив сдвинут на {0} элементов"
+            comment-args="new Integer(@h.length / 2 - 1), new Integer(@left), new Integer(@right)"
+            level="1"
+        >
+            <draw>
+               	@visualizer.drawCells(0, @l, @r, 0, 0, @h.length, true);
+               	@visualizer.drawBrackets(@l, @r, true, true);
+               	@visualizer.drawMin(true);
+                @visualizer.setSecondBigStep();
+            </draw>
+
+            <action>
+                @l @= @left;
+                @r @= @right;
+            </action>
+        </step>
+
+        <while
+            id="loop"
+            test="@l &lt;= @r"
+            description="Проход по дереву вверх с релаксацией минимума на границах"
+            level="-1"
+        >
+            <if
+                id="Cond1"
+                description="Проверка левой границы на минимальность"
+                test="@a &gt; @h[@l]"
+                true-comment-ru="{0} меньше текущего минимума ({1})"
+                true-comment-en="{0} less than current minimum ({1})"
+                false-comment-ru="{0} не меньше текущего минимума ({1})"
+                false-comment-en="{0} not less than current minimum ({1})"
+                comment-args="new Integer(@h[@l]), @minim"
+            >
+                <draw>
+                 	@visualizer.drawCells(0, @l, @r, @l, 0, @r, true);
+                 	@visualizer.drawBrackets(@l, @r, true, true);
+                 	@visualizer.drawMin(true);
+                </draw>
+                <then>
+                    <step
+                        id="newMin1"
+                        description="Обновление минимума"
+                        comment-ru="Обновляем текущий минимум, кладем его значение равным: {0}"
+                        comment-en="Renew current minimum, his value is equal {0} now"
+                        comment-args="new Integer(@a)"
+                    >
+                        <draw>
+                        	@visualizer.drawCells(0, @l, @r, @l, @l, @r, true);
+                        	@visualizer.drawBrackets(@l, @r, true, true);
+                        	@visualizer.drawMin(true);
+                        </draw>
+
+                        <action>
+                            @a @= @h[@l];
+                            @minim @= Integer.toString(@a);
+                        </action>
+                    </step>
+                </then>
+            </if>
+
+
+            <if
+                id="Cond2"
+                description="Приверка на минимальность"
+                test="@a &gt; @h[@r]"
+                true-comment-ru="{0} меньше текущего минимума ({1})"
+                true-comment-en="{0} less than current minimum ({1})"
+                false-comment-ru="{0} не меньше текущего минимума ({1})"
+                false-comment-en="{0} not less than current minimum ({1})"
+                comment-args="new Integer(@h[@r]), @minim"
+            >
+                <draw>
+                 	@visualizer.drawCells(0, @l, @r, @r, 0, @r, true);
+                 	@visualizer.drawBrackets(@l, @r, true, true);
+                 	@visualizer.drawMin(true);
+                </draw>
+                <then>
+                    <step
+                        id="newMin2"
+                        description="Обновление минимума"
+                        comment-ru="Обновляем текущий минимум, кладем его значение равным: {0}"
+                        comment-en="Renew current minimum, his value is equal {0} now"
+                        comment-args="new Integer(@a)"
+                    >
+                        <draw>
+                        	@visualizer.drawCells(0, @l, @r, @r, @r, @r, true);
+                        	@visualizer.drawBrackets(@l, @r, true, true);
+                        	@visualizer.drawMin(true);
+                        </draw>
+
+                        <action>
+                            @a @= @h[@r];
+                            @minim @= Integer.toString(@a);
+                        </action>
+                    </step>
+                </then>
+            </if>
+
+            <if 
+            	description="проверка"
+            	test="((@l + 1)) / 2 &lt;= ((@r - 1) / 2)"
+            	level="-1"
+            >
+            	<then>
+                    <step
+                        id="rise2"
+                        description="Сжатие границ поиска"
+        	            comment-en="Lift up search's bounds. Left border is calculated by formula: l = (l + 1) / 2, and right border is calculated by formula: r = (r - 1) / 2"
+            	        comment-ru="Поднимаем границы поиска. Левая граница вычисляется по формуле: l = (l + 1) / 2, а правая по формуле: r = (r - 1) / 2"
+                    >
+                        <draw>
+                          	@visualizer.drawCells(0, @l, @r, 0, 0, @r, true);
+                          	@visualizer.drawBrackets(@l, @r, true, true);
+                          	@visualizer.drawMin(true);
+                        </draw>
+
+                        <action>
+                            int next = (@l + 1) / 2;
+                            @l @= next;
+
+                            next = (@r - 1) / 2;
+                            @r @= next;
+                        </action>
+                    </step>
+            	</then>
+            	<else>
+                    <step
+                        id="rise3"
+                        description="Границы поиска зашли друг за друга"
+        	            comment-en="Search's bounds are crossed"
+            	        comment-ru="Границы поиска зашли друг за друга. (левая граница равна: {0}, правая граница равна: {1})"
+            	        comment-args="new Integer((@l + 1) / 2), new Integer((@r - 1) / 2)"
+                    >
+                        <draw>
+                          	@visualizer.drawCells(0, @l, @r, 0, 0, @r, true);
+                          	@visualizer.drawBrackets(@l, @r, true, true);
+                          	@visualizer.drawMin(true);
+                        </draw>
+
+                        <action>
+                            int next = (@l + 1) / 2;
+                            @l @= next;
+
+                            next = (@r - 1) / 2;
+                            @r @= next;
+                        </action>
+                    </step>
+            	</else>
+            </if>
+
+        </while>
+
+        <finish
+            comment-ru="Минимум найден: {0}"
+            comment-en="Minimum found: {0}"
+            comment-args="new Integer(@a)"
+        >
+        	<draw>
+               	@visualizer.drawCells(0, 0, 0, 0, 0, 0, true);
+               	@visualizer.drawBrackets(@l, @r, false, true);
+               	@visualizer.drawMin(true);
+        	</draw>
+        </finish>
+    </auto>
+
+</algorithm>

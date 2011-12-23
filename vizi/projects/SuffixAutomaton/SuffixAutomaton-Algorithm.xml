@@ -1,0 +1,388 @@
+<?xml version="1.0" encoding="WINDOWS-1251"?>
+
+<algorithm>
+	<import>java.lang.String</import>
+
+    <variable 
+        description = "Экземпляр апплета"
+        name        = "visualizer"
+        type        = "SuffixAutomatonVisualizer"
+        value       = "null"
+    />
+
+    <variable 
+        description = "Количество состояний"
+        name        = "nv"
+        type        = "int"
+        value       = "0"
+    />
+
+    <variable 
+        description = "Номер последнего состояния"
+        name        = "last"
+        type        = "int"
+        value       = "0"
+    />
+
+    <variable
+        description = "Строка"
+        name        = "s"
+        type        = "String"
+		value       = "new String(&quot;abbac&quot;)"
+    />
+
+    <variable
+        description = "Массив переходов"
+        name        = "next"
+        type        = "int[][]"
+        value       = "new int[11][256]"
+    />
+
+    <variable
+        description = "Массив глубин состояний"
+        name        = "l"
+        type        = "int[]"
+        value       = "new int[11]"
+    />
+
+    <variable
+        description = "Массив суффиксных ссылок"
+        name        = "suff"
+        type        = "int[]"
+        value       = "new int[11]"
+    />
+
+    <variable
+        description = "Массив пометок типа состояния"
+        name        = "upper"
+        type        = "boolean[]"
+        value       = "new boolean[11]"
+    />
+
+    <variable
+    	description = "Массив символов по которым происходит переход"
+    	name 		= "chars"
+    	type		= "String[]"
+    	value		= "new String[11]"
+    />
+
+
+  
+    <toString>
+    	StringBuffer s = new StringBuffer();
+    	s.append("nv = ").append(@nv).append("\n");
+	  	s.append("last = ").append(@last).append("\n");
+	    s.append("next = \n");
+	    for (int i = 0; i &lt; @nv; i++) {
+	    	for (int j = 0; j &lt; @next[i].length; j++) {
+	    		s.append(@next[i][j]).append(" ");
+	    	}
+	    	s.append("\n");
+	    }
+		s.append("l = \n");
+		for (int i = 0; i &lt; @nv; i++) {
+			s.append(@l[i]).append(" ");
+		}
+		s.append("suff = \n");
+		for (int i = 0; i &lt; @nv; i++) {
+			s.append(@suff[i]).append(" ");
+		}
+		s.append("upper = \n");
+		for (int i = 0; i &lt; @nv; i++) {
+			s.append(@upper[i]).append(" ");
+		}
+        return s.toString();
+    </toString>
+
+    <auto id="Main" description="Строит суффиксный автомат">
+        <variable 
+            description = "Переменная цикла"
+            name        = "i"
+            type        = "int"
+        />
+      	<variable 
+	         description = "Вспомогательная переменная"
+             name        = "p"
+             type        = "int"
+  	    />
+      	<variable 
+             description = "Вспомогательная переменная"
+             name        = "q"
+             type        = "int"
+ 	    />
+      	<variable 
+             description = "Вспомогательная переменная"
+             name        = "r"
+             type        = "int"
+  	    />
+  	    <variable
+  	    	description  = "Вспомогательная переменная цикла"
+  	    	name 		 = "j"
+  	    	type		 = "int"
+  	    />
+
+        <start
+            comment-ru="Для строки ''{0}'' будет построен суффиксный автомат."
+            comment-en="The automaton for string ''{0}'' will be constructed."
+            comment-args="new String(@s)"
+        >
+            <draw>
+            	@visualizer.draw();
+            </draw>
+        </start>
+
+        <step
+            id="Initialization"
+            description="Инициализация"
+            comment-ru="Создаем начальное состояние. В верхнем прямоугольнике - символ, по которому ведут переходы в состояние. Слева внизу - номер состояния. Справа внизу - длина наибольшей строки, заканчивающейся в состоянии (глубина состояния). Суффиксные ссылки показываются серым цветом."
+            comment-en="Creating the initial state. In the top rectangle is a symbol of transition to the state. In the bottom left - number of state. In the bottom right - maximal length of string ending in this state (depth of the state). Suffix links are gray."
+        >
+        	<draw>
+        		@visualizer.updateRect(0, 1);
+        		@visualizer.draw();
+        	</draw>
+            <action>
+                @last @= 0;
+                @suff[0] @= -1;
+                @nv @= 1;
+                @upper[0] @= true;
+                @chars[0] @= "nil";
+                for (int i = 0; i &lt; @next.length; i++) {
+                	for (int j = 0; j &lt; @next[0].length; j++) {
+                		@next[i][j] @= -1;
+                	}
+                }
+                for (int i = 0; i &lt; @suff.length; i++) {
+                	@suff[i] @= -1;
+                }
+            </action>
+        </step>
+
+        <step
+            id="LoopInit"
+            description="Начало цикла"
+            level="-1"
+        >
+            <direct>
+                @i = 0;
+            </direct>
+        </step>
+
+        <while
+            id="Loop"
+            description="Цикл"
+            test="@i &lt; @s.length()"
+            level="1"
+            true-comment-ru="Добавляем очередной символ ''{0}''."
+            true-comment-en="Adding symbol ''{0}''."
+            false-comment-ru="Строка закончилась."
+            false-comment-en="The string completed."
+            comment-args="@i &lt; @s.length() ? new Character(@s.charAt(@i)) : new Character(' ')"
+        >
+        	<draw>
+        		@visualizer.clearStates();
+        		@visualizer.draw();
+        	</draw>
+        	<step
+        		id="NewState"
+				description="Создание нового состояния"
+				level="0"
+				comment-ru="Создаем новое состояние ({0})."
+				comment-en="Creating a new state ({0})."
+				comment-args="new Integer(@last)"
+			>
+		        	<draw>
+		        		@visualizer.clearStates();
+		        		@visualizer.updateRect(@last, 1);
+        				@visualizer.draw();
+		        	</draw>
+				<action>
+					@p @= @last;
+					@last @= @nv;
+					@nv @= @nv + 1;
+					@l[@last] @= @l[@p] + 1;	
+					@upper[@last] @= true;
+					@chars[@last] @= "" + @s.charAt(@i);
+				</action>
+        	</step>	
+
+			<while
+				id="AddingEdgeLoop"
+				description="Добавление переходов в новое состояние"
+				test = "@p &gt;= 0 &amp;&amp; @next[@p][@s.charAt(@i)] &lt; 0"
+				true-comment-ru="Пока нет перехода по добавляемому символу ''{1}'', откатываемся по суффиксным ссылкам. Текущее состояние - ({0})."
+				true-comment-en="While there is no transition by adding symbol ''{1}'', rolling back by suffix links. Current state - ({0})."
+				false-comment-ru="Откат закончился. Либо ушли по суффиксной ссылке из начального положения, либо нашли состояние из которого уже есть переход по ''{1}''."
+				false-comment-en="Rolling back completed."
+				comment-args="new Integer(@p), new Character(@s.charAt(@i))"
+			>
+		      	<draw>
+	        		@visualizer.clearStates();
+		      		@visualizer.updateRect(@last, 1);
+		       		@visualizer.updateRect(@p, 2);
+		      		@visualizer.draw();
+		      	</draw>
+				<step
+					id="AddEdge"
+					description="Добавление перехода"
+					comment-ru="Добавляем переход в новое состояние."
+					comment-en="Adding transition to the new state."
+				>
+			        	<draw>
+        					@visualizer.draw();
+			        	</draw>
+					<action>
+						@next[@p][@s.charAt(@i)] @= @last;
+  						@p @= @suff[@p];
+					</action>
+				</step>
+			</while>
+
+            <if
+                id="Cond"
+                description="Условие"
+                test="@p &lt; 0"
+                false-comment-ru="Найдено состояние, из которого уже есть переход по символу ''{0}''."
+                false-comment-en="There is a state with transition by symbol ''{0}''."
+                true-comment-ru="Ни из одного посещенного состояния не было перехода по символу ''{0}''."
+                true-comment-en="There is no state with transition by symbol ''{0}''."
+                comment-args="new Character(@s.charAt(@i))"
+            >
+                <then>
+                    <step
+                        id="AddingSuffixReference"
+                        description="Добавление суффиксной ссылки"
+                        comment-ru="Суффиксная ссылка из нового состояния ведет в начальное."
+                        comment-en="Suffix link from new state goes to initial state."
+                    >
+		        	<draw>
+        				@visualizer.draw();
+		        	</draw>
+	                	<action>
+    	            		@suff[@last] @= 0;
+        	            </action>
+                    </step>
+                </then>
+                <else>
+                	<step
+                		id = "AuxStep1"
+                		description="Инициализация переменной q"
+                		level = "-1"
+                	>
+		        	<draw>
+		        		@visualizer.draw();
+		        	</draw>
+                		<action>
+                			@q @= @next[@p][@s.charAt(@i)];
+                		</action>
+                	</step>
+                	<if
+                		id="Cond2"
+                		description=""
+                		test="@l[@q] &lt;= @l[@p] + 1"
+			            true-comment-ru="Глубина состояния ({0}) не более, чем на 1 больше глубины состояния ({1}), в которое ведет переход."
+            			true-comment-en="The depth of the state ({0}) is not more then the the depth of the state ({1}) plus 1."
+			            false-comment-ru="Глубина состояния ({0}) более, чем на 1 больше глубины состояния ({1}), в которое ведет переход."
+			            false-comment-en="The depth of the state ({0}) is more then the the depth of the state ({1}) plus 1."
+            			comment-args="new Integer(@q), new Integer(@p)"
+                	>
+	                	<then>
+    	            		<step
+        	        			id = "AddingSuffixReference2"
+            	    			description="Добавление суффиксной ссылки"
+                				comment-ru="Суффиксная ссылка из нового состояния ведет в состояние ({0})."
+                				comment-en="Suffix link from the new state goes to the state ({0})."
+                				comment-args="new Integer(@q)"
+                			>
+				        	<draw>
+				        		@visualizer.draw();
+				        	</draw>
+                				<action>
+                					@suff[@last] @= @q;
+	                			</action>
+    	            		</step>
+        	        	</then>
+        	        	<else>
+        	        		<step
+        	        			id="AddingState2"
+        	        			description="Создание нового состояния"
+        	        			comment-ru="Добавляем новое состояние ({0}) и соответствующим образом перестраиваем суффиксные ссылки. Переходы из нового состояния совпадают с переходами из состояния ({1})"
+        	        			comment-en="Adding new state ({0}) and redirectioning of suffix links."
+        	        			comment-args="new Integer(@r), new Integer(@q)"
+        	        		>
+				        	<draw>
+				        		@visualizer.clearStates();
+				        		@visualizer.updateRect(@r, 1);
+				        		@visualizer.updateRect(@p, 2);
+				        		@visualizer.draw();
+				        	</draw>
+        	        			<action>
+        	        				@r @= @nv;
+        	        				@nv @= @nv + 1;
+        	        				@upper[@r] @= false;
+        	        				@chars[@r] @= "" + @s.charAt(@i);
+        	        				@l[@r] @= @l[@p] + 1;
+        	        				@suff[@last] @= @r;
+        	        				@suff[@r] @= @suff[@q];
+        	        				@suff[@q] @= @r;
+        	        				for (@j = 0; @j &lt; 256; @j++) {
+        	        					@next[@r][@j] @= @next[@q][@j];
+        	        				}
+        	        			</action>
+        	        		</step>
+							<while
+								id="AddingEdgeLoop2"
+								description="Добавление переходов в новое состояние"
+								test = "@p >= 0 &amp;&amp; @next[@p][@s.charAt(@i)] == @q"
+								true-comment-ru="Пока есть переход по добавляемому символу ''{1}'', откатываемся по суффиксным ссылкам. Текущая вершина - ({0})."
+								true-comment-en="While there is a transition by adding symbol ''{1}'', rolling back by suffix links. Current state - ({0})."
+								false-comment-ru="Откат закончился. Либо ушли по суффиксной ссылке из начального положения, либо нашли состояние из которого нет перехода по ''{1}''."
+								false-comment-en="Rolling back completed."
+								comment-args="new Integer(@p), new Character(@s.charAt(@i))"
+							>
+								<draw>
+									@visualizer.clearStates();
+									@visualizer.updateRect(@r, 1);
+									@visualizer.updateRect(@p, 2);
+									@visualizer.draw();
+								</draw>
+								<step
+									id="AddEdge2"
+									description="Добавление перехода"
+									comment-ru="Добавление перехода в новое состояние."
+									comment-en="Adding trasition to the new state."
+								>
+							        	<draw>
+							        		@visualizer.draw();
+							        	</draw>
+									<action>
+										@next[@p][@s.charAt(@i)] @= @r;
+										@p @= @suff[@p];
+									</action>
+								</step>
+							</while>
+        	        	</else>
+                	</if>
+                </else>
+            </if>
+            <step
+                id="inc"
+                description="Инкремент"
+                level="-1"
+            >
+                <action>
+                    @i @= @i + 1;
+                </action>
+            </step>
+        </while>
+        <finish
+            comment-ru="Суффиксный автомат построен!"
+            comment-en="Suffix automaton constructed!"
+        >
+        	<draw>
+        		@visualizer.clearStates();
+        		@visualizer.draw();
+        	</draw>
+        </finish>
+    </auto>
+</algorithm>

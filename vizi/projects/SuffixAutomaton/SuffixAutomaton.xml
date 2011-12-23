@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="WINDOWS-1251"?>
+
+<!DOCTYPE visualizer PUBLIC
+    "-//IFMO Vizi//Visualizer description"
+    "http://ips.ifmo.ru/vizi/dtd/visualizer.dtd"
+[
+    <!ENTITY algorithm SYSTEM "SuffixAutomaton-Algorithm.xml">
+    <!ENTITY configuration SYSTEM "SuffixAutomaton-Configuration.xml">
+]>
+
+<visualizer
+    id="SuffixAutomaton"
+    package="ru.ifmo.vizi.suff_auto"
+    main-class="SuffixAutomatonVisualizer"    
+
+    preferred-width="800"
+    preferred-height="600"
+
+    name-ru="Алгоритм построения суффиксного автомата"
+    name-en="Suffix automaton construction algorithm"
+
+    author-ru="Сергей Поромов"
+    author-en="Sergey Poromov"
+    author-email="poromov@rain.ifmo.ru"
+
+    supervisor-ru="Георгий Корнеев"
+    supervisor-en="Georgiy Korneev"
+    supervisor-email="kgeorgiy@rain.ifmo.ru"
+
+    copyright-ru="Copyright \u00A9 Кафедра КТ, СПбГУ ИТМО, 2008"
+    copyright-en="Copyright \u00A9 Computer Technologies Department, SPb IFMO, 2008"
+>
+    &algorithm;
+    &configuration;
+</visualizer>
+

@@ -1,0 +1,520 @@
+<?xml version="1.0" encoding="WINDOWS-1251"?>
+
+<algorithm>
+		<variable 
+            description = "Массив для сортировки"
+            name = "array"
+            type = "int[]"
+            value = "new int[]{1, 2, 3, 4, 5, 6, 7 ,8}"
+        />
+		<variable 
+            description = "Массив левых границ"
+            name = "leftBorders"
+            type = "int[]"
+            value = "new int[]{1, 2, 3, 4, 5, 6, 7 ,8}"
+        />
+		<variable 
+            description = "Массив правых границ"
+            name = "rightBorders"
+            type = "int[]"
+            value = "new int[]{1, 2, 3, 4, 5, 6, 7 ,8}"
+        />
+		<variable 
+            description = "Массив i"
+            name = "stackI"
+            type = "int[]"
+            value = "new int[]{1, 2, 3, 4, 5, 6, 7 ,8}"
+        />
+		<variable 
+            description = "Массив j"
+            name = "stackJ"
+            type = "int[]"
+            value = "new int[]{1, 2, 3, 4, 5, 6, 7 ,8}"
+        />
+		<variable 
+            description = "Глубина рекурсии"
+            name = "depth"
+            type = "int"
+            value = "0"
+        />
+		<variable 
+            description = "Барьер"
+            name = "bar"
+            type = "int"
+            value = "0"
+        />
+		<variable 
+            description="Экземпляр апплета"
+            name = "visualizer"
+            type = "QuickSortVisualizer"
+            value = "null"
+        />
+		
+		<data>
+	        <toString>
+		        StringBuffer s=new StringBuffer();
+			    return s.toString();
+			</toString>
+		</data>
+
+		<auto id="Main" description="Главный автомат">
+		    <start
+			    comment-ru="На экране изображен сортируемый массив"
+				comment-en="Array we need to sort is shown on the screen"
+			>
+				<draw>
+					@visualizer.updateArray(0, @array.length - 1);
+					@visualizer.updateBorders();
+					@visualizer.updateBar();
+				</draw>
+			</start>
+	
+			<step
+	            id="MainInitialization"
+				description="Запуск автомата сортировки массива"
+				level="-1"
+			>
+				<draw>
+					@visualizer.updateArray(0, @array.length - 1);
+					@visualizer.updateBorders();
+				</draw>
+	            <action>
+					@depth @= 0;
+					@leftBorders[@depth] @= 0;
+					@rightBorders[@depth] @= @array.length - 1;
+					@depth @= @depth + 1;
+				</action>
+			</step>
+			<call-auto id="QSort" level = "1"/>
+			<finish
+	            comment-ru="Массив отсортирован"
+				comment-en="The array is sorted"
+				
+			>
+				<draw>
+					@visualizer.updateArray(0, @array.length - 1);
+					@visualizer.updateBorders();
+				</draw>
+		    </finish>
+    </auto>
+
+	<auto id="QSort" description="Сортировка">
+		<variable 
+            description="Текущая левая граница"
+            name = "left"
+            type = "int"
+        />
+        <variable 
+            description="Текущая правая граница"
+            name = "right"
+            type = "int"
+        />
+        <variable
+            description="Барьер"
+            name = "m"
+            type = "int"
+        />
+		<variable
+            description="Локальная переменная"
+            name = "i"
+            type = "int"
+        />
+		<variable
+            description="Локальная переменная"
+            name = "j"
+            type = "int"
+        />
+		<variable
+            description="Локальная переменная"
+            name = "tmp"
+            type = "int"
+        />
+		<step
+            id="SetVariables"
+            description="Инициализация локальных переменных"
+            comment-ru="Необходимо отсортировать массив [{0}..{1}]"
+            comment-en="We need to sort array [{0}..{1}]"
+            comment-args="new Integer(@left + 1), new Integer(@right + 1)"
+            level="1"
+        >
+			<draw>
+					@visualizer.updateArray(@left, @right);
+					@visualizer.updateBar();
+					@visualizer.updateBorders();
+			</draw>
+            <action>
+                @left @= @leftBorders[@depth - 1];
+                @i @= @left;
+                @right @= @rightBorders[@depth - 1];
+                @j @= @right;
+            </action>
+        </step>
+
+		<step
+            id="ChooseBarrier"
+            description="Выбор барьера"
+            comment-ru="Выберем в качестве барьера средний элемент ((текущая левая граница + текущая правая граница) / 2)"
+            comment-en="Choose medium element as a barrier"
+            level="1"
+        >
+			<draw>
+				@visualizer.updateBar();
+				@visualizer.updateBorders();
+				@visualizer.updatePointers((@left + @right) / 2, (@left + @right) / 2, 1, 1);
+			</draw>
+            <action>
+                @m @= @array[(@left + @right) / 2];
+            </action>
+        </step>
+		
+		<step
+            id="partitionMessage"
+            description="Собощение о разделении"
+            comment-ru="Будет произведено разделение сортируемой части
+                        массива на две, первая часть - элементы, которые
+                        меньше, чем барьер, либо равны ему; вторая - элементы,
+                        которые больше, чем барьер, либо равны ему"
+            comment-en="Partition of the sorting part of the array will be
+                        proceeded, first part will contain elements which
+                        are less than the barrier or are equal to it, the second 
+                        part will contain elements which are greater than the barrier or
+                        are equal to it"
+            level="1"
+        >
+            <draw>
+				@visualizer.updatePointers(@i, @j, 1, 1);
+				@visualizer.updateBorders();
+            </draw>
+            <action>
+            </action>
+        </step>
+		
+		<while
+            id="PartitionLoop"
+            description="Разделение элементов сортируемой части"
+            test="@i &lt;= @j"
+            level="-1"
+        >
+            <while
+                id="firstElementSearch"
+                description="Поиск элемента большего или равного барьеру"
+                test="@array[@i] &lt; @m"
+                level="-1"
+            >
+                <step
+                    id="incrementI"
+                    description="Увеличиваем i"
+                    comment-ru="Элемент {0} меньше чем барьер ({1}). Первый указатель смещается вправо"
+                    comment-en="Element {0} is less than barrier ({1}). First pointer is moved to the right"
+                    comment-args="new Integer(@array[@i - 1]), new Integer(@m)"
+                    level="0"
+                >
+                    <draw>
+						@visualizer.updatePointers(@i - 1, @j, 1, 1);
+						@visualizer.updateBorders();
+					</draw>
+					<action>
+						@i @= @i + 1;
+                    </action>
+                </step>
+            </while>
+            <step
+                id = "firstElementFound"
+                description="Найден первый элемент для обмена"
+                comment-ru="Элемент {0} больше либо равен барьеру ({1}). Фиксируем первый указатель на этом элементе"
+                comment-en="Element {0} is greater than barrier ({1}) or they are equal. The pointer is fixed on this element"
+                comment-args="new Integer(@array[@i]), new Integer(@m)"
+                level="0"
+            >
+				<draw>
+					@visualizer.updatePointers(@i, @j, 2, 1);
+					@visualizer.updateBorders();
+				</draw>
+                <action>
+                </action>
+            </step>
+            <while
+                id="secondElementSearch"
+                description="Поиск элемента меньшего или равного барьеру"
+                test="@array[@j] &gt; @m"
+                level="-1"
+            >
+                <step
+                    id="decrementJ"
+                    description="Уменьшаем j"
+                    comment-ru="Элемент {0} больше чем барьер ({1}). Второй указатель смещается влево"
+                    comment-en="Element {0} is greater than barrier ({1}). Second pointer is moved to the left"
+                    comment-args="new Integer(@array[@j + 1]), new Integer(@m)"
+                    level="0"
+                >
+					<draw>
+						@visualizer.updatePointers(@i, @j + 1, 2, 1);
+						@visualizer.updateBorders();
+					</draw>
+                    <action>
+                        @j @= @j - 1;
+                    </action>
+                </step>
+            </while>
+            <step
+                id = "secondElementFound"
+                description="Найден второй элемент для обмена"
+                comment-ru="Элемент {0} меньше либо равен барьеру ({1}). Фиксируем второй указатель на этом элементе."
+                comment-en="Element {0} is less than barrier ({1}) or they are equal. The pointer is fixed on this element"
+                comment-args="new Integer(@array[@j]), new Integer(@m)"
+                level="0"
+            >
+				<draw>
+					@visualizer.updatePointers(@i, @j, 2, 2);
+					@visualizer.updateBorders();
+				</draw>
+                <action>
+                </action>
+            </step>
+
+            <if
+                id="swapCondition"
+                description="Условие смены мест элементов"
+                test="@i &lt;= @j"
+                level="-1"
+            >
+                <then>
+                    <step
+                        id="elementsSwapComment"
+                        description="Сообщение об обмене элементов"
+                        comment-ru="Первый указатель стоит левее второго или они совпадают, элементы будут переставлены"
+                        comment-en="First pointer is to the left of the second one or they are the same, elements would be swapped"
+                        level="0"
+                    >
+                        <action>
+                        </action>
+                    </step>
+                    <step
+                        id="elementsSwapComment"
+                        description="Обмен переменных"
+                        level="-1"
+                    >
+                        <action>
+                            @tmp @= @array[@i];
+                            @array[@i] @= @array[@j];
+                            @array[@j] @= @tmp;
+                        </action>
+                    </step>
+                    <step
+                        id="shiftPointers"
+                        description="Сдвиг указателей"
+                        comment-ru="Первый и второй указатели смещаются вправо и влево соответственно"
+                        comment-en="First and second pointers are moved to the right and to the left respectively"
+                        level="0"
+                    >
+						<draw>
+							@visualizer.updatePointers(@i, @j, 1, 1);
+							@visualizer.updateBorders();
+						</draw>
+
+                        <action>
+                            @i @= @i + 1;
+                            @j @= @j - 1;
+                        </action>
+                    </step>
+                </then>
+                <else>
+                    <step
+                        id="notElementsSwap"
+                        description="Элементы не надо менять местами"
+                        comment-ru="Первый указатель ({0}) стоит правее второго ({1}), указанные элементы не следует менять местами"
+                        comment-en="First pointer is to the right of the second, elements wouldn't be swapped"
+                        comment-args="new Integer(@array[@j]), 
+                                      new Integer(@array[@i])"
+                        level="0"
+                    >
+						<draw>
+							@visualizer.updatePointers(@i, @j, 1, 1);
+							@visualizer.updateBorders();
+						</draw>	
+                        <action>
+                        </action>
+                    </step>
+                </else>
+            </if>
+		</while>
+		<if
+            id="leftLaunchCondition"
+            description="Условие для рекурсивного вызова для левой части"
+            test="@left &lt; @j"
+            level="-1"
+        >
+            <then>
+                <step
+                    id="launchLeft"
+                    description="Рекурсивный вызов левой части"
+                    comment-ru="Левая часть [{0}..{1}] состоит более чем из одного элемента, ее необходимо отсортировать. Вызов сортировки для левой части"
+                    comment-en="Left part [{0}..{1}] contains more than one element, it should be sorted. Call sorting for left part"
+                    comment-args="new Integer(@left + 1), new Integer(@j + 1)"
+                    level="1"
+                >
+					<draw>
+						@visualizer.updateArray(@left, @right);
+						@visualizer.updateBorders();
+					</draw>	
+                    <action>
+                        @leftBorders[@depth] @= @left;
+                        @rightBorders[@depth] @= @j;
+			@stackI[@depth] @= @i;
+			@stackJ[@depth] @= @j;
+                        @depth @= @depth + 1;
+                    </action>
+                </step>
+                <call-auto id="QSort" level = "1"/>
+                <step
+                    id="recoveryLeft"
+                    description="Восстановление переменных после рекурсии"
+                    level="-1"
+                >
+                    <action>
+                        @left @= @leftBorders[@depth - 1];
+                        @right @= @rightBorders[@depth - 1];
+			@i @= @stackI[@depth - 1];
+			@j @= @stackJ[@depth - 1];
+                    </action>
+                </step>
+            </then>
+            <else>
+                <if
+                    id="leftContainsOneOrZeroElements"
+                    description="Проверка один элемент в левой части или она пуста"
+                    test="@left == @j"
+                    level="-1"
+                >
+                    <then>
+                        <step
+                            id="leftContainsOneElement"
+                            description="Левая часть состоит из одного элемента"
+                            comment-ru="Левая часть состоит из одного элемента. Сортировка не требуется"
+                            comment-en="Left part contains only one element. Sorting is not necessary"
+                            level="1"
+                        >
+							<draw>
+								@visualizer.updateBorders();
+							</draw>
+                            <action>
+                            </action>
+                        </step>
+                    </then>
+                    <else>
+                        <step
+                            id="leftContainsZeroElements"
+                            description="Левая часть пуста"
+                            comment-ru="Левая часть пуста. Сортировка не требуется"
+                            comment-en="Left part is empty. Sorting is not necessary"
+                            level="1"
+                        >
+							<draw>
+								@visualizer.updateBorders();
+							</draw>
+                            <action>
+                            </action>
+                        </step>
+                    </else>
+                </if>
+            </else>
+        </if>
+        <if
+            id="rightLaunchCondition"
+            description="Условие для рекурсивного вызова для правой части"
+            test="@i &lt; @right"
+            level="-1"
+        >
+            <then>
+                <step
+                    id="launchRight"
+                    description="Рекурсивный вызов для правой части"
+                    comment-ru="Правая часть [{0}..{1}] состоит более чем из одного элемента, ее необходимо отсортировать. Вызов сортировки для правой части"
+                    comment-en="Right part [{0}..{1}] contains more than one element, it should be sorted. Call sorting for right part"
+                    comment-args="new Integer(@i + 1), new Integer(@right + 1)"
+                    level="1"
+                >
+					<draw>
+						@visualizer.updateArray(@left, @right);
+						@visualizer.updateBorders();
+					</draw>	
+                    <action>
+                        @leftBorders[@depth] @= @i;
+                        @rightBorders[@depth] @= @right;
+                        @depth @= @depth + 1;
+                    </action>
+                </step>
+                <call-auto id="QSort" level = "1"/>
+                <step
+                    id="recoveryRight"
+                    description="Восстановление переменных после рекурсии"
+                    level="-1"
+                >
+                    <action>
+                        @left @= @leftBorders[@depth - 1];
+                        @right @= @rightBorders[@depth - 1];
+			<!--@i @= @stackI[@depth - 1];
+			@j @= @stackJ[@depth - 1];-->
+                    </action>
+                </step>
+
+            </then>
+            <else>
+                <if
+                    id="rightContainsOneOrZeroElements"
+                    description="Проверка один элемент в правой части или она пуста"
+                    test="@right == @i"
+                    level="-1"
+                >
+                    <then>
+                        <step
+                            id="rightContainsOneElement"
+                            description="Правая часть состоит из одного элемента"
+                            comment-ru="Правая часть состоит из одного элемента. Сортировка не требуется"
+                            comment-en="Right part contains only one element. Sorting is not necessary"
+                            level="1"
+                        >
+							<draw>
+								@visualizer.updateBorders();
+							</draw>
+                            <action>
+                            </action>
+                        </step>
+                    </then>
+                    <else>
+                        <step
+                            id="rightContainsZeroElements"
+                            description="Правая часть пуста"
+                            comment-ru="Правая часть пуста. Сортировка не требуется"
+                            comment-en="Left part is empty. Sorting is not necessary"
+                            level="1"
+                        >
+							<draw>
+								@visualizer.updateBorders();
+							</draw>
+                            <action>
+                            </action>
+                        </step>
+                    </else>
+                </if>
+            </else>
+        </if>
+        <step
+            id="popBorders"
+            description="Достаём из стэка последние границы"
+            comment-ru="Часть массива [{0}..{1}] была отсортирована, ее следует извлечь из стэка."
+            comment-en="Part of the array [{0}..{1}] was sorted, it should be popped from stack"
+            comment-args="new Integer(@left + 1), new Integer(@right + 1)"
+            level="0"
+        >
+			<draw>
+				@visualizer.updateBar();
+				@visualizer.updateBorders();
+			</draw>
+            <action>
+				@depth @= @depth - 1;
+            </action>
+        </step>
+    </auto>
+
+</algorithm>

@@ -1,0 +1,1287 @@
+<?xml version="1.0" encoding="WINDOWS-1251"?>
+
+<!--
+    "Karkkainen" algoritm description (example)
+    Version: $Id: Karkkainen-Algorithm.xml,v 1.1 2005/02/28 11:47:43 geo Exp $
+-->
+
+<algorithm>
+    <variable 
+        description = "Экземпляр апплета"
+        name        = "visualizer"
+        type        = "KarkkainenVisualizer"
+        value       = "null"
+    />
+
+    
+    <variable
+        description = "Начальная строка"
+        name        = "s"
+        type        = "char[]"
+        value       = "new char[]{'a'}"
+    />
+    <variable
+        description = "Стиль начальной строки"
+        name        = "sSt"
+        type        = "int[]"
+        value       = "new int[0]"
+    />
+    <variable
+        description = "Стиль индексов начальной строки"
+        name        = "sNumSt"
+        type        = "int[]"
+        value       = "new int[3]"
+    />
+
+    <variable
+        description = "Рекурсивно построенные строки"
+        name        = "recStr"
+        type        = "int[][]"
+        value       = "new int[0][0]"
+    />
+    <variable
+        description = "Стиль рекурсивно построенных строк"
+        name        = "recStrSt"
+        type        = "int[][]"
+        value       = "new int[0][0]"
+    />
+    <variable
+        description = "Стиль индексов рекурсивно построенных строк"
+        name        = "recStrNumSt"
+        type        = "int[][]"
+        value       = "new int[0][0]"
+    />
+
+    <variable
+        description = "Стиль троек"
+        name        = "tripplesSt"
+        type        = "int[][][]"
+        value       = "new int[0][0][0]"
+    />
+
+    <variable
+        description = "Номера троек"
+        name        = "tripplesNum"
+        type        = "int[][][]"
+        value       = "new int[0][0][0]"
+    />
+
+    <variable
+        description = "Стиль номеров троек"
+        name        = "tripplesNumSt"
+        type        = "int[][][]"
+        value       = "new int[0][0][0]"
+    />
+
+    <variable
+        description = "Recursive built array 1 style"
+        name        = "recS1St"
+        type        = "int[][]"
+        value       = "new int[0][0]"
+    />
+
+    <variable
+        description = "Суффиксные массивы"
+        name        = "suffArr"
+        type        = "int[][]"
+        value       = "new int[0][0]"
+    />
+
+    <variable
+        description = "Стиль суффиксных массивов"
+        name        = "suffArrSt"
+        type        = "int[][]"
+        value       = "new int[0][0]"
+    />
+
+    <variable
+        description = "Второй стиль суффиксного массива"
+        name        = "suffArrSt2"
+        type        = "int[][]"
+        value       = "new int[0][0]"
+    />
+
+    <variable
+        description = "Стиль суффиксного массива для последней строки"
+        name        = "lastSuffArrSt"
+        type        = "int[][]"
+        value       = "new int[0][0]"
+    /> 
+
+    <variable
+        description = "Обратная к суффиксному масиву перестановка"
+        name        = "invSuffArr"
+        type        = "int[][][]"
+        value       = "new int[0][0][0]"
+    />
+
+    <variable
+        description = "Стиль обратной к суффиксному массиву перестановки"
+        name        = "invSuffArrSt"
+        type        = "int[][][]"
+        value       = "new int[0][0][0]"
+    /> 
+
+    <variable
+        description = "Пары"
+        name        = "pairs"
+        type        = "int[][][]"
+        value       = "new int[0][0][0]"
+    />
+
+    <variable
+        description = "Стиль пар"
+        name        = "pairsSt"
+        type        = "int[][][]"
+        value       = "new int[0][0][0]"
+    />
+
+    <variable
+        description = "Номера пар"
+        name        = "pairsNum"
+        type        = "int[][][]"
+        value       = "new int[0][0][0]"
+    />
+
+    <variable
+        description = "Стиль номеров пар"
+        name        = "pairsNumSt"
+        type        = "int[][][]"
+        value       = "new int[0][0][0]"
+    />
+
+
+    <variable
+        description = "Стиль индексов обратной к суффиксному массиву перестановки"
+        name        = "invSuffArrNumSt"
+        type        = "int[][][]"
+        value       = "new int[0][0][0]"
+    /> 
+
+    <variable
+        description = "Номера элементов типа 2 и 3 в строке"
+        name        = "trp23Num"
+        type        = "int[][][]"
+        value       = "new int[0][0][0]"
+    /> 
+
+    <variable
+        description = "Стиль номеров элементов типа 2 и 3"
+        name        = "trp23NumSt"
+        type        = "int[][][]"
+        value       = "new int[0][0][0]"
+    />
+
+    <variable
+        description = "Отсортированный список суффиксов типа 2 и 3"
+        name        = "suff23List"
+        type        = "int[][][]"
+        value       = "new int[0][0][0]"
+    />
+
+    <variable
+        description = "Стиль отсортированного списка суффиксов типа 2 и 3"
+        name        = "suff23ListSt"
+        type        = "int[][][]"
+        value       = "new int[0][0][0]"
+    />
+
+    <variable
+        description = "Второй стиль отсортированного списка суффиксов типа 2 и 3"
+        name        = "suff23ListSt2"
+        type        = "int[][][]"
+        value       = "new int[0][0][0]"
+    />
+
+    <variable
+        description = "Стиль индексов отсортированного списка суффиксов типа 2 и 3"
+        name        = "suff23ListNumSt"
+        type        = "int[][][]"
+        value       = "new int[0][0][0]"
+    />
+
+    <variable
+        description = "Отсортированный список суффиксов типа 0"
+        name        = "suff0List"
+        type        = "int[][][]"
+        value       = "new int[0][0][0]"
+    />
+
+    <variable
+        description = "Стиль отсортированного списка суффиксов типа 0"
+        name        = "suff0ListSt"
+        type        = "int[][][]"
+        value       = "new int[0][0][0]"
+    />
+
+    <variable
+        description = "Клон стиля отсортированного списка суффиксов типа 0"
+        name        = "suff0ListSt2"
+        type        = "int[][][]"
+        value       = "new int[0][0][0]"
+    />
+
+    <variable
+        description = "Стиль индексов отсортированного списка суффиксов типа 0"
+        name        = "suff0ListNumSt"
+        type        = "int[][][]"
+        value       = "new int[0][0][0]"
+    />
+
+    <variable
+        description = "Номера суффиксов типа 2 и 3"
+        name        = "suff23Num"
+        type        = "int[][]"
+        value       = "new int[0][0]"
+    />
+
+    <toString>
+        StringBuffer s = new StringBuffer();
+        return s.toString();
+    </toString>
+
+    <auto id="Main" description="Строит суффиксный массив">
+        <variable 
+            description = "Переменная цикла - глубина рекурсии"
+            name        = "i"
+            type        = "int"
+        />
+        
+        <variable 
+            description = "Переменная цикла"
+            name        = "j"
+            type        = "int"
+        />
+
+        <variable 
+            description = "Переменная цикла - указатель в левом суффиксном массиве"
+            name        = "l"
+            type        = "int"
+        />
+
+        <variable 
+            description = "Переменная цикла - указатель в правом суффиксном массиве"
+            name        = "r"
+            type        = "int"
+        />
+
+        <variable 
+            description = "Временная переменная"
+            name        = "tl"
+            type        = "int"
+        />
+
+        <variable 
+            description = "Временная переменная"
+            name        = "tr"
+            type        = "int"
+        />
+
+        <variable 
+            description = "Переменная цикла - глубина, на которую мы ушли при сравнении суффиксов"
+            name        = "sh"
+            type        = "int"
+        />
+
+        <variable 
+            description = "Переменная цикла"
+            name        = "goOn"
+            type        = "boolean"
+        />
+
+        <start
+            comment-ru="На экране изображена строка, для которой будет построен суффиксный массив"
+            comment-en="There is a string on the display for which a suffix array will be built"
+        >
+            <draw>
+                @visualizer.draw();
+            </draw>
+        </start>
+
+        <step
+            id="Renumerating"
+            description="Перенумерация"
+            comment-ru="Занумеруем буквы последовательными натуральными числами начиная с единицы так, чтобы та буква, которая в алфавите идет раньше, имела меньший номер, а равные буквы имели равные номера. Для удобства пронумеруем элементы строки."
+            comment-en="Number letters with natural numbers, so that the letter that comes earlier in the alphabet had less value. Equal letter must have equal values."
+        >
+            <draw>
+                @visualizer.draw();
+            </draw>
+            <action>
+                @i @= 0;
+                for (int ti = 0; ti &lt; @recStrSt[@i].length; ti++) {
+                    @recStrSt[@i][ti] @= 1 + ti % 3;
+                    @recStrNumSt[@i][ti] @= 1;
+                }
+                
+                if (@recStr[@i][@recStr[@i].length - 1] == 0) {
+                    @recStrSt[@i][@recStr[@i].length - 1] @= -1;
+                    @recStrNumSt[@i][@recStr[@i].length - 1] @= -1;
+               }
+            </action>
+        </step>
+
+        <while
+            id="Loop1"
+            description="Главный цикл рекурсии"
+            test="@i &lt; @recStr.length"
+            level="-1"
+        >
+            <step
+                id="step1"
+                description="Текущая строка"
+                comment-ru="На экране изображена новая строка, для которой нужно построить суффиксный массив."
+                comment-en="A string, for which suffix array must be built, is shown."
+            >
+                <draw>
+                    @visualizer.draw();
+                </draw>
+                <action>
+                    if (@i > 0) {
+                        for (int tj = 0; tj &lt; @tripplesSt[@i - 1].length; tj++) {
+                            for (int tk = 0; tk &lt; @tripplesSt[@i - 1][tj].length; tk++) {
+                                @tripplesSt[@i - 1][tj][tk] @= -1;
+                            }                            
+                        }
+                        for (int ti = 0; ti &lt; @tripplesNumSt[@i - 1].length; ti++) {
+                            for (int tk = 0; tk &lt; @tripplesNumSt[@i - 1][ti].length; tk++) {
+                                @tripplesNumSt[@i - 1][ti][tk] @= -1;   
+                            }
+                        }
+                        for (int ti = 0; ti &lt; @recS1St[@i].length; ti++) {
+                            @recS1St[@i][ti] @= -1;       
+                        }                        
+                    }
+                    for (int ti = 0; ti &lt; @recStrSt[@i].length; ti++) {
+                        @recStrSt[@i][ti] @= 1 + ti % 3;    
+                        @recStrNumSt[@i][ti] @= 1;
+                    }                    
+                    
+                    if (@recStr[@i][@recStr[@i].length - 1] == 0) {
+                        @recStrSt[@i][@recStr[@i].length - 1] @= -1;
+                        @recStrNumSt[@i][@recStr[@i].length - 1] @= -1;
+                    }
+                    @i @= @i + 1;
+                    @j @= 0;
+                </action>
+            </step>
+                    
+            
+            <if
+                id="if0"
+                description="Проверка на то, что все символы различны"
+                test="@i &lt; @recStr.length"
+                true-comment-ru="В строке присутствуют одинаковые элементы. Строим строку меньшего размера"
+                true-comment-en="There are equal elements in the string. We have to build a string of less size."
+                false-comment-ru="Все элементы различны. Суффиксный массив для текущей строки можно построить напрямую."
+                false-comment-en="All elements are different. Suffix array could be built directly within linear time."
+                comment-args=""
+            >
+                <draw>
+                    @visualizer.draw();
+                </draw>
+                <then>
+                    <if
+                        id="if1"
+                        description="Дополнение нулем"
+                        test="@recStr[@i - 1][@recStr[@i - 1].length - 1] == 0"
+                        true-comment-ru="Длина строки дает остаток 1 от деления на 3. Для корректной работы алгоритма нееобходимо дополнить её нулем."
+                        true-comment-en="The length of the string has residue 1 of division by 3. For correct work of the algorithm zero has to be appended."
+                        false-comment-ru="Длина строки дает остаток {0} от деления на 3. Нет необходимости дополнять её нулем."
+                        false-comment-en="The length of the string has residue {0} of division by 3. There is no need in appending it with zero."
+                        comment-args="new Integer(@recStr[@i - 1].length % 3)"
+                    >
+                        <draw>
+                            @visualizer.draw();
+                        </draw>
+                        <then>
+                            <step
+                                    id="step2"
+                                    description="Комментарий"
+                                    comment-ru="Теперь это уже другая строка, но по её суффиксному массиву несложно восстановить суффиксный массив для строки без нуля."
+                                    comment-en="Having a suffix array for this string, a suffix array for the string without zero at the end could be easily built."
+                                >
+                                    <draw>
+                                        @visualizer.draw();
+                                    </draw>
+                                    <action>                                
+                                        @recStrSt[@i - 1][@recStrSt[@i - 1].length - 1] @= 1 + (@recStrSt[@i - 1].length - 1) % 3;
+                                        @recStrNumSt[@i - 1][@recStrSt[@i - 1].length - 1] @= 1;    
+                                    </action>
+                                </step>
+                        </then>
+                    </if>
+
+                    <while
+                        id="Loo"
+                        description="Цкл"
+                        test="@j &lt; @tripplesSt[@i - 1].length"
+                        level="-2"
+                    >  
+                        <step
+                            id="bla"
+                            description="Построение троек"
+                            comment-ru="Выписываем тройки, начинающиеся в позициях, дающих остатки 1 и 2 при делении на 3. (Для краткости - тройки типа 1 и 2 соответственно). Считаем, что строка дополнена нулями."
+                            comment-en="Writing out tripples starting at positions which have residue 1 and 2 of division by 3. (To be short - of type 1 and 2)"
+                        >
+                            <draw>
+                            @visualizer.draw();
+                            </draw>
+                            <action>
+                                int col = 2 + (@j % 2);
+                                for (int ti = 0; ti &lt; @tripplesSt[@i - 1][@j].length; ti++) {
+                                    @tripplesSt[@i - 1][@j][ti] @= col;        
+                                }
+                                @j @= @j + 1;
+                            </action>
+                        </step>    
+                    
+                    </while>
+
+                    <step                                                                      
+                        id="I"                                                                 
+                        description="Сортировка троек"
+                        comment-ru="Отсортируем выписанные тройки лексикографически числовой сортировкой. Занумеруем в неубывающем порядке. Равные тройки получают равные номера."
+                        comment-en="Sorting the tripples with radix sort. They are numbered in non-descending order. Equal tripples have equal numbers."
+                    >                                                                          
+                        <draw>                                                                 
+                            @visualizer.draw();                                                
+                        </draw>                                                                
+                        <action>                                                      
+                            for (int ti = 0; ti &lt; @tripplesNumSt[@i - 1].length; ti++) {
+                                @tripplesNumSt[@i - 1][ti][0] @= 2 + (ti % 2);
+                            }
+                            @j = 0;                                                         
+                        </action>                                                              
+                    </step>
+
+                    <while
+                        id="Loop3"
+                        description="Цикл по тройкам типа 1"
+                        test="@j &lt; (@tripplesNumSt[@i - 1].length + 1) / 2"
+                        level="-2"
+                    >  
+                        <step
+                            id="step5"
+                            description="Выписываем номера троек типа 1"
+                            comment-ru="Выписываем номера троек типа 1"
+                            comment-en="Writing out numbers of tripples of type 1"
+                        >
+                            <draw>
+                                @visualizer.draw();
+                            </draw>
+                            <action>
+                                if (@j > 0) {
+                                    @tripplesNumSt[@i - 1][(@j - 1) * 2][0] @= 2;
+                                    @recS1St[@i][@j - 1] @= 2;
+                                }
+                                @tripplesNumSt[@i - 1][@j * 2][0] @= 4;
+
+
+                                @recS1St[@i][@j] @= 4;
+
+                                @j @= @j + 1;
+                            </action>
+                        </step>    
+                    </while>
+
+                    <while
+                        id="Loop4"
+                        description="Цикл по тройкам типа 2"
+                        test="@j &lt; @tripplesNumSt[@i - 1].length"
+                        level="-2"
+                    >  
+                        <step
+                            id="step6"
+                            description="Выписываем номера троек типа 2"
+                            comment-ru="Выписываем номера троек типа 2"
+                            comment-en="Wrinting out numbers of tripples of type 2"
+                        >
+                            <draw>
+                                @visualizer.draw();
+                            </draw>
+                            <action>
+                                if (@j > (@tripplesNumSt[@i - 1].length + 1) / 2) {
+                                    @tripplesNumSt[@i - 1][(@j - 1 - ((@tripplesNumSt[@i - 1].length + 1) / 2)) * 2 + 1][0] @= 3;
+                                    @recS1St[@i][@j - 1] @= 3;
+                                } else {
+                                    @tripplesNumSt[@i - 1][2 * @j - 2][0] @= 2;
+                                    @recS1St[@i][@j - 1] @= 2;
+                                }
+                                @tripplesNumSt[@i - 1][(@j - ((@tripplesNumSt[@i - 1].length + 1) / 2)) * 2 + 1][0] @= 4;
+
+                                @recS1St[@i][@j] @= 4;
+
+                                @j @= @j + 1;
+                            </action>
+                        </step>    
+                    </while>
+                                     
+                    <step
+                        id="Idi"
+                        description="Комментарий"
+                        comment-ru="Получена строка меньшего размера. Отметим, что сравнение суффиксов в построенной строке равносильно сравнению суффиксов типа 1 и 2 в исходной строке. Именно для выполнения этого свойства в случае если длина строки сравнима с 1 по модулю 3, её дополняют нулем."           
+                        comment-en="You can see a string of less size, for which a suffix array is need to be built. Note that comparing suffixes in this string is equivalent to comparing suffixes of type 1 and 2 in the initial string."
+                    >
+                        <draw>
+                            @visualizer.draw();
+                        </draw>
+                        <action>
+                                @recS1St[@i][@j - 1] @= 3;
+                                @tripplesNumSt[@i - 1][@tripplesNumSt[@i - 1].length - 1 - (@tripplesNumSt[@i - 1].length % 2)][0] @= 3;
+                        </action>
+                    </step>
+                </then>
+            </if>
+        </while>
+
+        <while
+            id="while10"
+            description="Цикл"
+            test="@j &lt; @lastSuffArrSt.length"
+            level="-1"
+        >
+            <step
+                id="step12"
+                description="Непосредственное построение суффиксного массива"
+                comment-ru="Значение текущего элемента {0}, поэтому суффикс, начинающийся в позиции {1} имеет номер {2} = {0} - 1 в суффиксном массиве."
+                comment-en="Value of the current element is {0}. That's why suffix that starts at position {1} has number {2} = {0} - 1 in the suffix array."
+                comment-args="new Integer(@recStr[@i - 1][@j - 1]), new Integer(@j - 1), new Integer(@recStr[@i - 1][@j - 1] - 1)"
+            >
+                <draw>
+                    @visualizer.draw();
+                </draw>
+                <action>
+                    if (@j > 0) {
+                        @recStrSt[@i - 1][@j - 1] @= 1 + (@j % 3);
+                        @lastSuffArrSt[@recStr[@recStr.length - 1][@j - 1] - 1][0] @= 1;
+                    }
+                    @recStrSt[@i - 1][@j] @= 4;
+                    @lastSuffArrSt[@recStr[@recStr.length - 1][@j] - 1][0] @= 4;
+                    @j @= @j + 1;    
+                </action>
+            </step>    
+
+        </while>
+      
+      
+
+
+        <while
+            id="while7"
+            description="Цикл"
+            test="@i > 1"
+            level="-1"
+        >
+            <step
+                id="step14"
+                description="Начало шага рекурсии"
+                comment-ru="Суффиксный массив для текущей строки построен"
+                comment-en="Suffix Array for current string is built"
+                comment-args=""
+            >
+                <draw>
+                    @visualizer.draw();
+                </draw>
+                <action>                
+                    if (@i == @recStr.length) {
+                        @recStrSt[@i - 1][@j - 1] @= 1 + (@j % 3);
+                        @lastSuffArrSt[@recStr[@recStr.length - 1][@j - 1] - 1][0] @= 1;    
+                    }
+                    if (@i &lt; @suff0ListSt.length) {
+                        @suff0ListSt2[@i][@suff0ListSt2[@i].length - 1][0] @= 1;
+                        @suff23ListSt2[@i][@suff23ListSt2[@i].length - 1][0] @= 1;
+                    }
+                </action>
+            </step>    
+            
+            <step
+                id="step13"
+                description="???"
+                comment-ru="Строим суффиксный массив для текущей строки, используя известный суффиксный массив для строки, соответствующей суффиксам типа 1 и 2."
+                comment-en="We are going to build a suffix array for the current string, using suffix array, which we have just built."
+                comment-args=""
+            >
+                <draw>
+                    @visualizer.draw();
+                </draw>
+                <action>
+                    for (int ti = 0; ti &lt; @recStrSt[@i - 1].length; ti++) {
+                        @recStrSt[@i - 1][ti] @= -1;    
+                        @recStrNumSt[@i - 1][ti] @= -1;
+                    }
+                    if (@i &lt; @suff0ListSt2.length) {
+                        for (int ti = 0; ti &lt; @suff0ListSt2[@i].length; ti++) {
+                            @suff0ListSt2[@i][ti][0] @= -1;
+                        }
+                        for (int ti = 0; ti &lt; @suff23ListSt2[@i].length; ti++) {
+                            @suff23ListSt2[@i][ti][0] @= -1;
+                        }
+                        for (int ti = 0; ti &lt; @trp23NumSt[@i].length; ti++) {
+                            @trp23NumSt[@i][ti][0] @= -1;
+                        }
+                        for (int ti = 0; ti &lt; @suffArrSt[@i - 1].length; ti++) {
+                            @suffArrSt2[@i - 1][ti] @= -1;
+                        }
+                    }
+                    if (@i &lt; @suffArr.length) {                        
+                        @suffArrSt[@i][0] @= -1;                        
+                    } else {
+                        for (int ti = 0; ti &lt; @lastSuffArrSt.length; ti++) {
+                            @lastSuffArrSt[ti][0] @= -1;
+                        }
+                    }
+                                     
+                    @i @= @i - 1;
+                    for (int ti = 0; ti &lt; @suffArrSt[@i].length; ti++) {
+                        @suffArrSt[@i][ti] @= 1;
+                    }                   
+                    @j @= 0;
+                </action>
+            </step>    
+
+            <step
+                id="step23"
+                description="Комментарий"
+                comment-ru="Построим обратную перестановку суффиксов. На экране изображены индексы в будущем массиве."
+                comment-en="We are going to build an array, where the number of each suffix in the suffix array is stored."
+                comment-args=""
+            >
+                <draw>
+                    @visualizer.draw();
+                </draw>
+                <action>                
+                    @j @= 0;
+                    for (int ti = 0; ti &lt; @invSuffArrSt[@i].length; ti++) {
+                        @invSuffArrNumSt[@i][ti][0] @= 1;
+                    }
+                </action>
+            </step>
+
+            
+            <while
+                id="while15"
+                description="Цикл построения обратной перестановки"
+                test="@j &lt; @invSuffArr[@i].length"
+                level="-1"
+            >
+                <step
+                    id="step19"
+                    description="???"
+                    comment-ru="Рассматриваемый элемент имеет номер {0} в суффиксном массиве и соответствовал суффиксу, начинающемуся в позиции {1} в строке, для которой он был построен."
+                    comment-en="Current element has number {0} in the suffix array and corresponded to the suffix, starting at position {1}."
+                    comment-args="new Integer(@j - 1), new Integer(@suffArr[@i][@j - 1])"
+                >
+                    <draw>
+                        @visualizer.draw();
+                    </draw>
+                    <action>
+                        if (@j > 0) {
+                            @suffArrSt[@i][@j - 1] @= 1;
+                            @invSuffArrSt[@i][@suffArr[@i][@j - 1]][0] @= 1;
+                        }
+                        @suffArrSt[@i][@j] @= 4;
+                        @invSuffArrSt[@i][@suffArr[@i][@j]][0] @= 4;
+                        @j @= @j + 1;    
+                    </action>
+                </step>    
+    
+            </while>
+
+            <step
+                id="step21"
+                description="Комментарий"
+                comment-ru="Теперь вспомним, каким суффиксам соответствовали суффиксы в предыдущей строке. На экране заготовлены индексы в будущем массиве. Пронумеруем суффиксы, а заодно выпишем индексы начал суффиксов типа 1 и 2, упорядоченных лексикографически."
+                comment-en="Now we are going to number suffixes of type 1 and 2 in the current string and write them out in ascending order."
+                comment-args=""
+            >
+                <draw>
+                    @visualizer.draw();
+                </draw>
+                <action>
+                    @suffArrSt[@i][@j - 1] @= 1;        
+                    @invSuffArrSt[@i][@suffArr[@i][@j - 1]][0] @= 1;
+                    @j @= 0;
+                    for (int ti = 0; ti &lt; @suff23ListNumSt[@i].length; ti++) {
+                        @suff23ListNumSt[@i][ti][0] @= 1;
+                    }
+                </action>
+            </step>
+
+            <while
+                id="while28"
+                description="Цикл"
+                test="@j &lt; @trp23Num[@i].length"
+                level="-1"
+            >
+                <step
+                    id="step29"
+                    description="Шаг цикла"
+                    comment-ru="Суффиксу номер {0} в строке соответствует суффикс, начинающий в позиции {1}."
+                    comment-en="Suffix number {0} cooresponds to the suffix, starting at position {1}."
+                    comment-args="new Integer(@j - 1), new Integer(@suff23List[@i][@invSuffArr[@i][@j - 1][0]][0])"
+                >
+                    <draw>
+                        @visualizer.draw();
+                    </draw>
+                    <action>
+                        if (@j > 0) {
+                            @invSuffArrSt[@i][@j - 1][0] @= 1;
+                            @trp23NumSt[@i][@j - 1][0] @= 1;
+                            @suff23ListSt[@i][@invSuffArr[@i][@j - 1][0]][0] @= 1;
+                        }
+                        @invSuffArrSt[@i][@j][0] @= 4;
+                        @trp23NumSt[@i][@j][0] @= 4;
+                        @suff23ListSt[@i][@invSuffArr[@i][@j][0]][0] @= 4;
+                        @j @= @j + 1;    
+                    </action>
+                </step>    
+    
+            </while>
+
+            <step
+                id="step37364"
+                description="Скрываем вспомогательные массивы"
+                comment-ru="Больше нам вспомогательные массивы не нужны."
+                comment-en="We don't need temporary arrays any more."
+            >
+                <draw>
+                    @visualizer.draw();
+                </draw>
+                <action>
+                    @invSuffArrSt[@i][@j - 1][0] @= 1;       
+                    @trp23NumSt[@i][@j - 1][0] @= 1;
+                    @suff23ListSt[@i][@invSuffArr[@i][@j - 1][0]][0] @= 1;
+                    @j @= 0;
+                    for (int ti = 0; ti &lt; @suff23List[@i].length; ti++) {
+                        @suff23ListSt[@i][ti][0] @= -1;
+                        @suff23ListSt2[@i][ti][0] @= 1;
+                        @suff23ListNumSt[@i][ti][0] @= -1;
+                        @invSuffArrSt[@i][ti][0] @= -1;
+                        @invSuffArrNumSt[@i][ti][0] @= -1;
+                        @suffArrSt[@i][ti] @= -1;
+                    }
+                </action>
+            </step>
+            
+            <step
+                id="step31"
+                description="Комментарий"
+                comment-ru="Таким образом мы можем за O(1) сравнить любые два суффикса типа 1 и 2, а также обладаем их упорядоченным списком."
+                comment-en="Now we are able to compare two suffixes of type 1 or 2 within constant time and we also have a suffix array of suffixes type 1 and 2."
+            >
+                <draw>
+                    @visualizer.draw();
+                </draw>
+                <action>
+                </action>
+            </step>
+
+
+
+            <while
+                id="while38"
+                description="Цикл построения пар"
+                test="@j &lt; @pairs[@i].length"
+                level="-1"
+            >
+                <step
+                    id="step39"
+                    description="Выписываем очередную пару"
+                    comment-ru="Выпишем пары элементов - элемент типа 0 и номер следующего за ним суффикса. Отметим, что сравнение таких пар эквивалентно сравнению соответствующих суффиксов."
+                    comment-en="Writing out pairs of elements - element of type 0 and number of suffix right after it."
+                    comment-args=""
+                >
+                    <draw>
+                        @visualizer.draw();
+                    </draw>
+                    <action>
+                        if (@j > 0) {
+                            @recStrSt[@i - 1][3 * (@j - 1)] @= 1;
+                            @trp23NumSt[@i][@j - 1][0] @= 1;
+                        }
+                        @recStrSt[@i - 1][3 * @j] @= 4;
+                        @trp23NumSt[@i][@j][0] @= 4;
+                        for (int ti = 0; ti &lt; @pairsSt[@i][@j].length; ti++) {
+                            @pairsSt[@i][@j][ti] @= 1;
+                        }
+                        @j @= @j + 1;    
+                    </action>
+                </step>    
+            </while>
+
+            <step
+                id="step41"
+                description="Сортировка пар"
+                comment-ru="Отсортируем полученные пары числовой сортировкой в лексикографическом порядке. Занумеруем их в неубывающем порядке. Равных пар, очевидно, быть не может."
+                comment-en="Sort pairs lexicographically. Then number it with integer number starting from zero in non-descending order. Note, that there could not be any equal pairs."
+            >
+                <draw>
+                    @visualizer.draw();
+                </draw>
+                <action>
+                    @recStrSt[@i - 1][3 * (@j - 1)] @= 1;
+                    @trp23NumSt[@i][@j - 1][0] @= 1;         
+                    for (int ti = 0; ti &lt; @pairsNumSt[@i].length; ti++) {
+                        @pairsNumSt[@i][ti][0] @= 1;
+                    }
+                    @j @= 0;
+                </action>
+            </step>
+
+            <step
+                id="step61"
+                description="Комментарий"
+                comment-ru="Теперь выпишем индексы начал суффиксов типа 0 в таком порядке, чтобы соответствующие суффиксы были упорядочены лексикографически по возрастанию."
+                comment-en="???"
+            >
+                <draw>
+                    @visualizer.draw();
+                </draw>
+                <action>                
+                    for (int ti = 0; ti &lt; @suff0ListNumSt[@i].length; ti++) {
+                        @suff0ListNumSt[@i][ti][0] @= 1;
+                    }
+                    @j @= 0;
+                </action>
+            </step>
+
+            <while
+                id="while51"
+                description="Цикл"
+                test="@j &lt; @suff0List[@i].length"
+                level="-1"
+            >
+                <step
+                    id="step49"
+                    description="???"
+                    comment-ru="Текущая пара соответствует суффиксу, начинающемуся в позиции {0} и имеет номер {1}, что эквивалентно номеру суффикса."
+                    comment-en="Current pair comes to the suffix, starting at index {0} and having number {1} in the suffix array."
+                    comment-args="new Integer(3 * (@j - 1)), new Integer(@pairsNumSt[@i][@j - 1][0])"
+                >
+                    <draw>
+                        @visualizer.draw();
+                    </draw>
+                    <action>
+                        if (@j > 0) {
+                            @pairsSt[@i][@j - 1][0] @= 1;
+                            @pairsSt[@i][@j - 1][1] @= 1;
+                            @pairsNumSt[@i][@j - 1][0] @= 1;
+                            @recStrSt[@i - 1][3 * (@j - 1)] @= 1;
+                            @suff0ListSt[@i][@pairsNum[@i][@j - 1][0]][0] @= 1;
+                        }
+                        @pairsSt[@i][@j][0] @= 4;
+                        @pairsSt[@i][@j][1] @= 4;
+                        @pairsNumSt[@i][@j][0] @= 4;
+                        @recStrSt[@i - 1][3 * (@j)] @= 4;
+                        @suff0ListSt[@i][@pairsNum[@i][@j][0]][0] @= 4;                        
+                        @j @= @j + 1;    
+                    </action>
+                </step>    
+    
+            </while>
+
+            <step
+                id="step71"
+                description="???"
+                comment-ru="Для дальнейшей работы ничего, кроме двух массивов с номерами суффиксов, выписанных в лексикографическом порядке, не нужно. По существу это два суффиксных массива, которые необходимо слить в один."
+                comment-en="For the former work of the algorithm we don't need anything except for the two arrays with the lists of the suffixes. You can think that we are going to merge this two lists."
+                comment-args=""
+            >
+                <draw>
+                    @visualizer.draw();
+                </draw>
+                <action>
+                    int pj = @pairs[@i].length;
+                    @pairsSt[@i][pj - 1][0] @= 1;
+                    @pairsSt[@i][pj - 1][1] @= 1;
+                    @pairsNumSt[@i][pj - 1][0] @= 1;
+                    @recStrSt[@i - 1][3 * (pj - 1)] @= 1;
+                    @suff0ListSt[@i][@pairsNum[@i][pj - 1][0]][0] @= 1;      
+
+                    for (int ti = 0; ti &lt; @pairsNum[@i].length; ti++) {
+                        @pairsNumSt[@i][ti][0] @= -1;
+                        for (int tj = 0; tj &lt; @pairsSt[@i][ti].length; tj++) {
+                            @pairsSt[@i][ti][tj] @= -1;
+                        }
+                    }
+
+                    for (int ti = 0; ti &lt; @suff0List[@i].length; ti++) {
+                        @suff0ListSt[@i][ti][0] @= -1;
+                        @suff0ListSt2[@i][ti][0] @= 1;
+                        @suff0ListNumSt[@i][ti][0] @= -1;
+                    }
+
+                    @j @= 0;
+                    @l @= 0;
+                    @r @= 0;
+                    @suff0ListSt2[@i][@l][0] @= 4;
+                    @suff23ListSt2[@i][@r][0] @= 5;
+                    @recStrSt[@i - 1][@suff0List[@i][@l][0]] @= 4;
+                    @recStrSt[@i - 1][@suff23List[@i][@r][0]] @= 5;
+                    @goOn @= true;
+                    @sh @= -1;
+                </action>
+            </step>
+            
+            
+            <if
+                id="if6"
+                description="???"
+                test="@recStr[@i - 1][@recStr[@i - 1].length - 1] == 0"
+                true-comment-ru="В конец строки был добавлен 0."
+                true-comment-en="The string has been appended with zero."
+                false-comment-ru="В конец строки не был добавлен 0"
+                false-comment-en="The string hasn't been appended with zero."
+                comment-args=""
+            >
+                <draw>
+                    @visualizer.draw();
+                </draw>
+                <then>
+                    <step
+                        id="step911"
+                        description="???"
+                        comment-ru="Пропускаем этот суффикс."
+                        comment-en="We skip this suffix."
+                    >
+                        <draw>
+                            @visualizer.draw();
+                        </draw>
+                        <action>                                
+                            @recStrSt[@i - 1][@suff23List[@i][@r][0]] @= 1 + (@suff23List[@i][@r][0] % 3);
+                            @suff23ListSt2[@i][@r][0] @= 1;
+                            @r @= @r + 1;
+                            @recStrSt[@i - 1][@suff23List[@i][@r][0]] @= 5;
+                            @suff23ListSt2[@i][@r][0] @= 5;
+                        </action>
+                    </step>
+                </then>
+             </if>
+
+             <while
+                  id="while101"
+                  description="Цикл"
+                  test="@l &lt; @suff0List[@i].length &amp;&amp; @r &lt; @suff23List[@i].length"
+                  level="-1"
+             >
+                  <step
+                      id="step267"
+                      description="???"
+                      comment-ru="Рассматриваем два очередных суффикса"
+                      comment-en="Two suffixes are being compared."
+                  >
+                      <draw>
+                          @visualizer.draw();
+                      </draw>
+                      <action>
+                          for (int ti = 0; ti &lt; @recStrSt[@i - 1].length; ti++) {
+                               @recStrSt[@i - 1][ti] @= 1 + (ti % 3);
+                          }
+                              
+                          if (@l > 0) {
+                              @suff0ListSt2[@i][@l - 1][0] @= 1;           
+                          }       
+                          
+                          if (@r > 0) {
+                              @suff23ListSt2[@i][@r - 1][0] @= 1;           
+                          }
+
+                          @suff0ListSt2[@i][@l][0] @= 4;
+                          @suff23ListSt2[@i][@r][0] @= 5;
+                          
+                          @recStrSt[@i - 1][@suff0List[@i][@l][0]] @= 4;
+                          @recStrSt[@i - 1][@suff23List[@i][@r][0]] @= 5;
+                          @sh @= -1;
+                          @goOn @= true;
+                      </action>
+                  </step> 
+             
+             
+                  <while
+                       id="while131"
+                       description="Цикл"
+                       test="@goOn == true"
+                       level="-2"
+                  >   
+                      <step
+                          id="step2327"
+                          description="???"
+                          comment-ru="На экране выделены текущие позиции в сливаемых массивах и соответствующие элементы в строке."
+                          comment-en="Current positions in the suffix arrays and current positions in the string are marked."
+                      >
+                          <draw>
+                              @visualizer.draw();
+                          </draw>
+                          <action>
+                              for (int ti = 0; ti &lt; @recStrSt[@i - 1].length; ti++) {
+                                  @recStrSt[@i - 1][ti] @= 1 + (ti % 3);
+                              }
+                              @sh @= @sh + 1;
+
+                              if (@l > 0) {
+                                  @suff0ListSt2[@i][@l - 1][0] @= 1;           
+                              }       
+                              
+                              if (@r > 0) {
+                                  @suff23ListSt2[@i][@r - 1][0] @= 1;           
+                              }
+
+                              @suff0ListSt2[@i][@l][0] @= 4;       
+                              @suff23ListSt2[@i][@r][0] @= 5;
+                              @recStrSt[@i - 1][@suff0List[@i][@l][0] + @sh] @= 4;
+                              @recStrSt[@i - 1][@suff23List[@i][@r][0] + @sh] @= 5;
+                              
+                              @goOn @= true;
+                          </action>
+                      </step>
+            
+            
+                      <if
+                          id="if90"
+                          description="Сравнение символов"
+                          test="@recStr[@i - 1][@suff0List[@i][@l][0] + @sh] == @recStr[@i - 1][@suff23List[@i][@r][0] + @sh]"
+                          true-comment-ru="Текущие элементы строки равны"
+                          true-comment-en="Current elements of the string are equal."
+                          false-comment-ru="Текущие элементы строки не равны. Сравнение текущих суффиксов эквивалентно сравнению этих чисел."
+                          false-comment-en="Current elements of the string aren't equal. Comparing suffixes means just comparing this values."
+                          comment-args=""
+                      >
+                          <draw>
+                              @visualizer.draw();
+                          </draw>
+                          <then>
+                              <if
+                                  id="if66"
+                                  description="Проверка на принадлежность к типам 1-2"
+                                  test="(@suff0List[@i][@l][0] + @sh) % 3 == 0 || (@suff23List[@i][@r][0] + @sh) % 3 == 0"
+                                  true-comment-ru="Суффиксы по известным номерам суффиксов типа 1 или 2 сравнить невозможно."
+                                  true-comment-en="???"
+                                  false-comment-ru="Оба суффикса типа 1 или 2, можно сравнить."
+                                  false-comment-en="???"
+                                  comment-args=""
+                              >
+                                  <draw>
+                                      @visualizer.draw();
+                                  </draw>
+                                  <then>
+                                      <if
+                                          id="if316"
+                                          description="Проверка, не кончилавсь ли строка"
+                                          test="@suff0List[@i][@l][0] + @sh + 1 == @recStr[@i - 1].length || @suff23List[@i][@r][0] + @sh + 1 == @recStr[@i - 1].length"
+                                          true-comment-ru="Cтрока закончилась"
+                                          true-comment-en="The string has ended."
+                                          false-comment-ru="Строка не кончилась"
+                                          false-comment-en="The string hasn't ended yet."
+                                          comment-args=""
+                                      >
+                                          <draw>
+                                              @visualizer.draw();
+                                          </draw>    
+                                          <then>
+                                              <step
+                                                  id="step924"
+                                                  description="???"
+                                                  comment-ru="Записываем в строящийся суффиксный массив номер начала меньшего суффикса."
+                                                  comment-en="???"
+                                              >
+                                                  <draw>
+                                                      @visualizer.draw();
+                                                  </draw>
+                                                  <action>                                
+                                                      if (@suff0List[@i][@l][0] + 1 == @recStr[@i - 1].length) {
+                                                          @r @= @r + 1;
+                                                      } else {
+                                                          @l @= @l + 1;
+                                                      }
+                                                      @suffArrSt2[@i - 1][@j] @= 1;
+                                                      @j @= @j + 1;
+                                                      @goOn @= false;
+                                                  </action>
+                                              </step>    
+                                          </then>
+                                      </if>
+                                  </then>    
+                                  <else>
+                                      <if
+                                          id="if346"
+                                          description="Сравнение номеров суффиксов"
+                                          test="@suff23Num[@i][@suff0List[@i][@l][0] + @sh] &lt; @suff23Num[@i][@suff23List[@i][@r][0] + @sh]"
+                                          true-comment-ru="Сравниваем номера суффиксов. {0} &lt; {1}"
+                                          true-comment-en="???"
+                                          false-comment-ru="Сравниваем номера суффиксов. {0} > {1}"
+                                          false-comment-en="???"
+                                          comment-args="new Integer(@suff23Num[@i][@suff0List[@i][@l][0] + @sh]), new Integer(@suff23Num[@i][@suff23List[@i][@r][0] + @sh])"
+                                      >
+                                          <draw>
+                                              @visualizer.draw();
+                                          </draw>    
+                                          <then>
+                                              <step
+                                                  id="step7624"
+                                                  description="???"
+                                                  comment-ru="Помещаем меньший суффикс в массив"
+                                                  comment-en="???"
+                                              >
+                                                  <draw>
+                                                      @visualizer.draw();
+                                                  </draw>
+                                                  <action>                                
+                                                      @l @= @l + 1;
+                                                      @suffArrSt2[@i - 1][@j] @= 1;
+                                                      @j @= @j + 1;
+                                                      @goOn @= false;
+                                                  </action>
+                                              </step>    
+                                          </then>
+                                          <else>
+                                              <step
+                                                  id="step7224"
+                                                  description="???"
+                                                  comment-ru="Помещаем меньший суффикс в массив"
+                                                  comment-en="???"
+                                              >
+                                                  <draw>
+                                                      @visualizer.draw();
+                                                  </draw>
+                                                  <action>                                
+                                                      @r @= @r + 1;
+                                                      @suffArrSt2[@i - 1][@j] @= 1;
+                                                      @j @= @j + 1;
+                                                      @goOn @= false;
+                                                  </action>
+                                              </step>
+                                          </else>
+                                      </if>
+                                   </else>
+                               </if>
+                          </then>   
+                          <else>
+                              <step
+                                  id="step766"
+                                  description="Сравнение символов"
+                                  comment-ru="Сравниваем {0} и {1}."
+                                  comment-en="Comparing {0} and {1}."
+                                  comment-args="new Integer(@recStr[@i - 1][@suff0List[@i][@tl][0] + @sh]), new Integer(@recStr[@i - 1][@suff23List[@i][@tr][0] + @sh])" 
+                              >
+                                  <draw>
+                                      @visualizer.draw();
+                                  </draw>
+                                  <action>                                
+                                      @tl @= @l;
+                                      @tr @= @r;
+                                      if (@recStr[@i - 1][@suff0List[@i][@l][0] + @sh] &lt; @recStr[@i - 1][@suff23List[@i][@r][0] + @sh]) {
+                                          @l @= @l + 1;
+                                      } else {
+                                          @r @= @r + 1;
+                                      }
+                                      @suffArrSt2[@i - 1][@j] @= 1;
+                                      @j @= @j + 1;
+                                      @goOn @= false;
+                                  </action>
+                              </step>    
+                          </else>
+                      </if>       
+                  </while>
+             </while>
+             <while
+                  id="while151"
+                  description="Дописываем остаток"
+                  test="@l &lt; @suff0List[@i].length || @r &lt; @suff23List[@i].length"
+                  level="-1"
+             >
+                  <step                                                                                               
+                       id="step32415"                                                                                 
+                       description="Дописываем остаток"                                                                           
+                       comment-ru="Дописываем в суффиксный массив из оставшегося массива"
+                       comment-en="???"                                                                            
+                       comment-args=""                                                                             
+                   >                                                                                               
+                       <draw>                                                                                      
+                           @visualizer.draw();                                                                     
+                       </draw>
+                       <action>
+                           if (@l &lt; @suff0List[@i].length) {
+                                @recStrSt[@i - 1][@suff0List[@i][@l][0] + @sh] @= 1;
+                           }
+
+                           if (@l - 1 &lt; @suff0List[@i].length &amp;&amp; @l > 0) { 
+                               @suff0ListSt2[@i][@l - 1][0] @= 1;
+                               @recStrSt[@i - 1][@suff0List[@i][@l - 1][0] + @sh] @= 1;
+                           }
+
+                           if (@r &lt; @suff23List[@i].length) {
+                               @recStrSt[@i - 1][@suff23List[@i][@r][0] + @sh] @= 1 + ((@suff23List[@i][@r][0] + @sh) % 3); 
+                           }
+                           if (@r - 1 &lt; @suff23List[@i].length &amp;&amp; @r > 0) {
+                               @suff23ListSt2[@i][@r - 1][0] @= 1;
+                               @recStrSt[@i - 1][@suff23List[@i][@r - 1][0] + @sh] @= 1 + ((@suff23List[@i][@r - 1][0] + @sh) % 3);
+                           } 
+
+                           if (@l &lt; @suff0List[@i].length) { 
+                               @suff0ListSt2[@i][@l][0] @= 4;
+                           }
+                           if (@r &lt; @suff23List[@i].length) {
+                               @suff23ListSt2[@i][@r][0] @= 5;
+                           }
+
+                           @suffArrSt2[@i - 1][@j] @= 1;
+                           @l @= @l + 1;
+                           @r @= @r + 1;
+                           @j @= @j + 1;                                                                               
+                       </action>                                                                                   
+                   </step>                                                                                         
+             </while>
+
+
+        </while>
+
+       <step
+            id="step15"
+            description="Сокрытие ненужных массивов"
+            comment-ru="Построенный суффиксный массив является суффиксным массивом для исходной строки."
+            comment-en="The suffix array we have just built is the suffix array for the initial string."
+            comment-args=""
+        >
+            <draw>
+                @visualizer.draw();
+            </draw>
+            <action>
+                for (int ti = 0; ti &lt; @recStrSt[0].length; ti++) {
+                    @recStrSt[0][ti] @= -1;
+                    @recStrNumSt[0][ti] @= -1;
+                }
+                if (@suff0ListSt2.length > 1) {
+                    for (int ti = 0; ti &lt; @suff0ListSt2[1].length; ti++) {
+                        @suff0ListSt2[1][ti][0] @= -1;
+                    }
+                    for (int ti = 0; ti &lt; @suff23ListSt2[1].length; ti++) {
+                        @suff23ListSt2[1][ti][0] @= -1;
+                    }
+                    for (int ti = 0; ti &lt; @trp23NumSt[1].length; ti++) {
+                        @trp23NumSt[1][ti][0] @= -1;
+                    }
+                }
+                for (int ti = 0; ti &lt; @suffArrSt[0].length; ti++) {
+                    @suffArrSt2[0][ti] @= -1;
+                }
+                for (int ti = 0; ti &lt; @lastSuffArrSt.length; ti++) {
+                    @lastSuffArrSt[ti][0] @= -1;
+                }
+                for (int ti = 0; ti &lt; @suffArrSt[0].length; ti++) {
+                    @suffArrSt[0][ti] @= 1;
+                }
+            </action>
+        </step>    
+
+
+        <finish
+            comment-ru="Суффиксный массив для исходной строки построен."
+            comment-en="Suffix array for initial string is built."
+        >
+            <draw>
+                @visualizer.draw();
+            </draw>
+        </finish>
+    </auto>
+</algorithm>

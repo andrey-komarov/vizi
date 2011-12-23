@@ -1,0 +1,477 @@
+<?xml version="1.0" encoding="WINDOWS-1251"?>
+
+<!--
+    "ApproxTour" algoritm description using auto-reverse feature.
+-->
+
+<algorithm>
+
+    <variable 
+        description = "Экземпляр апплета"
+        name        = "visualizer"
+        type        = "ApproxTourVisualizer"
+        value       = "null"
+    />
+    <variable
+        description = "Количество элементов"
+        name        = "count"
+        type        = "int"
+        value       = "0"
+    />
+    <variable
+        description = "Матрица смежности"
+        name        = "a"
+        type        = "int[][]"
+        value       = "new int[22][22]"
+    />
+    <variable
+        description="Переменная цикла"
+        name="i"
+        type="int"
+        value="0"
+    />
+    <variable
+        description="Переменная цикла"
+        name="j"
+        type="int"
+        value="0"
+    />
+<!-- Prim -->
+    <variable
+        description="Массив ключей вершин"
+        name="key"
+        type="int[]"
+        value="new int[22]"  
+    />
+    <variable
+        description="Массив меток вершин при проверке графа"
+        name="w"
+        type="boolean[]"
+        value="new boolean[22]"  
+    />
+    <variable
+        description="Количество вершин в черном ящике"
+        name="m"
+        type="int"
+        value="0"
+    />
+    <variable
+        description="Минимальная вершина"
+        name="min"
+        type="int"
+        value="0"
+    />
+<!-- //Prim -->
+    <variable
+        description="Массив родителей вершин"
+        name="p"
+        type="int[]"
+        value="new int[22]"  
+    />
+    
+    <variable 
+        description="Дети"
+        name="ch"
+        type="int[][]"
+        value="new int[22][22]"
+    />
+
+    <variable
+        description="Массив меток вершин"
+        name="q"
+        type="boolean[]"
+        value="new boolean[22]"
+    />
+
+<!-- DFS -->
+
+    <variable
+        description="Вершина"
+        name="k"
+        type="int"
+        value="0"
+    />
+
+    <variable
+        description="Конец поиска в глубину"
+        name="dfsEnd"
+        type="boolean"
+        value="false"
+    />
+
+
+<!--//DFS -->
+
+    <variable
+        description="Цикл"
+        name="c"
+        type="int[]"
+        value="new int[22]"
+    />
+    <variable
+        description="Конец алгоритма"
+        name="endAlg"
+        type="boolean"
+        value="false"
+    />
+
+<!-- //variable -->
+
+    <toString>
+        StringBuffer s=new StringBuffer();
+        return s.toString();
+    </toString>
+
+    <auto id="Main" description="Главный автомат">
+        <start
+            comment-ru="На плоскости имеется {0} точек. Вес ребра между двумя
+            вершинами - расстояние между ними. Построим минимальное остовное 
+            дерево алгоритмом Прима."
+            comment-en="There are {0} points in the area. Edge weight equals it's 
+            length. Build the minimal spanning tree with Prim algorithm."
+            comment-args="new Integer(@count)"
+        >
+            <draw>
+              @visualizer.updateView(true, -1, false);
+            </draw>
+        </start>
+
+        <call-auto
+            id="Prim"
+            level="-1"
+        />
+        
+        <call-auto
+            id="DFS"
+            level="1"
+        />
+
+        <step
+            id="end"
+            description="end"
+            level="-1"
+        >
+            <action>
+                @endAlg @= true;
+            </action>
+        </step>
+
+        <finish
+            comment-ru="Минимальный Гамильтонов цикл найден с ошибкой не более 
+            чем в 2 раза."
+            comment-en="Minimal Hamilton tour with not grater then 2 times as much error complete"
+        >
+            <draw>
+              @visualizer.updateView(false, -1, true);
+            </draw>
+        </finish>
+    </auto>
+
+<!-- Prim -->
+    <auto
+        id="Prim"
+        description="Алгоритм Прима"
+    >
+        <step
+            id="InitLoop1"
+            description="Инициализация цикла 1"
+            level="-1"
+        >
+            <action>
+                @m @= @count;
+                @i @= 1;
+                @min @= 0;
+            </action>   
+        </step>
+
+        <while
+            id="Loop1"
+            description="Цикл 1"
+            test="(@i &lt;= @count)"
+            level="-1"
+        >
+            <step
+                id="StepLoop1"
+                description="Шаг цикла 1"
+                level="-1"
+            >
+                <action>
+                    @q[@i] @= true;
+                    @key[@i] @= 1000000;
+                    @i @= @i + 1;   
+                </action>
+            </step> 
+        </while>
+        
+        <step
+            id="InitKeys"
+            description="Инициализация ключей вершин"
+            level="-1"
+        >
+            <action>
+                @key[1] @= 0;   
+            </action>
+        </step>
+
+        <while
+            id="MainLoop"
+            description="Главный цикл"
+            test="@m &gt; 0"
+            level="-1"
+        >
+            <call-auto
+                id="extractMinimum"
+                level="-1"
+            />  
+
+            <call-auto
+                id="updateKeys"
+                level="-1"
+            />  
+
+            <step
+                id="Decrement"
+                description="Декремент"
+                level="-1"
+            >
+                <action>
+                    @m @= @m - 1;
+                </action>   
+            </step>
+        </while>
+    </auto>
+
+    <auto
+        id="extractMinimum"
+        description="Автомат извлечения из черного ящика вершины с минимальным ключом"
+    >   
+        <step
+            id="InitLoop2"
+            description="Инициализация цикла 2"
+            level="-1"
+        >
+            <action>
+                @min @= 0;
+                @i @= 1;    
+            </action>   
+        </step>
+
+        <while
+            id="Loop2"
+            description="Цикл2"
+            test="(@i &lt;= @count)"
+            level="-1"
+        >
+            <step
+                id="StepLoop2"
+                description="шаг цикла 2"
+                level="-1"
+            >
+                <action>
+                    if ((@q[@i]) &amp; ((@min == 0) || (@key[@min] &gt; @key[@i]))) {
+                    @min @= @i;
+                    }
+                    @i @= @i + 1;
+                </action>
+            </step>
+        </while>    
+
+        <step
+            id="MarkMinimalVertex"
+            description="Помечаем минимальную вершину"
+            level="-1"
+        >
+            <action>
+                @q[@min] @= false;
+            </action>   
+        </step>
+    </auto>
+
+    <auto
+        id="updateKeys"
+        description="Автомат обновления ключей вершин"
+    >
+        <step
+            id="InitLoop3"
+            description="Инициализация цикла 3"
+            level="-1"
+        >
+            <action>
+                @i @= 1;    
+            </action>   
+        </step>
+
+        <while
+            id="Loop3"
+            description="Цикл3"
+            test="(@i &lt;= @count)"
+            level="-1"
+        >
+            <step
+                id="StepLoop3"
+                description="шаг цикла 3"
+                level="-1"
+            >
+                <action>
+                    if ((@q[@i]) &amp; (0 &lt; @a[@min][@i]) &amp; (@a[@min][@i] &lt; @key[@i])) {
+                        @p[@i] @= @min;
+                        @key[@i] @= @a[@min][@i];
+                    }
+                    @i @= @i + 1;
+                </action>
+            </step>
+        </while>
+
+    </auto>
+<!-- /Prim -->
+<!-- DFS -->
+
+    <auto
+        id="DFS"
+        description="Автомат обхода дерева"
+    >
+        <step
+            id="Inint"
+            description="init"
+            level="-1"
+        >
+            <action>
+                @k @= 1;
+                @i @= 1;
+            </action>
+        </step>
+
+        <while
+            id="initLoop"
+            description="initLoop"
+            test="@i &lt;= @count"
+            level="-1"
+        >
+
+            <step
+                id="loopInintStep"
+                description="loopInitStep"
+                level="-1"
+            >
+                <action>
+                    @q[@i] @= false;
+                    @c[@i] @= 0;
+
+                    @ch[ @p[@i] ][0] @= @ch[ @p[@i] ][0] + 1;
+                    @ch[ @p[@i] ] [ @ch[@p[@i]][0] ] @= @i;
+                    @i @= @i + 1;
+                </action>
+            </step>
+
+        </while>
+
+        <step
+            id="dfsInit"
+            description="инициализация начальных параметров"
+            level="1"
+            comment-ru="Минимальное остовное дерево построено. Примем вершину {0} за корень, с неё начиинаем обход в глубину."
+            comment-en="{0} - is a root, DFS is starting here"
+            comment-args="new Integer(@k)"
+        >
+            <draw>
+                @visualizer.updateView(false, @k, false);
+            </draw>
+            <action>
+                @q[@k] @= true;
+                @c[0] @= @c[0] + 1;
+                @c[@c[0]] @= @k;
+            </action>
+        </step>
+
+        <while
+            id="loopa"
+            description="loop"
+            test="!(@dfsEnd)"
+            level="-1"
+        >
+
+            <if
+                id="if"
+                description="Условие"
+                test="@ch[@k][0] == 0"
+                level="-1"
+            >
+                <then>
+                    <if
+                        id="if1"
+                        description="Условие"
+                        test="@p[@k] != 0"
+                        level="-1"
+                    >
+                    <then>
+                        <step
+                            id="stepUp"
+                            description=""
+                            level="1"
+                            comment-en="stepUp from {0} to {1}, Vertex {1} is already in a cycle, skip it."
+                            comment-ru="Идем вверх из {0} в {1}"
+                            comment-args="new Integer(@k), new Integer(@p[@k])"
+                        >
+                            <draw>
+                                @visualizer.updateView(false, @p[@k], true);
+                            </draw>
+                            <action>
+                            </action>
+                        </step>
+                        <step
+                            id="goUp"
+                            description="up"
+                            level="-1"
+                        >
+                            <action>
+                                @k @= @p[@k];
+                            </action>
+                        </step>
+                    </then>
+                    <else>
+                        <step
+                            id="endDFS"
+                            description="end"
+                            level="1"
+                            comment-ru="Поиск в глубину окончен, замкнем цикл добавив в него вершину 1 еще раз."
+                        >
+                            <draw>
+                                @visualizer.updateView(false, -1, true);
+                            </draw>
+                            <action>
+                                @dfsEnd @= true;
+                                @c[0] @= @c[0] + 1;
+                                @c[@c[0]] @= 1;
+                            </action>
+                        </step>
+                    </else>
+                    </if>
+                </then>
+                <else>
+                    
+                    <step
+                        id="stepDown"
+                        description="down"
+                        level="1"
+                        comment-en="stepDown to vertex {0}, Vertex {0} isn't in a cycle else, include it."
+                        comment-ru="Идем вниз в вершину {0}. Вершина {0} еще не в цикле, добавляем."
+                        comment-args="new Integer(@c[@c[0]])"
+                    >
+                        <draw>
+                            @visualizer.updateView(false, @k, true);
+                        </draw>
+                        <action>
+                            @ch[@k][0] @= @ch[@k][0] - 1;
+                            @k @= @ch[@k][ @ch[@k][0] + 1 ];
+                            @q[@k] @= true;
+                            @c[0] @= @c[0] + 1;
+                            @c[@c[0]] @= @k;
+                        </action>
+                    </step>
+                </else>
+            </if>
+        </while>
+
+    </auto>
+<!-- /DFS -->
+</algorithm>   

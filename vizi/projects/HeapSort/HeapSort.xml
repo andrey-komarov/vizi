@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="WINDOWS-1251"?>
+
+<!--
+    "HeapSort" visualizer description usin auto-reverse feature.
+    Version: $Id: HeapSort.xml,v 0.1 2004/04/24 23:05:18 mar Exp $
+-->
+
+<!DOCTYPE visualizer PUBLIC
+    "-//IFMO Vizi//Visualizer description"
+    "http://ips.ifmo.ru/vizi/dtd/visualizer.dtd"
+[
+    <!ENTITY algorithm SYSTEM "HeapSort-Algorithm.xml">
+    <!ENTITY configuration SYSTEM "HeapSort-Configuration.xml">
+]>
+
+<visualizer
+    id="HeapSort"
+    package="ru.ifmo.vizi.heap_sort"
+    main-class="HeapSortVisualizer"    
+
+    preferred-width="600"
+    preferred-height="400"
+
+    name-ru="Сортировка кучей массива натуральных чисел"
+    name-en="Sorting the array of natural numbers with heap"
+
+    author-ru="Илья Пименов"
+    author-en="Ilya Pimenov"
+    author-email="ipimenov@rain.ifmo.ru"
+
+    supervisor-ru="Георгий Корнеев"
+    supervisor-en="Georgiy Korneev"
+    supervisor-email="kgeorgiy@rain.ifmo.ru"
+
+    copyright-ru="Copyright \u00A9 Кафедра КТ, СПб ГИТМО (ТУ), 2003"
+    copyright-en="Copyright \u00A9 Computer Technologies Department, SPb IFMO, 2003"
+>
+    &algorithm;
+    &configuration;
+</visualizer>
+

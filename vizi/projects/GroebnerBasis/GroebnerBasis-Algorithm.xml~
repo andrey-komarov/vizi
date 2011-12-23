@@ -1,0 +1,1458 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<algorithm>
+	<import>
+		java.util.Stack
+	</import>
+	<variable
+		description = "Экзмляр апплета"
+		name		= "visualizer"
+		type		= "GroebnerBasisVisualizer"
+		value		= "null"
+	/>
+	<variable
+		description	= "Временная переменная для хранения начального идеала."
+		name		= "given"
+		type		= "Polynomial[]"
+		value		= "null"
+	/>
+	<variable
+		description	= "Выделенные полиномы"
+		name		= "checked"
+		type		= "int[]"
+		value		= "null"
+	/>
+	<variable
+		description = "Комментарий к результату"
+		name		= "comment"
+		type		= "String"
+		value		= "new String()"
+	/>
+	<variable
+		description = "Точность вычислений"
+		name 	    = "EPS"
+		type	    = "double"
+		value	    = "1e-9"
+	/>
+	<variable
+		description = "Показывать ли G2"
+		name		= "showG2"
+		type		= "boolean"
+		value		= "false"
+	/>
+	<variable
+		description = 'Показывается перед "rem"'
+		name		= "showS"
+		type		= "String"
+		value		= '"S = "'
+	/>
+	<variable
+		description = "Идеал G1."
+		name	    = "g1"
+		type	    = "Polynomial[]"
+		value	    = 'new Polynomial[] {new Polynomial("x^2+y^2"), new Polynomial("x-y")}'
+	/>
+	<variable
+		description = "Идеал G2."
+		name	    = "g"
+		type 	    = "Polynomial[]"
+		value       = "null"
+	/>
+	<variable
+		description = "Количество полиномов в идеале"
+		name	    = "n"
+		type	    = "int"
+		value	    = "2"
+	/>
+	<variable
+		description = "Переменная, используемая для передачи параметра в автомат"
+		name	    = "numb"
+		type	    = "int"
+		value	    = "0"
+	/>
+	<variable
+		description = "Переменная, используемая для передачи параметра в автомат"
+		name	    = "numb2"
+		type	    = "int"
+		value	    = "0"
+	/>
+	<variable
+		description = "S-полином"
+		name	    = "spol"
+		type	    = "Polynomial"
+		value	    = "null"
+	/>
+	<variable
+		description = "Временная переменная, используемая для передачи параметров"
+		name 	    = "temp"
+		type	    = "Polynomial"
+		value	    = "null"
+	/>
+	<variable
+		description = "Остаток от деления некоторого полинома на идеал g"
+		name	    = "reminder"
+		type	    = "Polynomial"
+		value	    = "null"
+	/>
+
+	<toString>
+		StringBuffer s = new StringBuffer();
+		return s.toString();
+	</toString>
+
+	<auto
+		description = "Вычисляет S-полином 2 полиномов из g1"
+		id		    = "spolynomial"	
+	>
+		<variable
+			description = "Наименьшее общее кратное старших членов 2 полиномов"
+			name	    = "lcm"
+			type	    = "Monomial"
+		/>
+		<variable
+			description = "Отношение lcm к старшему члену первого полинома"
+			name	    = "x"
+			type	    = "Monomial"
+		/>
+		<variable
+			description = "Отношение lcm к старшему члену второго полинома"
+			name	    = "y"
+			type	    = "Monomial"
+		/>
+		<variable
+			description = "Произведение x и первого полинома"
+			name 	    = "a"
+			type	    = "Polynomial"
+		/>
+		<variable
+			description = "Произведение y и второго полинома"
+			name 	    = "b"
+			type	    = "Polynomial"
+		/>
+		<step
+			description  = "ToDO"
+			id			 = "todo"
+			comment-ru	 = "Вычислим S-полином от {0} и {1}."
+			comment-en	 = "Let's calculate S-polynomial for {0} and {1}."
+			comment-args = "@g1[@numb], @g1[@numb2]"
+			level		 = "1"
+			>
+			<draw>
+				@visualizer.printIdeals(new boolean[] {false, true}, @checked);
+				@visualizer.redraw();
+			</draw>
+			<action>
+				@visualizer.labels @= @visualizer.hide();
+			</action>
+		</step>
+		<step
+			description  = "Вычисление наименьшего общего кратного старших членов"
+			id			 = "CalculateLCM"
+			comment-ru   = "Вычисляем наименьшее общее кратное (LCM) старших членов {0} и {1}. LCM = {2}."
+			comment-en   = "Calculating least common multiple (LCM) for first monomials of {0} and {1}. LCM = {2}."
+			comment-args = "@g1[@numb], @g1[@numb2], @lcm"
+			level	     = "0"
+		>
+			<draw>
+				@visualizer.redraw();
+			</draw>
+			<action>
+				@lcm @= lcm (@g1[@numb].m[0], @g1[@numb2].m[0]);
+				@comment @= "lcm (" + @g1[@numb].m[0].toString() + ", " + @g1[@numb2].m[0].toString() + ") = " + @lcm.toString();
+				@visualizer.labels @= @visualizer.printResult();
+			</action>
+		</step>
+		<step
+			description  = "Вычисление отношения LCM к старшему члену первого полинома"
+			id		     = "DivideLCMByLT1"
+			comment-ru   = "Делим LCM ({0}) на старший член (LT) первого полинома ({1}). Получаем {2}."
+			comment-en   = "Dividing LCM ({0}) by least term (LT) of first polynomial ({1}). Result is {2}."
+			comment-args = "@lcm, @g1[@numb].m[0], @x"
+			level	     = "0"
+		>
+			<draw>
+				@visualizer.redraw();
+			</draw>
+			<action>
+				@x @= divide(@lcm,@g1[@numb].m[0]);
+				@visualizer.labels @= @visualizer.printAction('/', new Polynomial(new Monomial[] {@lcm}), new Polynomial(new Monomial[] {@g1[@numb].m[0]}), new Polynomial(new Monomial[] {@x}), 1);
+			</action>
+		</step>
+		<step
+			description  = "Умножение первого полинома на x"
+			id	     	 = "Multiply1ByX"
+			comment-ru   = "Умножаем {0} на первый полином ({1}). Получаем a = {2}." 
+			comment-en   = "Multiplication {0} by first polinomial ({1}). Result is a = {2}."
+			comment-args = "@x, @g1[@numb], @a"
+			level		 = "0"
+		>
+			<draw>
+				@visualizer.redraw();
+			</draw>
+			<action>
+				@a @= multiply(@g1[@numb],@x);	
+				@visualizer.labels @= @visualizer.printAction('*', @g1[@numb], new Polynomial(new Monomial[] {@x}), @a, 2);
+			</action>
+		</step>
+		<step
+			description  = "Вычисление отношения LCM к старшему члену второго полинома"
+			id	     	 = "DivideLCMByLT2"
+			comment-ru   = "Делим LCM ({0}) на старший член второго полинома ({1}). Получаем {2}."
+			comment-en   = "Dividing LCM ({0}) by LT of second polynomial ({1}). Result is {2}."
+			comment-args = "@lcm, @g1[@numb2].m[0], @y"
+			level	     = "0"
+		>
+			<draw>
+				@visualizer.redraw();
+			</draw>
+			<action>
+				@visualizer.labels @= @visualizer.hideAction();
+				@y @= divide(@lcm,@g1[@numb2].m[0]);
+				@visualizer.labels @= @visualizer.printAction('/', new Polynomial(new Monomial[] {@lcm}), new Polynomial(new Monomial[] {@g1[@numb2].m[0]}), new Polynomial(new Monomial[] {@y}), 1);
+			</action>
+		</step>
+		<step
+			description  = "Умножение второго полинома на y"
+			id	     	 = "Multiply2ByY"
+			comment-ru   = "Умножаем {0} на второй полином ({1}). Получаем b = {2}." 
+			comment-en   = "Multiplication {0} by second polinomial ({1}). Result is b = {2}."
+			comment-args = "@y, @g1[@numb2], @b"
+			level	     = "0"
+		>
+			<draw>
+				@visualizer.redraw();
+			</draw>
+			<action>
+				@b @= multiply(@g1[@numb2],@y);
+				@comment @= "lcm (" + @g1[@numb].m[0].toString() + ", " + @g1[@numb2].m[0].toString() + ") = " + @lcm.toString();
+				@visualizer.labels = @visualizer.printResult();
+				@visualizer.labels @= @visualizer.printAction('*', @g1[@numb2], new Polynomial(new Monomial[] {@y}), @b, 2);
+			</action>
+		</step>
+		<step
+			description  = "s = a - b"
+			id	     	 = "SubtractBFromA"
+			comment-ru   = "Искомый S-полином S = a - b = {0}."
+			comment-en   = "Sought S-polynomial S = a - b = {0}."
+			comment-args = "@spol"
+			level	     = "0"
+		>
+			<draw>
+				@visualizer.printIdeals(new boolean[] {false, true}, @checked);
+				@visualizer.redraw();
+			</draw>
+			<action>
+				@spol @= new Polynomial(subtract(@a, @b));
+				@visualizer.labels @= @visualizer.hide();
+				@visualizer.labels @= @visualizer.printAction('-', @a, @b, @spol, 1);
+			</action>
+		</step>
+		<step
+			description  = "print s"
+			id	     	 = "Result"
+			comment-ru   = "S-полином найден. S = {0}."
+			comment-en   = "S-polynomial is found. S = {0}."
+			comment-args = "@spol"
+			level	     = "0"
+		>
+			<draw>
+				@visualizer.printIdeals(new boolean[] {false, true}, @checked);
+				@visualizer.redraw();
+			</draw>
+			<action>
+				@spol @= new Polynomial(subtract(@a, @b));
+				@visualizer.labels @= @visualizer.hide();
+				@comment @= "S = " + @spol.toString();
+				@visualizer.labels @= @visualizer.printResult();
+			</action>
+		</step>
+	</auto>
+
+	<auto
+		description = "Добавление полинома в идеал"
+		id	    	= "AddPolynomial2Ideal"
+	>
+		<step
+			description  = "Добавление полинома в идеал g1"
+			id	    	 = "AddingPolynomial2Ideal"
+			comment-ru   = "Добавляем полином {0} в G1."
+			comment-en   = "Adding polynomial {0} to G1."
+			comment-args = "@reminder"
+			level	     = "1"
+		>
+			<draw>
+				@visualizer.printIdealsWithPolynomials(new boolean[] {false, true}, new Polynomial[] {@reminder});
+			</draw>
+			<action>
+				@g1 @= add(@reminder);
+			</action>
+		</step>
+	</auto>
+
+	<auto
+		description = "Остаток от деления полинома на идеал"
+		id 	    	= "rem"
+	>
+		<variable
+			description = "Временная переменная"
+			name	    = "t"
+			type	    = "Polynomial"
+		/>
+		<variable
+			description = "Переменная цикла"
+			name	    = "i"
+			type	    = "int"
+		/>
+		<variable
+			description = "Переменная цикла"
+			name	    = "j"
+			type	    = "int"
+		/>
+		<variable
+			description = "Переменная цикла"
+			name		= "z"
+			type		= "int"
+		/>
+		<variable
+			description = "Длина полинома temp"
+			name	    = "lt"
+			type	    = "int"
+		/>
+		<variable
+			description = "Длина идеала g"
+			name	    = "lg"
+			type	    = "int"
+		/>
+		<variable
+			description = "Флаг окончания вычисления"
+			name	    = "er"
+			type	    = "boolean"
+		/>
+		<variable
+			description = "Временная переменная для вычислений"
+			name		= "tr"
+			type		= "Polynomial"
+		/>
+		<variable
+			description = "Временная переменная для вычислений"
+			name		= "tr1"
+			type		= "Polynomial"
+		/>
+		<variable
+			description = "Временный моном для отображеня"
+			name		= "tm"
+			type		= "Monomial"
+		/>
+		<variable
+			description = "Временный полином для отображеня"
+			name		= "tp"
+			type		= "Polynomial"
+		/>
+		<if
+			description = "if showS"
+			id			= "ifShowS"
+			test		= '@showS.equals("S = ")'
+			level		= "-1"
+		>
+		<then>
+			<step
+				description  = "Покажем S"
+				id			 = "ShowS"
+				level		 = "-1"
+			>
+				<action>
+					@visualizer.labels @= @visualizer.hide();
+					@comment @= @showS + @spol.toString();
+					@visualizer.labels @= @visualizer.printResult();
+					@visualizer.redraw();
+				</action>
+			</step>
+		</then>
+		<else>
+			<step
+				description  = "Не покажем S"
+				id			 = "NoShowS"
+				level		 = "-1"
+			>
+				<action>
+					@visualizer.labels @= @visualizer.hide();
+					@visualizer.redraw();
+				</action>
+			</step>
+		</else>
+		</if>
+		<step
+			description  = "ToDo"
+			id			 = "todo"
+			comment-ru	 = "Найдём остаток от деления полинома {0} на G2."
+			comment-en	 = "Let's find a reminder of dividing polynomial {0} by G2."
+			comment-args = "@spol"
+			level		 = "0"
+		>
+			<draw>
+				@visualizer.printIdeals(new boolean[] {true, true}, @checked);
+			</draw>
+			<action>
+			</action>
+		</step>
+		<if
+			description 	 = "А не пустой ли полином?"
+			id				 = "CondPolynomialIsEmpty"
+			test		 	 = "@spol.m.length == 0"
+			true-comment-ru  = "S-полином равен 0. Искомый остаток равен 0."
+			true-comment-en  = "S-polynomial is equal to 0. Sought reminder is 0."
+			false-comment-ru = "Полином {0} не равен 0. Продолжаем."
+			false-comment-en = "Polynomial {0} isn't equal to 0. Let's continue."
+			comment-args	 = "@spol"
+			level			 = "-1"
+		>
+		<then>
+			<step
+				description  = "Искомый остаток равен 0"
+				id	     	 = "EmptyPolynom"
+				comment-ru	 = "Раматриваемый полином равен 0. Искомый остаток равен 0."
+				comment-en	 = "Concerned polynomial is equal to 0. Sought reminder is 0."
+				level	     = "0"
+			>
+				<draw>
+					@visualizer.printIdeals(new boolean[] {true, true}, @checked);
+					@visualizer.redraw();
+				</draw>
+				<action>
+    		 		@reminder @= new Polynomial(1);
+    		 		@reminder.m[0] @= new Monomial();
+    		 		@reminder.m[0].c @= 0;
+					@comment @= @spol.toString() + " % G2 = " + @spol.toString();
+					@visualizer.labels @= @visualizer.printResult();
+				</action>
+			</step>
+		</then>
+		<else>
+			<step
+				description = "Подготовка"
+				id	    	= "Preparing"
+				level	    = "-1"
+			>
+				<action>
+    	 			@reminder @= new Polynomial(@spol.length());
+    	 			@reminder.m[0] @= new Monomial();
+					@lt @= @spol.length();
+					@t @= new Polynomial(@lt);
+					@i @= 0;
+					@lg @= length(@g);
+				</action>
+			</step>
+			<while 
+				description = "Копирование spol в t"
+				id	    	= "LoopCopyingSpol2T"
+				test	    = "@i &lt; @lt"
+				level	    = "-1"
+			>
+				<step
+					description = "Подготовка к циклу"
+					id	   	 	= "Preparing2Loop"
+					level	    = "-1"
+				>
+					<action>
+    		 			@t.m[@i] @= new Monomial();
+						@t.m[@i].c @= @spol.m[@i].c;
+						@j @= 0;
+					</action>
+				</step>
+				<while
+					description = "Копирование spol[i] в t[i]"
+					id	    	= "LoopCopyingSpolI2TI"
+					test	    = "@j &lt; 26"
+					level	    = "-1"
+				>
+					<step
+						description = "Копирование spol[i].deg в t[i].deg"
+						id	   		= "CoppyingDeg"
+						level	    = "-1"
+					>
+						<action>
+							@t.m[@i].deg[@j] @= @spol.m[@i].deg[@j];
+							@j @= @j + 1;
+						</action>
+					</step>
+				</while>
+				<step
+					description = "i++"
+					id			= "IncI"
+					level		= "-1"
+				>
+					<action>
+						@i @= @i + 1;
+					</action>
+				</step>
+			</while>
+			<while
+				description = "Признак окончания работы"
+				id	    	= "WhileNotEnd"
+				test	    = "!eq0(@t)"
+				level	    = "-1"
+			>
+				<step
+					description = "Подготовка к циклу"
+					id	    	= "Preparing2Loop2"
+					level	    = "-1"
+				>
+					<action>
+						@er @= true;
+						@i @= 0;
+					</action>
+				</step>
+				<while
+					description = "Деление t на полиномы g"
+					id	    	= "LoopDeletingTByG"
+					test	    = "(@i &lt; @lg) &amp;&amp; @er"
+					level 	    = "-1"
+				>
+					<step
+						description  = "Проверка делимости LT(t) на LT(g[i])"
+						id			 = "BeforeIf"
+						comment-ru	 = "Проверка делимости {0} на LT ({1}) = {2}."
+						comment-en	 = "Checking if {0} is divisible by LT ({1}) = {2}."
+						comment-args = "@t.m[0], @g[@i], @g[@i].m[0]"
+						level		 = "0"
+					>
+						<draw>
+							@visualizer.printIdeals(new boolean[] {true, true}, @checked);
+						</draw>
+						<action>
+							@checked @= new int[] {- @i - 1};
+						</action>
+					</step>
+					<if
+						description	 	 = "Старший моном t делится на старший моном g[i]"
+						id	   	 		 = "CondTIsDivisibleByGi"
+						test		 	 = "isDivisibleBy(@t.m[0], @g[@i].m[0])"
+						true-comment-ru  = "Моном {0} делится на LT ({1}) = {2}."
+						true-comment-en  = "Monomial {0} is divisible by LT ({1}) = {2}."
+						false-comment-ru = "Моном {0} не делится на LT ({1}) = {2}."
+						false-comment-en = "Monomial {0} isn't divisible by LT ({1}) = {2}."
+						comment-args	 = "@t.m[0], @g[@i], @g[@i].m[0]"
+						level			 = "-1"
+					>
+					<then>
+						<step
+							description	 = "Старший моном t делится на старший моном g[i]"
+							id			 = "TIsDivisibleByGi"
+							comment-ru	 = "LT ({3}) = {0} делится на LT ({1}) = {2}."
+							comment-en	 = "LT ({3}) = {0} is divisible by LT ({1}) = {2}."
+							comment-args = "@t.m[0], @g[@i], @g[@i].m[0], @t"
+							level		 = "0"
+						>
+							<draw>
+								@visualizer.printIdeals(new boolean[] {true, true}, @checked);
+							</draw>
+							<action>
+							</action>
+						</step>
+						<step
+							description  = "Делим t на g[i]"
+							id	     	 = "DivisingTByGi1"
+							comment-ru   = "Делим {0} на {1}"
+							comment-en   = "Divising {0} by {1}"
+							comment-args = "@t.m[0], @g[@i].m[0]"
+							level	     = "-1"
+						>
+							<action>
+								@tr @= multiply(@g[@i], divide(@t.m[0],@g[@i].m[0]));
+								@er @= false;
+							</action>
+						</step>
+						<step
+							description  = "Делим t на g[i]"
+							id	     	 = "DivisingTByGi"
+							comment-ru   = "Вычисляем остаток от деления {0} на {1}. Получаем {2}."
+							comment-en   = "Calculating reminder {0} by {1}. Result is {2}."
+							comment-args = "@t, @g[@i], @tr1"
+							level	     = "0"
+						>
+							<draw>
+								@visualizer.printIdeals(new boolean[] {true, true}, @checked);
+								@visualizer.redraw();
+							</draw>
+							<action>
+								@tr1 @= subtract(@t, @tr);
+								@visualizer.labels @= @visualizer.hide();
+								@visualizer.labels @= @visualizer.printAction('%', @t, @g[@i], @tr1, 1);
+							</action>
+						</step>
+						<step
+							description = "Завершение деления"
+							id			= "FinishingDeleting"
+							level		= "-1"
+						>
+							<action>
+								@t @= @tr1;
+							</action>
+						</step>
+					</then>
+					<else>
+						<step
+							description = "Не делится"
+							id			= "TIsNotDivisibleByGi"
+							comment-ru	 = "LT ({3}) = {0} не делится на LT ({1}) = {2}."
+							comment-en	 = "LT ({3}) = {0} isn't divisible by LT ({1}) = {2}."
+							comment-args = "@t.m[0], @g[@i], @g[@i].m[0], @t"
+							level		= "0"
+						>
+							<draw>
+								@visualizer.printIdeals(new boolean[] {true, true}, @checked);
+							</draw>
+							<action>
+							</action>
+						</step>
+					</else>
+					</if>
+					<step
+						description = "Increment of i"
+						id 	    	= "IncI"
+						level		= "-1"
+					>
+						<action>
+							@i @= @i + 1;
+						</action>
+					</step>
+				</while>
+				<if
+					description	 	 = "Старший член t ({0}) не делится ни на один из старших членов полиномов идеала"
+					id				 = "ThereIsSomethingNewToAdd"
+					test	 	 	 = "@er"
+					true-comment-ru	 = "LT ({1}) = {0} не делится ни на один LT полиномов G2."
+					true-comment-en	 = "LT ({1}) = {0} isn't divisible by any LT of polynomials from G2."
+					comment-args	 = "@t.m[0], @t"
+					level			 = "-1"
+				>
+				<then>
+					<step
+						description  = "Отправление в остаток LT(t)"
+						id	     	 = "AddingLT2Rem"
+						comment-ru   = "LT({2}) = {0} не делится ни на один LT полиномов G2. Отправляем {0} в остаток (Rem)."
+						comment-en   = "LT({2}) = {0} isn't divisible by any LT of polynomials from G2. Transference {0} to reminder (Rem)."
+						comment-args = "@tm, @reminder, @tp"
+						level		 = "0"
+					>
+						<draw>
+							@visualizer.redraw();
+							@visualizer.printIdeals(new boolean[] {true, true}, @checked);
+						</draw>
+						<action>
+							@checked @= null;
+							@tm @= new Monomial(@t.m[0]);
+							@tp @= new Polynomial(@t);
+							@t @= add(@t, new Monomial(multiply(@tm, new Monomial(-1))));
+							@reminder @= new Polynomial(add(@reminder, @tm));
+							@comment @= @showS + @t.toString();
+							@visualizer.labels @= @visualizer.printResult();
+							@visualizer.labels @= @visualizer.printReminder(@reminder);
+						</action>
+					</step>
+					<step
+						description = "Добавление t[0] в остаток"
+						id			= "UpdatingReminder"
+						level		= "-1"
+					>
+						<draw>
+						</draw>
+						<action>
+						</action>
+					</step>
+					<step
+						description = "Подготовка к циклу"
+						id			= "BeforeDeg0"
+						level		= "-1"
+					>
+						<action>
+							@z @= 0;
+						</action>
+					</step>
+				</then>
+				</if>
+			</while>
+	 	</else>
+		</if>
+	</auto>
+
+	<auto
+		description = "Построение базиса Грёбнера для g1"
+		id	    	= "MakingBasis"
+	>
+		<variable
+			description = "Переменная, используемая для подсчета количества полиномов идеала"
+			name	    = "lg"
+			type	    = "int"
+		/>
+		<variable
+			description = "Переменная, используемая для подсчета количества полиномов идеала"
+			name	    = "lg1"
+			type	    = "int"
+		/>
+		<variable
+			description = "Переменная цикла"
+			name	    = "i"
+			type	    = "int"
+		/>
+		<variable
+			description = "Переменная цикла"
+			name	    = "j"
+			type	    = "int"
+		/>
+		<variable
+			description = "Переменная-флаг"
+			name	    = "b"
+			type	    = "boolean"
+		/>
+		<step
+			description = "Подготовка к циклу"
+			id			= "BeforeMainLoop"
+			level		= "-1"
+		>
+			<action>
+				@b @= true;
+			</action>
+		</step>
+		<while	
+			description = "Внешний цикл"
+			id	    	= "MainLoop"
+			test	    = "@b"
+			level	    = "-1"
+		>
+			<step
+				description = "Подготовка к внутренним циклам"
+				id	    	= "MainPreparing"
+				level	    = "-1"
+			>
+				<action>
+					@b @= false;
+					@lg1 @= length(@g1);
+					@g @= g1ToG();
+					@g1 @= gToG1();
+					@i @= 0;
+				</action>
+			</step>
+			<while
+				description = "Перебор всех пар полиномов"
+				id	    	= "Loop4S1"
+				test	    = "@i &lt; @lg1"
+				level	    = "-1"
+			>
+				<step
+					description = "Подготовка к внутреннему циклу"
+					id	    	= "LastPreparing"
+					level	    = "-1"
+				>
+					<action>
+						@j @= @i + 1;
+					</action>
+				</step>
+				<while
+					description = "Перебор всех пар полиномов"
+					id	    	= "Loop4S2"
+					test	    = "@j &lt; @lg1"
+					level	    = "-1"
+				>
+					<step
+						description = "Выводим сообщение о дальнейшем действии"
+						id			= "PrintMessage"
+						comment-ru	= "Перебираем все пары полиномов G1."
+						comment-en	= "Looking through all pairs of polynomials in G1."
+						level		= "0"
+					>
+						<draw>
+							@visualizer.printIdeals(new boolean[] {false, true}, @checked);
+						</draw>
+						<action>
+						</action>
+					</step>
+					<step
+						description  = "Построение S-полинома от i-го и j-го полиномов"
+						id	     	 = "MakingSPolynomial"
+						comment-ru   = "Строим S-полином полиномов {0} и {1}."
+						comment-en   = "Making S-polynomial fot polynomials {0} and {1}."
+						comment-args = "@g1[@i], @g1[@j]"
+						level 	     = "-1"
+					>
+						<action>
+							@numb @= @i;
+							@numb2 @= @j;
+							@checked @= new int[] {@i, @j};
+						</action>
+					</step>
+					<call-auto id = "spolynomial"/>
+					<step
+						description = "Скопируем G1 в G2"
+						id			= "G1ToG2"
+						comment-ru	= "Скопируем G1 в G2."
+						comment-en	= "Let's copy G1 to G2."
+						level		= "0"
+					>
+						<draw>
+							@visualizer.printIdeals(new boolean[] {true, true}, @checked);
+						</draw>
+						<action>
+							@checked @= null;
+							@g @= g1ToG();
+							@visualizer.labels @= @visualizer.hideAction();
+						</action>
+					</step>
+					<call-auto id = "rem"/>
+					<step
+						description = "Нарисуем на экране"
+						id			= "draw"
+						comment-ru	= "Скопируем G1 в G2."
+						comment-en	= "Let's copy G1 to G2."
+						level		= "-1"
+					>
+						<action>
+							@visualizer.labels @= @visualizer.hide();
+							@visualizer.printIdeals(new boolean[] {true, true}, @checked);
+							@visualizer.redraw();
+						</action>
+					</step>
+					<if
+						description	 	 = "S-полином не делится на g"
+						id		 	 	 = "CondRemSNotZero"
+						test		 	 = "!eq0(@reminder)"
+						true-comment-ru  = "S-полином не делится на G2. Добавим его в G1."
+						true-comment-en  = "S-polynomial isn't divisible by G2. Let's add it to G1."
+						false-comment-ru = "S-полином делится на G2. Продолжаем."
+						false-comment-en = "S-polynomial is divisible by G2. Let's continue."
+						level			 = "0"
+					>
+					<then>
+						<call-auto id = "AddPolynomial2Ideal"/>
+						<step
+							description  = "Добавление остатка в идеал"
+							id	     	 = "AddingReminder2Ideal"
+							level        = "-1"
+						>
+							<action>
+								@b @= true;
+							</action>
+						</step>
+					</then>
+					</if>
+					<step
+						description = "Increment of J"
+						id	    	= "IncJ"
+						level		= "-1"
+					>
+						<action>
+							@j @= @j + 1;
+						</action>
+					</step>
+				</while>
+				<step
+					description = "Increment of I"
+					id	    	= "IncI"
+					level		= "-1"
+				>
+					<action>
+						@i @= @i + 1;
+					</action>
+				</step>
+			</while>
+		</while>
+	</auto>
+
+	<auto
+		description = "Редуцирование полученного базиса"
+		id		    = "reduce"
+	>
+		<variable
+			description = "Переменная, используемая для подсчета количества мономов полинома"
+			name	    = "lgi"
+			type	    = "int"
+		/>
+		<variable
+			description = "Переменная, используемая для подсчета количества полиномов идеала"
+			name	    = "lg"
+			type	    = "int"
+		/>
+		<variable
+			description = "Переменная цикла"
+			name	    = "i"
+			type	    = "int"
+		/>
+		<variable
+			description = "Переменная цикла"
+			name	    = "j"
+			type	    = "int"
+		/>
+		<variable
+			description = "Переменная-флаг"
+			name	    = "b"
+			type	    = "boolean"
+		/>
+		<variable
+			description = "Временная переменная"
+			name	    = "tp"
+			type	    = "Polynomial"
+		/>
+		<step
+			description = "Подготовка к циклу"
+			id			= "Preparing"
+			level		= "-1"
+		>
+			<action>
+				@b @= true;
+				@showG2 @= true;
+			</action>
+		</step>
+		<while
+			description = "Внешний цикл"
+			id	    	= "LoopReduce"
+			test	    = "@b"
+			level	    = "-1"
+		>
+			<step
+				description = "Подготовка к циклу"
+				id	    	= "Preparing2Loop"
+				level	    = "-1"
+			>
+				<action>
+					@b @= false;
+					@lg @= length(@g);
+					@i @= 0;
+				</action>
+			</step>
+			<while
+				description		 = "Перебор полиномов g1"
+				id	    		 = "LoopI"
+				test	    	 = "(!@b) &amp;&amp; (@i &lt; @lg)"
+				true-comment-ru	 = "Перебераем полиномы из G1 по очереди."
+				true-comment-en	 = "Checking polynomials form G1 one by one."
+				false-comment-ru = "Заканчиваем перебор."
+				false-comment-en = "Finishing checking"
+				level	    	 = "0"
+			>
+				<step
+					description  = "Deleting g[i]"
+					id	    	 = "DeleteI"
+					comment-ru   = "Удаляем полином {0} из G2."
+					comment-en   = "Deleting polynomial {0} from G2."
+					comment-args = "@g1[@i]"
+					level	     = "0"
+				>
+					<draw>
+						@visualizer.printIdeals(new boolean[] {true, true}, @checked);
+					</draw>
+					<action>
+						@checked @= new int[] {@i};
+						@g @= subtract(@i);
+					</action>
+				</step>
+				<step
+					description  = "Checking g1[i]"
+					id	     	 = "CheckingI"
+					comment-ru   = "Проверка полинома {0} на редуцированность относительно G1."
+					comment-en   = "Checking if polynomial {0} is reduced about G1."
+					comment-args = "@g1[@i]"
+					level	     = "0"
+				>
+					<action>
+						@showS @= "";
+						copy2spol(@g1[@i]);
+					</action>
+				</step>
+				<call-auto id = "rem"/>
+				<if
+					description 	 = "Если остаток не равен самому полиному"
+					id		 		 = "CondPolEqToRem"
+					test		 	 = "!@g1[@i].equals(@reminder)"
+					true-comment-ru  = "Полином {0} и его остаток от деления на G2 {1} не равны. Нужно добавить {1} в G2 вместо {0}."
+					true-comment-en  = "Polynomial {0} and his reminder by G2 {1} are not equal. We should replace {0} in G2 by {1}."
+					false-comment-ru = "Остаток от деления {0} на G2 равен ему самому."
+					false-comment-en = "Reminder of dividing {0} by G2 is equal to itself."
+					comment-args	 = "@g1[@i], @reminder"
+					level		 	 = "0"
+				>
+					<draw>
+						@visualizer.printIdeals(new boolean[] {true, true}, @checked);
+					</draw>
+				<then>
+					<step
+						description = "Флажок"
+						id	    	= "Flag"
+						level	    = "-1"
+					>
+						<action>
+							@b @= true;
+						</action>
+					</step>
+				</then>
+				</if>
+				<if
+					description		= "Проверка на 0"
+					id				= "Checking"
+					test			= "eq0(@reminder)"
+					level			= "-1"
+				>
+				<then>
+					<step
+						description = "Не добавляем"
+						id			= "NothingToDo"
+						comment-ru	= "Остаток от деления равен 0. И так принадлежит G2. Продолжаем."
+						comment-en	= "Reminder is equal to 0. It's almost in G2. Let's continue."
+						level		= "0"
+					>
+						<draw>
+							@visualizer.printIdeals(new boolean[] {true, true}, @checked);
+						</draw>
+						<action>
+						</action>
+					</step>
+				</then>
+				<else>
+					<step
+						description  = "Замена полинома в идеале на остаток от деления его на идеал"
+						id	     	 = "ReplacingPolynomialByReminder"
+						comment-ru   = "Заменяем полином {0} в G1 полиномом {1}."
+						comment-en   = "Replacing polynomial {0} in G1 by polynomial {1}."
+						comment-args = "@g1[@i], @reminder"
+						level	     = "1"
+					>
+						<draw>
+							@visualizer.printIdeals(new boolean[] {true, true}, @checked);
+						</draw>
+						<action>
+							@checked @= new int[] {@i};
+							@g @= copy2x(@i);
+						</action>
+					</step>
+				</else>
+				</if>	
+				<step
+					description = "Завершение итерации"
+					id	    	= "EndingIteration"
+					comment-ru  = "End"
+					level	    = "-1"
+				>
+					<action>
+						@i @= @i + 1;
+					</action>
+				</step>
+			</while>
+			<step
+				description = "Завершение итерации"
+				id	    	= "AfterIteration"
+				comment-ru  = "Копируем G2 в G1"
+				comment-en	= "Copying G2 to G1"
+				level	    = "0"
+			>
+				<draw>
+					@visualizer.printIdeals(new boolean[] {true, true});
+				</draw>
+				<action>
+					@g1 @= gToG1();
+					@g @= g1ToG();
+				</action>
+			</step>
+		</while>
+	</auto>
+
+	<auto
+		description = "Главный автомат"
+		id			= "Main"
+	>
+		<start
+			comment-ru = "На экране изображены полиномы, составляющие идеал (G1), для которого необходимо построить редуцированный базис Грёбнера."
+			comment-en = "There are polynomials forming an ideal (G1) on the screen. The task is to make a reduced Groebner basis for this ideal."
+		>
+			<draw>
+				@visualizer.hide();
+				@visualizer.redraw();
+				@visualizer.printIdeals(new boolean[] {false, true}, @checked);
+			</draw>
+		</start>
+		<step
+			description = "Копирование g1 в given."
+			id			= "First"
+			level		= "-1"
+		>
+			<action>
+				@visualizer.labels @= @visualizer.hide();
+				@visualizer.redraw();
+				g12given();
+			</action>
+		</step>
+		<call-auto id = "MakingBasis" />
+		<step
+			description = "BasisIsMade"
+			id			= "PreparingForReducing"
+			comment-ru	= "Базис построен. Приступаем к его редуцированию."
+			comment-en	= "The basis is built. Starting reducing."
+			level		= "1"
+		>
+			<draw>
+				@visualizer.hide();
+				@visualizer.printIdeals(new boolean[] {false, true}, @checked);
+			</draw>
+			<action>
+			</action>
+		</step>
+		<call-auto id = "reduce" />
+		<step
+			description = "Копирование в g1 начального идеала."
+			id			= "Last"
+			level		= "-1"
+		>
+			<action>
+				given2g1();
+			</action>
+		</step>
+		<step
+			description	= "Нормировка"
+			id			= "Norming"
+			level		= "1"
+		>
+			<draw>
+				@visualizer.printIdeals(new boolean[] {true, true});
+			</draw>
+			<action>
+				@g @= norm();
+			</action>
+		</step>
+		<step
+			description = "HideAll"
+			id			= "hideAll"
+			level		= "-1"
+		>
+			<action>
+				@visualizer.labels @= @visualizer.hide();
+			</action>
+		</step>
+		<finish
+			comment-ru = "На экране изображены полиномы, составляющие редуцированный базис Грёбнера (G2) заданного идеала (G1)."
+			comment-en = "There is reduced Groebner basis (G2) for given ideal (G1)."
+		>
+			<draw>
+				@visualizer.redraw();
+				@visualizer.printIdeals(new boolean[] {true, true});
+			</draw>
+		</finish>
+	</auto>
+
+	<method
+		comment = "Возвращает количество полиномов в идеале a"
+		header  = "int length(Polynomial[] a)"
+	>
+		int i;
+		for (i = 0; i &lt; a.length; ++i) {
+			if (a[i] == null) break;
+		}
+		return i;
+	</method>
+
+	<method
+		comment = "Возвращает наименьшее общее кратное 2 мономов"
+		header  = "Monomial lcm(Monomial a, Monomial b)"
+	>
+		Monomial temp = new Monomial();
+		temp.c = Math.max(Math.abs(a.c), Math.abs(b.c));
+		for (int i = 0; i &lt; 26; ++i) {
+			temp.deg[i] = Math.max(a.deg[i], b.deg[i]);
+		}
+		return temp;
+	</method>
+
+	<method
+		comment = "Перемножает 2 монома"
+		header  = "Monomial multiply(Monomial a, Monomial b)"
+	>
+    	Monomial temp = new Monomial();
+    	temp.c = a.c * b.c;
+    	for (int i = 0; i &lt; 26; ++i) {
+    		temp.deg[i] = a.deg[i] + b.deg[i];
+    	}
+    	return temp;
+	</method>
+
+	<method
+		comment = "Умножает полином на моном"
+		header  = "Polynomial multiply(Polynomial a, Monomial b)"
+	>
+    		Polynomial temp = new Polynomial(a);
+    	 	for (int i = 0; i &lt; a.length(); ++i) {
+				temp.m[i] = multiply(a.m[i], b);
+			}
+			temp.lexSort();
+    	 	return temp;
+	</method>
+
+	<method
+		comment = "Делит моном на моном"
+		header  = "Monomial divide(Monomial a, Monomial b)"
+	>
+		Monomial temp = new Monomial();
+    	temp.c = a.c / b.c;
+    	for (int i = 0; i &lt; a.deg.length; ++i) {
+    		temp.deg[i] = a.deg[i] - b.deg[i];
+     	}
+		return temp;
+	</method>
+
+	<method
+		comment = "Сравнивает на равенство два числа с плавающей точкой."
+		header  = "boolean eq(double a, double b)"
+	>
+    		return (Math.abs(a-b) &lt; d.EPS);
+	</method>
+
+	<method
+		comment = "Вычетает из полинома полином"
+		header  ="Polynomial subtract(Polynomial a, Polynomial b)"
+	>
+		System.out.println(a.toString());
+		System.out.println(b.toString());
+		int la = a.length(), lb = b.length();
+	 	Polynomial temp = new Polynomial(la + lb);
+     	for (int i = 0; i &lt; la; ++i) {
+    		temp.m[i] = new Monomial(a.m[i]);
+		}
+    	for (int i = 0; i &lt; b.length(); ++i) {
+    		temp.m[i + la] = new Monomial(b.m[i]);
+    		temp.m[i + la].c = -b.m[i].c;
+    	}
+		System.out.println(temp.toString());
+		temp.lexSort();
+    	boolean bb = true;
+    	while (bb) {
+    		bb = false;
+	    	for (int i = 0; i &lt; temp.length(); ++i) {
+	    		int j;
+	    		for (j = i + 1; (j &lt; temp.m.length) &amp;&amp; (temp.m[i].similarTo(temp.m[j])); ++j) {
+	    			if (temp.m[j].c != 0) {
+	    				bb = true;
+    			 	}
+    				temp.m[i].c += temp.m[j].c;
+    			 	temp.m[j].c = 0;
+    		 	}
+				if (eq(temp.m[i].c, 0)) {
+					for (int q = 0; q &lt; 26; ++q) {
+    					temp.m[i].deg[q] = 0;
+					}
+    		 	}
+    		 	i = j - 1;
+    	 	}
+    	 	temp.lexSort();
+   	 	}
+   	 	int lt = 0;
+   	 	for (int i = 0; (i &lt; temp.m.length) &amp;&amp; (temp.m[i] != null) &amp;&amp; (!eq(temp.m[i].c, 0)); ++i) {
+   			++lt;
+   	 	}
+   	 	Polynomial res = new Polynomial(lt);
+   	 	for (int i = 0; i &lt; lt; ++i) {
+   			res.m[i] = new Monomial(temp.m[i]);
+		}
+		System.out.println("======");
+		return res;
+
+	</method>
+	
+	<method
+		comment = "Меняет местами 2 монома"
+		header  = "void swap(Monomial a, Monomial b)"
+	>
+    	Monomial t = new Monomial(a);
+     	a = b;
+		b = t;
+	</method>
+
+	<method
+		comment = "Проверяет возможность деления a на b"
+		header  = "boolean isDivisibleBy(Monomial a, Monomial b)"
+	>
+    		if (eq(b.c, 0)) return false;
+    	 	for (int i = 0; i &lt; 26; ++i) {
+    		 	if (a.deg[i] &lt; b.deg[i]) return false;
+    	 	}
+		return true;
+	</method>
+
+	<method
+		comment = "Проверяет полином на равенство нулю"
+		header  = "boolean eq0(Polynomial a)"
+	>
+    		return (a.m.length == 0) || eq(a.m[0].c, 0);
+	</method>
+
+	<method
+		comment = "Добавляет моном в полином"
+		header  = "Polynomial add(Polynomial p, Monomial b)"
+	>
+		Polynomial a = new Polynomial(p);
+		int la = a.length();
+		for (int i = 0; i &lt; la; ++i) {
+    	 	if (a.m[i].similarTo(b)) {
+				a.m[i].c += b.c;
+				a.lexSort();
+    		 	return a;
+    	 	}
+			if (eq(a.m[i].c, 0)) {
+				a.m[i] = new Monomial(b);
+				a.lexSort();
+    		 	return a;
+    	 	}
+		}
+		int ll = la > 0 ? la * 2 : 1;
+		Polynomial temp = new Polynomial(ll);
+    	for (int i = 0; i &lt; la; ++i) {
+    		temp.m[i] = new Monomial(a.m[i]);
+    	}
+    	temp.m[la] = new Monomial(b);
+		return temp;
+	</method>
+
+	<method
+		comment = "Добавляет полином в идеал"
+		header	= "Polynomial[] add(Polynomial b)"
+	>
+		if ((d.g1 == null) || (length(d.g1) == 0)) {
+			Polynomial[] t = new Polynomial[]{new Polynomial(b)};
+			return t;
+		}
+		Polynomial[] res = new Polynomial[d.g1.length];
+		int q = 0;
+		for (int i = 0; i &lt; d.g1.length; ++i) {
+			if (d.g1[i] == null) continue;
+			res[q] = new Polynomial(d.g1[i]);
+			res[q++].lexSort();
+		}
+    	for (int i = 0; i &lt; q; ++i) {
+    	 	if (eq(res[i].m[0].c, 0)) {
+    		 	res[i] = new Polynomial(b);
+    		 	return res;
+    	 	}
+     	}
+     	int lg = q;
+     	int lt = lg * 2;
+     	Polynomial[] temp = new Polynomial[lt];
+        q = 0;
+     	for (int i = 0; i &lt; lg; ++i) {
+    	 	if (eq(res[i].m[0].c, 0)) continue;
+			temp[q++] = new Polynomial(res[i]);
+     	}
+		temp[q] = new Polynomial(b);
+		return temp;
+	</method>
+
+	<method
+		comment = "Удаляет полином из идеала g"
+		header	= "Polynomial[] subtract(int q)"
+	>
+		int lg = length(d.g);
+		if (q >= lg) return d.g;
+		Polynomial[] t = new Polynomial[lg - 1];
+		for (int i = 0; i &lt; q; ++i) {
+			t[i] = new Polynomial(d.g[i]);
+		}
+		for (int i = q + 1; i &lt; lg; ++i) {
+			t[i - 1] = new Polynomial(d.g[i]);
+		}
+		return t;
+	</method>
+
+	<method
+		comment = "Ищет полином в G1"
+		header	= "int indexIn(Polynomial p)"
+		>
+		int lg = length(d.g1);
+		for (int i = 0; i &lt; lg; ++i) {
+			if (p.equals(d.g1[i])) {
+				return i;
+			}
+		}
+		return -1;
+	</method>
+
+	<method
+		comment = "Копирует g в g1"
+		header  = "Polynomial[] gToG1()"
+	>
+    		int lg = length(d.g);
+			Polynomial[] temp = new Polynomial[lg];
+			int q = 0;
+			for (int i = 0; i &lt; lg; ++i) {
+				if (d.g[i] == null) continue;
+				temp[q++] = new Polynomial(d.g[i]);
+			}
+			return temp;
+	</method>
+
+	<method
+		comment = "Копирует x в spol"
+		header	    = "void copy2spol(Polynomial x)"
+	>
+		d.spol = new Polynomial(x);
+	</method>
+
+	<method
+		comment = "Копирует reminder в g[x]"
+		header	    = "Polynomial[] copy2x(int x)"
+	>
+		int lg = length(d.g);
+		Polynomial[] t = new Polynomial[lg + 1];
+		for (int i = 0; i &lt; x; ++i) {
+			t[i] = new Polynomial(d.g[i]);
+		}
+		t[x] = new Polynomial(d.reminder);
+		for (int i = x + 1; i &lt; lg + 1; ++i) {
+			t[i] = new Polynomial(d.g[i - 1]);
+		}
+		return t;
+	</method>
+
+	<method
+		comment = "Копирует g1 в g"
+		header  = "Polynomial[] g1ToG()"
+	>
+		int lg = length(d.g1);
+		Polynomial[] temp = new Polynomial[lg];
+		int q = 0;
+		for (int i = 0; i &lt; lg; ++i) {
+			if (d.g1[i] == null) continue;
+			temp[q++] = new Polynomial(d.g1[i]);
+		}
+		return temp;
+	</method>
+
+	<method
+		comment = "Копирует g1 в given"
+		header	= "void g12given()"
+	>
+		int lg = length(d.g1);
+		d.given = new Polynomial[lg];
+		for (int i = 0; i &lt; lg; ++i) {
+			d.given[i] = new Polynomial(d.g1[i]);
+		}
+	</method>
+
+	<method
+		comment = "Копирует given в g1"
+		header	= "void given2g1()"
+	>
+		int lg = length(d.given);
+		d.g1 = new Polynomial[lg];
+		for (int i = 0; i &lt; lg; ++i) {
+			d.g1[i] = new Polynomial(d.given[i]);
+		}
+	</method>
+
+	<method
+		comment = "Нормирование на 1-ый коэффициент"
+		header	= "Polynomial[] norm()"
+	>
+		int lg = length(d.g);
+		Polynomial[] t = new Polynomial[lg];
+		for (int i = 0; i &lt; lg; ++i) {
+			t[i] = new Polynomial(d.g[i]);
+			t[i].normalize();
+		}
+		return t;
+	</method>
+
+</algorithm>
+

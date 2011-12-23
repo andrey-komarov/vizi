@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="WINDOWS-1251"?>
+
+<configuration>
+    <property 
+        description = "Comment pane height"
+        param       = "comment-height"
+        value       = "100"
+    />
+
+    <message
+        description = 'Number of choice'
+        param       = "choice1-col"
+        message-ru  = "2"
+        message-en  = "2"
+    />
+    <message
+        description = 'Desc1'
+        param       = "choice1-message1"
+        message-ru  = "Добавление"
+        message-en  = "Inserting"
+    />
+    <message
+        description = 'Desc2'
+        param       = "choice1-message2"
+        message-ru  = "Удаление"
+        message-en  = "Deleting"
+    />
+
+    <styleset
+        description = "Tree style set"
+        param       = "tree"
+    >
+        <style
+            description     = "Containing cell"
+            text-color      = "000000"
+            text-align      = "0.5"
+            border-color    = "000000"
+            border-status   = "true"
+            fill-color      = "ffffff"
+            fill-status     = "false"
+            aspect-status   = "false"
+            padding         = "0.2"
+        >
+            <font
+                face        = "Monospaced"
+                size        = "14"
+                style       = "plain"
+            />
+        </style>
+
+        <style
+            description     = "Ordinary Incut cell"
+            text-color      = "000000"
+            text-align      = "0.5"
+            border-color    = "000000"
+            border-status   = "false"
+            fill-color      = "ffffff"
+            fill-status     = "true"
+            aspect-status   = "false"
+            padding         = "0.2"
+        >
+            <font
+                face        = "Monospaced"
+                size        = "14"
+                style       = "plain"
+            />
+        </style>
+
+        <style
+            description     = "Selected Incut cell"
+            text-color      = "000000"
+            text-align      = "0.5"
+            border-color    = "000000"
+            border-status   = "false"
+            fill-color      = "ff8080"
+            fill-status     = "true"
+            aspect-status   = "false"
+            padding         = "0.2"
+        >
+            <font
+                face        = "Monospaced"
+                size        = "14"
+                style       = "plain"
+            />
+        </style>
+
+        <style
+            description     = "Selected Containing cell"
+            text-color      = "000000"
+            text-align      = "0.5"
+            border-color    = "000000"
+            border-status   = "true"
+            fill-color      = "ff8080"
+            fill-status     = "false"
+            aspect-status   = "false"
+            padding         = "0.2"
+        >
+            <font
+                face        = "Monospaced"
+                size        = "14"
+                style       = "plain"
+            />
+        </style>
+
+        <style
+            description     = "1 component style"
+            fill-color      = "D0D0D0"
+            text-color      = "000000"
+            border-color    = "000000"
+        />
+
+        <style
+            description     = "2 component style"
+            fill-color      = "D0D0D0"
+            text-color      = "000000"
+            border-color    = "000000"
+        />
+
+        <style
+            description     = "Selected cell"
+            fill-color      = "80ff80"
+        />
+        <style
+            description     = "Local-maximum cell"
+            fill-color      = "ff8080"
+        />
+    </styleset>
+
+    <adjustablePanel
+        description = "Number of elements in the array"
+        param           = "elements"
+        caption-ru      = "Элементов: {0,number,####}"
+        caption-en      = "Elements: {0,number,####}"
+        hint-ru         = "Количество элементов в массиве"
+        hint-en         = "Number of elements in the array"
+        value           = "5"
+        minimum         = "5"
+        maximum         = "20"
+        unitIncrement   = "1"
+        blockIncrement  = "2"
+        blockInterval   = "500"
+    >
+        <button
+            param       = "incrementButton"
+            caption-ru  = "&gt;&gt;"
+            caption-en  = "&gt;&gt;"
+            hint-ru     = "Увеличить количество элементов"
+            hint-en     = "Increase number of elements"
+        />
+        <button
+            param       = "decrementButton"
+            caption-ru  = "&lt;&lt;"
+            caption-en  = "&lt;&lt;"
+            hint-ru     = "Уменьшить количество элементов"
+            hint-en     = "Decrease number of elements"
+        />
+    </adjustablePanel>
+</configuration>

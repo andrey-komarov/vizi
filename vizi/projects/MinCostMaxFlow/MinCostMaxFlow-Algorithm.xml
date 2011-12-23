@@ -1,0 +1,704 @@
+<!--
+MinCost-MaxFlow algorthm description for vizi (http://neerc.ifmo.ru/vizi)
+Copyright (C) 2008 by Aleksey Sergushichev <alsergbox@gmail.com>
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or (at
+your option) any later version.
+
+This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
+USA
+-->
+<algorithm>
+    <variable
+        description = "Количество вершин"
+        name = "n"
+        type = "int"
+        value = "6"
+    />
+    <variable
+        description = "Количество ребер"
+        name = "m"
+        type = "int"
+        value = "10"
+    />
+    <variable
+        description = "Источник"
+        name = "source"
+        type = "int"
+        value = "0"
+    />
+    <variable
+        description = "Сток"
+        name = "sink"
+        type = "int"
+        value = "1"
+    />
+
+    <variable
+        description = "Матрица смежности графа"
+        name = "edge"
+        type = "Edge[][]"
+        value = "new Edge[n][n]"
+    />
+    <variable
+        description = "Матрица смежности для обратных ребер графа"
+        name = "reverseEdge"
+        type = "Edge[][]"
+        value = "new Edge[n][n]"
+    />
+    <variable
+        description = "Массив потенциалов"
+        name = "phi"
+        type = "long[]"
+        value = "new long[n]"
+    />
+    <variable
+        description = "Расстояния от источника"
+        name = "dist"
+        type = "long[]"
+        value = "new long[n]"
+    />
+    <variable
+        description = "Использовали ли мы данную вершину"
+        name = "used"
+        type = "boolean[]"
+        value = "new boolean[n]"
+    />
+    <variable
+        description = "Массив для востановления кратчайшего пути"
+        name = "prev"
+        type = "Edge[]"
+        value = "new Edge[n]"
+    />
+    <variable
+        description = "Текущяя стоимость потока"
+        name = "cost"
+        type = "long"
+        value = "0"
+    />
+    <variable
+        description = "Максимальный дополняющий поток"
+        name = "maxFlow"
+        type = "long"
+        value = "0"
+    />
+    <variable
+        description = "Надо ли отображать обратные ребра и дополнительную информацию в вершинах"
+        name = "extendedDraw"
+        type = "boolean"
+        value = "false"
+    />
+    <variable
+        description = "Что выделять (0 - ничего, 1 - расстояния, 2 - потенциалы)"
+        name = "highlight"
+        type = "int"
+        value = "0"
+    />
+    <variable
+        description = "Экзэмпляр апплета"
+        name = "visualizer"
+        type = "MinCostMaxFlowVisualizer"
+        value = "null"
+    />
+
+    <toString>
+        return "";
+    </toString>
+    <auto id = "dijkstra" description = "Вычисляет расстояния от источника до вершин">
+        <variable
+            description = "Переменная для использования в цикле"
+            name = "i"
+            type = "int"
+        />
+        <variable
+            description = "Переменная для использования в цикле"
+            name = "j"
+            type = "int"
+        />
+        <variable
+            description = "Текущая вершина в дейкстре"
+            name = "u"
+            type = "int"
+        />
+        <variable
+            description = "Текущая вершина в предыдущем пути"
+            name = "cur"
+            type = "int"
+        />
+        <step
+            id = "initCur"
+            description = "инициализируем cur"
+            level = "-1"
+        >
+            <action>
+                @cur @= @sink;
+            </action>
+        </step>
+        <while
+            id = "unhighlightPath"
+            description = "убираем выделение с пути"
+            test = "(@prev[@cur] != null) &amp;&amp; (@cur != @source)"
+            level = "-1"
+        >
+            <step
+                id = "unhighlightAndIncrement"
+                description = "убираем выделение с текущего ребра"
+                level = "-1"
+            >
+                <action>
+                    @prev[@cur].highlighted @= false;
+                    @cur @= @prev[@cur].u;
+                </action>
+            </step>
+        </while>
+        <step
+            id = "initI"
+            description = "обнуляем i"
+            level = "-1"
+        >
+            <action>
+                @i @= 0;
+            </action>
+        </step>
+        
+        <while
+            id = "fillDist"
+            description = "Заполняет расстояния бесконечностями"
+            test = "@i &lt; @n"
+            level = "-1"
+        >
+            <step
+                id = "loopStep1"
+                description = "шаг цикла"
+                level = "-1"
+            >
+                <action>
+                    @dist[@i] @= -1;
+                    @i @= @i + 1;
+                </action>
+            </step>
+        </while>
+       
+        <step
+            id = "initI2"
+            description = "обнуляем i2"
+            level = "-1"
+        >
+            <action>
+                @i @= 0;
+            </action>
+        </step>
+        <while
+            id = "fillUsed"
+            description = "Еще ничего не использовали"
+            test = "@i &lt; @n"
+            level = "-1"
+        >
+            <step
+                id = "loopStep2"
+                description = "шаг цикла"
+                level = "-1"
+            >
+                <action>
+                    @used[@i] @= false;
+                    @i @= @i + 1;
+                </action>
+            </step>
+            
+        </while>
+        <step
+            id = "markSourceAndInitI"
+            description = "Делаем источник источником для Дейкстры и инициализируем i"
+            level = "-1"
+        >
+            <action>
+                @i @= 0;
+                @dist[@source] = 0;
+                @prev[@source] = null;
+            </action>
+        </step>
+        
+        <while
+            id = "outDijkstraLoop"
+            description = "Внешний цикл дейкстры"
+            level = "-1"
+            test = "@i &lt; @n"
+        >
+            <step
+                id = "initUJ"
+                description = "инициализируем u и j"
+                level = "-1"
+            >
+                <action>
+                    @u @= -1;
+                    @j @= 0;
+                </action>
+            </step>
+            <while
+                id = "choosingVertex"
+                description = "выбираем виршину"
+                test = "@j &lt; @n"
+                level = "-1"
+            >
+                <if
+                    id = "condition1"
+                    description = "выбираем наиболее близкую неиспользованную вершину"
+                    test = "(!@used[@j]) &amp;&amp; (@dist[@j] &gt;= 0) &amp;&amp; ( ( @u == -1) || ( @dist[@j] &lt; @dist[@u] ) )"
+                    level = "-1"
+                >
+                    <then>
+                        <step
+                            id = "updateU"
+                            description = "обновляем u"
+                            level = "-1"
+                        >
+                            <action>
+                                @u @= @j;
+                            </action>
+                        </step>
+                    </then>
+                </if>
+                <step
+                    id = "inc1"
+                    description = "инкремент"
+                    level = "-1"
+                >
+                    <action>
+                        @j @= @j + 1;
+                    </action>
+                </step>
+            </while>
+
+            <if
+                id = "condition2"
+                description = "Есть ли вершина, которую можно использовать"
+                test = "@u != -1"
+                level = "-1"
+            >
+                <then>
+                    <step
+                        id = "initJ2"
+                        description = "инициализируем j"
+                        level = "-1"
+                    >
+                        <action>
+                            @j @= 0;
+                        </action>
+                    </step>
+                    <while
+                        id = "edgeLoop"
+                        description = "цикл по ребрам, инцидентным u"
+                        test = "@j &lt; @n"
+                        level = "-1"
+                    >
+                        <if
+                            id = "condition3"
+                            description = "надо ли обновлять вершину на конце ребра"
+                            test = "(@edge[@u][@j] != null ) &amp;&amp; ( @edge[@u][@j].capacity - @edge[@u][@j].flow &gt; 0 ) &amp;&amp; ( (@dist[@j] == -1 ) || (@dist[@u] + @edge[@u][@j].cost - @phi[@j] + @phi[@u] &lt; @dist[@j] ) )"
+                            level = "-1"
+                        >
+                            <then>
+                                <step
+                                    id = "updateVertexDist"
+                                    description = "обновляем расстояние до вершины и добавляем ребро в массив для восстановления"
+                                    level = "-1"
+                                >
+                                    <action>
+                                        @dist[@j] @= @dist[@u] + @edge[@u][@j].cost - @phi[@j] + @phi[@u];
+                                        @prev[@j] @= @edge[@u][@j];
+                                    </action>
+                                </step>
+                            </then>
+                        </if>
+                        <step
+                            id = "inc3"
+                            description = "следующее ребро"
+                            level = "-1"
+                        >
+                            <action>
+                                @j @= @j + 1;
+                            </action>
+                        </step>
+                    </while>
+                    <step
+                        id = "initJ3"
+                        description = "инициализируем j"
+                        level = "-1"
+                    >
+                        <action>
+                            @j @= 0;
+                        </action>
+                    </step>
+                    <while
+                        id = "reverseEdgeLoop"
+                        description = "цикл по обратным ребрам, инцидентным u"
+                        test = "@j &lt; @n"
+                        level = "-1"
+                    >
+                        <if
+                            id = "condition3"
+                            description = "надо ли обновлять вершину на конце ребра"
+                            test = "(@reverseEdge[@u][@j] != null ) &amp;&amp; ( @reverseEdge[@u][@j].capacity - @reverseEdge[@u][@j].flow &gt; 0 ) &amp;&amp; ( (@dist[@j] == -1 ) || (@dist[@u] + @reverseEdge[@u][@j].cost - @phi[@j] + @phi[@u] &lt; @dist[@j] ) )"
+                            level = "-1"
+                        >
+                            <then>
+                                <step
+                                    id = "updateVertexDist"
+                                    description = "обновляем расстояние до вершины и добавляем ребро в массив для восстановления"
+                                    level = "-1"
+                                >
+                                    <action>
+                                        @dist[@j] @= @dist[@u] + @reverseEdge[@u][@j].cost - @phi[@j] + @phi[@u];
+                                        @prev[@j] @= @reverseEdge[@u][@j];
+                                    </action>
+                                </step>
+                            </then>
+                        </if>
+                        <step
+                            id = "inc4"
+                            description = "следующее ребро"
+                            level = "-1"
+                        >
+                            <action>
+                                @j @= @j + 1;
+                            </action>
+                        </step>
+                    </while>
+                    
+                    <step
+                        id = "updateUseOfU"
+                        description = "мы использовали вершину u"
+                        level = "-1"
+                    >
+                        <action>
+                            @used[@u] @= true;
+                        </action>
+                    </step>
+                </then>
+            </if>
+            <step
+                id = "inc2"
+                description = "инкремент"
+                level = "-1"
+            >
+                <action>
+                    @i @= @i + 1;
+                </action>
+            </step>
+        </while>
+
+    </auto>
+    
+    <auto id = "updatePotentials" description = "Обновление потенциалов">
+        <variable
+            description = "переменная цикла"
+            name = "i"
+            type = "int"
+        />
+        <step
+            id = "initI"
+            description = "инициализируем i"
+            level = "-1"
+        >
+            <action>
+                @i @= 0;
+            </action>
+        </step>
+        <while
+            id = "updateLoop"
+            description = "цикл для обновления потенциалов"
+            test = "@i &lt; @n"
+            level = "-1"
+        >
+            <step
+                id = "updPotential"
+                description = "обновляем потенциал и переходим к следующей вершине"
+                level = "-1"
+            >
+                <action>
+                    @phi[@i] @= @dist[@i];
+                    @i @= @i + 1;
+                </action>
+            </step>
+        </while>
+        <step
+            id = "potentialUpdated"
+            description = "потенциалы обновлены"
+            comment-ru = "Выставляем потенциалы в вершинах равными расстояниям, найденным на предыдущем шаге."
+            comment-en = "Setting vertices potentials same as distances found at previous step"
+        >
+            <draw>
+                @visualizer.drawGraph();
+            </draw>
+            <action>
+                @highlight @= 2;
+            </action>
+        </step>
+   </auto>
+
+    <auto id = "recoverPath" description = "Находим максимальный дополняющий поток для кратчайшего пути">
+        <variable
+            description = "Текущая вершина"
+            name = "cur"
+            type = "int"
+        />
+        <step
+            id = "initCurAndMaxFlow"
+            description = "инициализируем текущую вершину стоком и максимальный дополняющий поток последним ребром"
+            level = "-1"
+        >
+            <action>
+                @cur @= @sink;
+                @maxFlow @= @prev[@cur].capacity - @prev[@cur].flow;
+            </action>
+        </step>
+        <while
+            id = "findMaxAddFlowLoop"
+            description = "находим максимальный дополняющий поток"
+            test = "@cur != @source"
+            level = "-1"
+        >
+            <step
+                id = "highlightEdge"
+                description = "выделяем ребро пути"
+                level = "-1"
+            >
+                <action>
+                    @prev[@cur].highlighted @= true;
+                </action>
+            </step>
+            <if
+                id = "updateMaxFlowCondition"
+                description = "надо ли обновлять поток"
+                test = "@maxFlow &gt; @prev[@cur].capacity - @prev[@cur].flow"
+                level = "-1"
+            >
+                <then>
+                    <step
+                        id = "updateMaxFlow"
+                        description = "обновляем поток"
+                        level = "-1"
+                    >
+                        <action>
+                            @maxFlow @= @prev[@cur].capacity - @prev[@cur].flow;
+                        </action>
+                    </step>
+                </then>
+            </if>
+            <step
+                id = "prevVertex"
+                description = "переходим к предыдущей вершине в пути"
+                level = "-1"
+            >
+                <action>
+                    @cur @= @prev[@cur].u;
+                </action>
+            </step>
+        </while>
+        <step
+            id = "pathRecovered"
+            description = "путь восстановлен"
+            comment-ru = "Восстанавливаем кратчайший путь от источника S до стока T и параллельно находим максимальный дополняюший поток для этого пути. В данном случае он равен {0}."
+            comment-en = "Recovering shortest path from source S to sink T and finding maximal supplemental flow for this path. It equals to {0}."
+            comment-args = "new Long(@maxFlow)"
+        >
+            <draw>
+                @visualizer.drawGraph();
+            </draw>
+            <action>
+                @highlight @= 0;
+            </action>
+        </step>
+    </auto>
+
+    <auto id = "letPassFlow" description = "пропускаем поток и обновляем стоимость">
+        <variable
+            description = "текущая вершина"
+            name = "cur"
+            type = "int"
+        />
+        <variable
+            description = "стоимость дополняющего потока"
+            name = "curCost"
+            type = "long"
+        />
+        <step
+            id = "initCurAndCurCost"
+            description = "инициализируем начальную вершину стоком и текущую стоимость нулем"
+            level = "-1"
+        >
+            <action>
+                @cur @= @sink;
+                @curCost @= 0;
+            </action>
+        </step>
+        <while
+            id = "updFlowAndCostLoop"
+            description = "цикл для обновления потока и стоимости"
+            test = "@cur != @source"
+            level = "-1"
+        >
+            <if
+                id = "reverseCondition"
+                description = "обратное ли это ребро"
+                test = "@prev[@cur].reversed"
+                level = "-1"
+            >
+                <then>
+                    <step
+                        id = "updReverseEdge"
+                        description = "обновляем ребро, обратное текущему"
+                        level = "-1"
+                    >
+                        <action>
+                            @edge[@cur][@prev[@cur].u].flow @= @edge[@cur][@prev[@cur].u].flow - @maxFlow; 
+                        </action>
+                    </step>
+                </then>
+                <else>
+                    <step
+                        id = "updReverseEdge2"
+                        description = "обновляем ребро, обратное текущему"
+                        level = "-1"
+                    >
+                        <action>
+                            @reverseEdge[@cur][@prev[@cur].u].flow @= @reverseEdge[@cur][@prev[@cur].u].flow - @maxFlow; 
+                        </action>
+                    </step>
+                </else>
+            </if>
+            <step
+                id = "updFlowAndCost"
+                description = "обновляем поток и стоимость"
+                level = "-1"
+            >
+                <action>
+                    @prev[@cur].flow @= @prev[@cur].flow + @maxFlow;
+                    @cost @= @cost + @maxFlow * @prev[@cur].cost;
+                    @curCost @= @curCost + @maxFlow * @prev[@cur].cost;
+                    @cur @= @prev[@cur].u;
+                </action>
+            </step>
+        </while>
+        <step
+            id = "flowPassed"
+            description = "пропустили поток"
+            comment-ru = "Пропускаем через найденный путь максимальный дополняющий поток (через обратные ребра пропускаем такой же поток, только с противополжным знаком), считаем его стоимость (для данного потока она равна {0}) и добавляем ее к общей стоимости."
+            comment-en = "Passing flow through maximal supplemental flow (throgh reversed edges passing flow with opposite sign), computing it''s cost (it equals to {0} for this flow) and adding this cost to summary cost."
+            comment-args = "new Long(@curCost)"
+            level = "1"
+        >
+            <draw>
+                @visualizer.drawGraph();
+            </draw>
+            <action>
+            </action>
+        </step>
+    </auto>
+
+    <auto id = "Main" description = "Находит максимальный поток минимальной стоимости">    
+        <start
+            comment-ru = "На экране изображена исходная сеть. Задача алгоритма - найти такой максимальный поток, стоимость которого минимальна."
+            comment-en = "There is initial net on the display. The goal is to find maximal flow with minimal cost."
+        >
+            <draw>
+                @visualizer.drawGraph();
+            </draw>
+        </start>
+
+        <step
+            id = "Initialization"
+            description = "Инициализация"
+            comment-ru = "Введем для каждой вершины потенциал (сначала ранвый нулю) вершин и расстояние от источника, их значения указаны слева и справа в нижней части вершины."
+            comment-en = "Adding for every vertex potential (in the begin it is zero) and distance from source, its'' values are displayed in the left and in the right of bottom part of vertex."
+        >
+        <!--
+            <direct>
+                @visualizer.startExtendedDraw();
+            </direct>
+            <reverse>
+                @visualizer.stopExtendedDraw();
+            </reverse>
+            -->
+            <draw>
+                @visualizer.drawGraph();
+            </draw>
+            <action>
+                @extendedDraw @= true;
+            </action>
+        </step>
+
+        <call-auto id = "dijkstra"/>
+        
+        <while
+            id = "MainLoop"
+            description = "Главный цикл"
+            test = "@dist[@sink] != -1"
+            level = "-1"
+        >
+            <step
+                id = "pathFinded"
+                description = "существет путь"
+                comment-ru = "С помощью алгоритма Дейкстры с потенциалами (W''uv = Wuv + \u03a6u - \u03a6\v, весом ребра является его стоимость) находим расстояния от источника до всех остальных вершин (в поиске учавсвуют также обратные ребра, характеризующий на сколько мы можем уменьшить поток в прямом ребре и на сколько при этом уменьшится общая стоимость потока)."
+                comment-en = "By Dijkstra''s algorithm with potentials (W''uv = Wuv + \u03a6u - \u03a6v, edge's weight is it''s cost) finding distances from source to other vertices (there are reverese edges characterizing how much we can reduce flow in straight edge and how much total cost decrease used in search ."
+            >
+                <draw>
+                    @visualizer.drawGraph();
+                </draw>
+                <action>
+                    @highlight @= 1;
+                </action>
+            </step>
+            
+            <call-auto id = "updatePotentials"/>
+
+            <call-auto id = "recoverPath"/>    
+
+            <call-auto id = "letPassFlow"/>
+            
+            <call-auto id = "dijkstra"/>
+        
+        </while>
+        <step
+            id = "pathNotFinded"
+            description = "путь до стока отсутствует"
+            comment-ru = "Отсутствует путь от источника до стока, а это означает конец алгоритма."
+            comment-en = "There is no path from source to sink so algorithm is finished."
+        >
+            <draw>
+                @visualizer.drawGraph();
+            </draw>
+            <action>
+                @highlight @= 1;
+            </action>
+        </step>
+        <step
+            id = "stopExtDraw"
+            description = "убираем расширенное рисование"
+            level = "-1"
+        >
+            <action>
+                @extendedDraw @= false;
+            </action>
+        </step>
+        <finish
+            comment-ru = "Задача решена. Максимальный поток изображен на экране, его стоимость равна {0}."
+            comment-en = "Problem solved. Maximal path is displayed on the screen, it''s cost is equals to {0}."
+            comment-args = "new Long(@cost)"
+        >
+            <draw>
+                @visualizer.drawGraph();
+            </draw>
+        </finish>
+    </auto>
+
+</algorithm>

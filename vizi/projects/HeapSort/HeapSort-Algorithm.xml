@@ -1,0 +1,581 @@
+<?xml version="1.0" encoding="WINDOWS-1251"?>
+
+<!--
+    "HeapSort" algoritm description using auto-reverse feature
+    Version: $Id: HeapSort-Algorithm.xml,v 1.2 2004/04/24 23:18:19 mar Exp $
+-->
+
+<algorithm>
+   <variable
+      description = "Массив для сортировки"
+      name        = "a"
+      type        = "int[]"
+      value       = "new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}"
+   />
+   <variable
+      description = "Экземпляр апплета"
+      name        = "visualizer"
+      type        = "HeapSortVisualizer"
+      value       = "null"
+   />
+   <variable
+      description="Размер кучи"
+      name="heapSize"
+      type="int"
+      value="a.length - 1"
+   />
+   <variable
+      description = "Переменная для передачи в Heapify"
+      name = "iHeapify"
+      type = "int"
+      value = "0"
+   />
+   <data>
+      <toString>
+         StringBuffer s = new StringBuffer();
+         return s.toString();
+      </toString>
+   </data>
+
+<!--  auto - Heapify -BEGIN   -->
+   <auto
+      id="Heapify"
+      description="Проcеивает элемент"
+   >
+      <variable
+         description="Левый ребёнок"
+         name = "l"
+         type = "int"
+      />
+      <variable
+         description="Правый ребёнок"
+         name = "r"
+         type = "int"
+      />
+      <variable
+         description="Наибольший из детей"
+         name = "largest"
+         type = "int"
+      />
+      <variable
+         description="Переменная для обмена"
+         name = "swapTmp"
+         type = "int"
+      />
+      <start
+         comment-ru="На экране изображён массив, который необходимо сперва превратить в кучу"
+         comment-en="There is an array on the display, which we have to turn into a heap first"
+      >
+         <draw>
+            @visualizer.updateAll(0, 0, 0, @heapSize);
+            @visualizer.stopEditMode();
+         </draw>
+      </start>
+      <step
+         id="Initialization1"
+         description="Инициализация"
+         comment-ru="Находим детей {0} ({1})"
+         comment-en="Looking for {0} ({1}) children"
+         comment-args="new Integer(@iHeapify + 1), new Integer(@a[@iHeapify + 1 - 1])"
+      >
+         <draw>
+            @visualizer.updateAll(@iHeapify, @iHeapify, 1, @heapSize);
+            @visualizer.stopEditMode();
+         </draw>
+         <action>
+            @l @= @iHeapify * 2 + 1;
+            @r @= @iHeapify * 2 + 1 + 1;
+         </action>
+      </step>
+      <if
+         id="ifChildsCond"
+         description="Условие"
+         test = "@l &lt;= @heapSize"
+         true-comment-ru="У {0} ({2}) есть левый ребёнок {1} ({3}) ( {1} = 2 * {0})"
+         true-comment-en="{0} ({2}) has left child {1} ({3}) ( {1} = 2 * {0})"
+         false-comment-ru="У {0} ({2}) нет детей"
+         false-comment-en="{0} ({2}) has no children"
+         comment-args="new Integer(@iHeapify + 1), new Integer(@l + 1), new Integer(@a[@iHeapify + 1 - 1]), new Integer(@a[( @l + 1 - 1 ) %  @a.length])"
+      >
+         <draw>
+             @visualizer.updateAll(@iHeapify, @iHeapify, 1, @heapSize);
+             @visualizer.stopEditMode();
+         </draw>
+         <then>
+            <step
+                id="ShowChild1"
+                description="Показ детей"
+                level="-1"
+            >
+                <draw>
+                    @visualizer.updateAll(@iHeapify, @l, 1, @heapSize);
+                    @visualizer.stopEditMode();
+                </draw>
+                <action>
+                </action>
+            </step>
+            <if
+               id="compareLeftChild"
+               description="Условие"
+               test = "@a[@iHeapify] &lt; @a[@l]"
+               true-comment-ru="Левый ребёнок {0} ({2}) больше родителя {1} ({3})"
+               true-comment-en="Left child {0} ({2}) is bigger then his parent {1} ({3})"
+               false-comment-ru="Левый ребёнок {0} ({2}) не больше своего родителя {1} ({3})"
+               false-comment-en="Left child {0} ({2}) is not bigger than his parent {1} ({3})"
+               comment-args="new Integer(@l + 1), new Integer(@iHeapify + 1), new Integer(@a[@l + 1 - 1]), new Integer(@a[@iHeapify + 1 - 1])"
+            >
+               <draw>
+                  @visualizer.updateAll(@iHeapify, @l, 1, @heapSize);
+                  @visualizer.stopEditMode();
+               </draw>
+               <then>
+                  <step
+                     id="leftNewLargest"
+                     description="Есть ребёнок больший родителя"
+                     level="-1"
+                  >
+                     <draw>
+                        @visualizer.updateAll(@iHeapify, @l, 2, @heapSize);
+                        @visualizer.stopEditMode();
+                     </draw>
+                     <action>
+                        @largest @= @l;
+                     </action>
+                  </step>
+               </then>
+               <else>
+                  <step
+                     id="noNewLargest"
+                     description="Родитель больше своего левого ребёнка"
+                     level="-1"
+                  >
+                     <draw>
+                        @visualizer.updateAll(@iHeapify, @l, 1, @heapSize);
+                        @visualizer.stopEditMode();
+                     </draw>
+                     <action>
+                        @largest @= @iHeapify;
+                     </action>
+                  </step>
+               </else>
+            </if>
+            <if
+               id="rightChildCompare"
+               description="Условие"
+               test = "@r &lt;= @heapSize &amp;&amp; @a[@largest] &lt; @a[@r] "
+               true-comment-ru="Правый ребёнок {0} ({2}) больше текущего наибольшего {1} ({3}) ( {0} = 2 * {1} + 1)"
+               true-comment-en="Right child {0} ({2}) is bigger then current largest {1} ({3}) ( {0} = 2 * {1} + 1)"
+               false-comment-ru="Правый ребёнок {0} ({2}) не больше текущего наибольшего {1} ({3})"
+               false-comment-en="Right child {0} ({2}) is not bigger than current largest {1} ({3})"
+               comment-args="new Integer(@r + 1), new Integer(@largest + 1), new Integer(@a[(@r + 1 - 1) % @a.length]), new Integer(@a[@largest + 1 - 1])"
+            >
+               <draw>
+                  @visualizer.updateAll(@largest, @r, 1, @heapSize);
+                  @visualizer.stopEditMode();
+               </draw>
+               <then>
+                  <step
+                     id="rightNewLargest"
+                     description="Есть ребёнок больший родителя"
+                     level="-1"
+                  >
+                     <draw>
+                        @visualizer.updateAll(@iHeapify, @r, 2, @heapSize);
+                        @visualizer.stopEditMode();
+                     </draw>
+                     <action>
+                        @largest @= @r;
+                     </action>
+                  </step>
+               </then>
+            </if>
+            <if
+               id="isLargest"
+               description="Условие"
+               test = "@largest != @iHeapify"
+               true-comment-ru="Есть ребёнок {0} ({2}) больший своего родителя {1} ({3})"
+               true-comment-en="There is a child {0} ({2}) bigger then parent {1} ({3})"
+               false-comment-ru="Нет ребёнка большего своего родителя {1} ({3})"
+               false-comment-en="There is no child bigger then his parent {1} ({3})"
+               comment-args="new Integer(@largest + 1), new Integer(@iHeapify + 1),new Integer(@a[@largest + 1 - 1]), new Integer(@a[@iHeapify + 1 - 1])"
+            >
+               <draw>
+                  @visualizer.updateAll(@largest, @iHeapify, 1, @heapSize);
+                  @visualizer.stopEditMode();
+               </draw>
+               <then>
+                  <step
+                     id="swapLargest"
+                     description="Меняем наибольшего"
+                     comment-ru="Меняем родителя {0} ({2}) и большего ребёнка местами {1} ({3})"
+                     comment-en="We swap parent {0} ({2}) and the bigger child {1} ({3})"
+                     comment-args="new Integer(@iHeapify + 1), new Integer(@largest + 1), new Integer(@a[@iHeapify + 1 - 1]), new Integer(@a[@largest + 1 - 1])"
+                     level="1"
+                  >
+                     <draw>
+                        @visualizer.updateAll(@iHeapify, @largest, 2, @heapSize, @largest - 1);
+                        @visualizer.stopEditMode();
+                     </draw>
+                     <action>
+                        @swapTmp @= @a[@largest];
+                        @a[@largest] @= @a[@iHeapify];
+                        @a[@iHeapify] @= @swapTmp;
+                     </action>
+                  </step>
+                  <step
+                     id="proccedHeapify"
+                     description="Теперь следует просеять дальше"
+                     comment-ru="Надо просеять данный элемент {0} ({1}) далее"
+                     comment-en="We have to procced this element {0} ({1}) down"
+                     comment-args="new Integer(@largest + 1), new Integer(@a[@largest + 1 - 1])"
+                     level="1"
+                  >
+                     <draw>
+                        @visualizer.updateAll(@largest, @largest, 1, @heapSize);
+                        @visualizer.stopEditMode();
+                     </draw>
+                     <action>
+                        @iHeapify @= @largest;
+                     </action>
+                  </step>
+                  <call-auto
+                     id="Heapify"
+                     level="1"
+                  />
+               </then>
+            </if>
+         </then>
+         <else>
+            <step
+                id="ShowChild1"
+                description="Показ детей"
+                level="-1"
+            >
+                <draw>
+                    @visualizer.updateAll(@iHeapify, @iHeapify, 1, @heapSize);
+                    @visualizer.stopEditMode();
+                </draw>
+                <action>
+                </action>
+            </step>
+         </else>
+      </if>
+      <finish
+         comment-ru="Данный элемент {0} ({1}) утоплен"
+         comment-en="This element {0} ({1}) is processed"
+         comment-args="new Integer(@iHeapify + 1), new Integer(@a[@iHeapify + 1 - 1])"
+      >
+         <draw>
+            @visualizer.updateAll(0, 0, 0, @heapSize);
+            @visualizer.stopEditMode();
+         </draw>
+      </finish>
+   </auto>
+<!--  auto - Heapify -END   -->
+
+<!--  auto - BuildHeap -BEGIN   -->
+   <auto
+      id="BuildHeap"
+      description="Превращает массив в кучу"
+   >
+      <variable
+         description="Переменная цикла"
+         name="i"
+         type="int"
+      />
+      <start
+         comment-ru="На экране изоражённ массив, который будет превращён в кучу"
+         comment-en="There is an array on the display, which is going to be turned into heap"
+      >
+         <draw>
+            @visualizer.updateAll(0, 0, 0);
+            @visualizer.stopEditMode();
+         </draw>
+      </start>
+      <step
+         id="buildHeapRaport"
+         description="bHeapRaport"
+         comment-ru="Сперва следует превратить массив в кучу"
+         comment-en="We have to turn array into a heap first"
+         level="1"
+      >
+         <draw>
+            @visualizer.updateAll(0, 0, 0);
+            @visualizer.stopEditMode();
+         </draw>
+         <action>
+         </action>
+      </step>
+      <step
+         id="SetHeapSize"
+         description="Присваивает значение размера кучи"
+         comment-ru="Размер кучи будет совпадать с размером массива"
+         comment-en="Size of heap will be equal to array size"
+         level="1"
+      >
+         <draw>
+            @visualizer.updateAll(0, 0, 0, @heapSize);
+            @visualizer.stopEditMode();
+         </draw>
+         <action>
+            @heapSize @= @a.length - 1;
+         </action>
+      </step>
+      <step
+        id="DescribeWhyHalf"
+        description="Объясняет почему начинаем с середины"
+        comment-ru="Элементы второй половины массива не имеют детей, поэтому начинаем просеивать элементы с {0} ({1})"
+        comment-en="Elements of second half dont have any children, so we start from the {0} ({1}) element"
+        comment-args="new Integer(@a.length / 2 - 1 + 1), new Integer(@a[@a.length / 2 - 1 + 1 - 1])"
+        level="1"
+      >
+        <action> 
+        </action>
+      </step>
+      <step
+         id="LoopInitHeapify"
+         description="Начало цикла"
+         level="-1"
+      >
+         <action>
+            @i @= @a.length / 2 - 1;
+         </action>
+      </step>
+      <while
+         id="LoopHeapify"
+         description="Цикл"
+         test="0 &lt;= @i"
+         level="-1"
+      >
+         <step
+            id="setIHeap"
+            description="Присвоить значение переменной автомата Heapify"
+            level="-1"
+         >
+            <action>
+               @iHeapify @= @i;
+            </action>
+         </step>
+         <call-auto
+            id="Heapify"
+            level="1"
+         />
+         <step
+            id="dec"
+            description="Декремент"
+            level="-1"
+         >
+            <action>
+               @i @= @i - 1;
+            </action>
+         </step>
+      </while>
+      <step
+         id="HeapAlready"
+         description="heapRaport"
+         comment-ru="Массив превращён в кучу"
+         comment-en="Array is turned to heap now"
+         level="1"
+      >
+         <draw>
+            @visualizer.updateAll(0, 0, 0, @heapSize);
+            @visualizer.stopEditMode();
+         </draw>
+         <action>
+         </action>
+      </step>
+      <finish
+         comment-ru="Массив превращён в кучу"
+         comment-en="Array is turned to heap now"
+      >
+         <draw>
+            @visualizer.updateAll(0, 0, 0, @heapSize);
+            @visualizer.stopEditMode();
+         </draw>
+      </finish>
+   </auto>
+<!--  auto - BuildHeap -END   -->
+
+<!--  auto - MakeHeapSort -BEGIN  -->
+   <auto
+      id="MakeHeapSort"
+      description="Сортирует массив кучей"
+   >
+      <variable
+         description="Переменная цикла"
+         name="i"
+         type="int"
+      />
+      <variable
+         description="Переменная для обмена"
+         name="swapTmp"
+         type="int"
+      />
+      <start
+         comment-ru="На экране изображён массив, который будет отсортирован кучей"
+         comment-en="There is an array on the display, in which heap sort is going to be held"
+      >
+         <draw>
+            @visualizer.updateAll(0, 0, 0);
+            @visualizer.stopEditMode();
+         </draw>
+      </start>
+<!--
+      <step
+         id="SortRaport"
+         description="startSortRaport"
+         comment-ru="На экране изображён массив, который будет отсортирован кучей"
+         comment-en="There is an array on the display, in which heap sort is going to be held"
+         level="1"
+      >
+         <draw>
+            @visualizer.updateAll(0, 0, 0);
+            @visualizer.stopEditMode();
+         </draw>
+         <action>
+         </action>
+      </step>
+-->
+      <call-auto
+         id="BuildHeap"
+         level="1"
+      />
+      <step
+         id="LoopInitSort"
+         description="Начало цикла"
+         level="-1"
+      >
+         <action>
+            @i @= @a.length - 1;
+         </action>
+      </step>
+      <while
+         id="LoopSort"
+         description="Цикл"
+         test="0 &lt; @i"
+         level="-1"
+      >
+         <step
+            id="swapFirstNLast"
+            description="Перемещаем корень в конец"
+            comment-ru="Меняем вершину кучи и последний элемент массива"
+            comment-en="We swap heap root the last array element"
+            level="1"
+         >
+            <draw>
+               @visualizer.updateAll(@i, 0, 2, @heapSize);
+               @visualizer.stopEditMode();
+            </draw>
+            <action>
+               @swapTmp @= @a[0];
+               @a[0] @= @a[@i];
+               @a[@i] @= @swapTmp;
+            </action>
+         </step>
+         <step
+            id="decHeapSize"
+            description="Уменьшаем размер кучи"
+            comment-ru="Отцепляем последний элемент кучи {0} ({1})"
+            comment-en="We cut the last element {0} ({1})"
+            comment-args="new Integer(@heapSize + 1 + 1), new Integer(@a[@iHeapify + 1 + 1 - 1])"
+         >
+            <draw>
+               @visualizer.updateAll(0, 0, 2, @heapSize);
+               @visualizer.stopEditMode();
+            </draw>
+            <action>
+               @heapSize @= @heapSize - 1;
+            </action>
+         </step>
+         <step
+            id="setIHeapSort"
+            description="Присвоить значени переменной автомата Heapify"
+            level="-1"
+         >
+            <action>
+               @iHeapify @= 0;
+            </action>
+         </step>
+         <call-auto
+            id="Heapify"
+            level="1"
+         />
+         <step
+            id="dec"
+            description="Декремент"
+            level="-1"
+         >
+            <action>
+               @i @= @i - 1;
+            </action>
+         </step>
+      </while>
+<!--
+      <step
+         id="endSort"
+         description="endSortRaport"
+         comment-ru="Сортировка кучей завершена"
+         comment-en="Heap sort is complete"
+         level="1"
+      >
+         <draw>
+            @visualizer.updateAll(0, 0, 3, -1);
+            @visualizer.stopEditMode();
+         </draw>
+         <action>
+         </action>
+      </step>
+-->
+      <step
+         id="topSecret"
+         description="makes all end"
+         level="-1"
+      >
+         <action>
+            @heapSize = -1;
+         </action>
+      </step>
+      <finish
+         comment-ru="Сортировка кучей завершена"
+         comment-en="Heap sort is complete"
+      >
+         <draw>
+            @visualizer.updateAll(0, 0, 3, -1);
+            @visualizer.stopEditMode();
+         </draw>
+      </finish>
+   </auto>
+<!--  auto - MakeHeapSort -END  -->
+
+<!--  auto - Main -BEGIN    -->
+   <auto
+      id="Main"
+      description="Сортирует массив натуральных чисел"
+   >
+      <start
+         comment-ru="На экране изображен массив, на примере которого будет показана работа сортировки кучей"
+         comment-en="There is an array on the display, on which we will show how heap sort works"
+      >
+         <draw>
+            @visualizer.updateAll(0, 0, 0);
+            @visualizer.makeAllStart();
+            @visualizer.stopEditMode();
+         </draw>
+      </start>
+      <call-auto
+         id="MakeHeapSort"
+         level="1"
+      />
+      <finish
+         comment-ru="Cортировки кучей завершена"
+         comment-en="Heap sort is complete"
+      >
+         <draw>
+            @visualizer.stopEditMode();
+            @visualizer.updateAll(0, 0, 3, -1);
+         </draw>
+      </finish>
+   </auto>
+<!-- auto - Main - END   -->
+
+</algorithm>

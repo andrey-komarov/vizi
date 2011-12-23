@@ -1,0 +1,948 @@
+<?xml version="1.0" encoding="WINDOWS-1251"?>
+
+<algorithm>
+	 <variable 
+        description = "Экземпляр апплета"
+        name        = "visualizer"
+        type        = "RBTreeVisualizer"
+        value       = "null"
+    />
+
+    <variable
+        description = "Корень дерева"
+        name        = "root"
+        type        = "Point"
+        value       = "null"
+    />
+	<variable
+        description = "Флаг для выхода из цикла"
+        name        = "flag"
+        type        = "boolean"
+        value       = "true"
+    />
+    <variable
+        description = "Текущий узел"
+        name        = "x"
+        type        = "Point"
+        value       = "null"
+    />
+	<variable
+        description = "Узел для различных операций"
+        name        = "z"
+        type        = "Point"
+        value       = "null"
+    />
+	<variable
+        description = "Переменная"
+        name        = "key"
+        type        = "int"
+        value       = "0"
+    />
+    <toString>
+    	return "";
+    </toString>
+
+	
+    <auto id="LeftRotate" description="Левый поворот">
+        <variable
+            description = ""
+            name        = "y"
+            type        = "Point"
+        />
+		<step
+            id="Loop1Init"
+            description="Инициализация нужных вершин"
+            level="-1"
+        >
+			<action>
+				@y @= @z.right;
+				@z.right @= @y.left;
+			</action>
+		</step>
+		<if
+            id               = "If"
+            description      = "Если нет левого поддерева"
+            test             = "@y.left != null"
+            level="-1"
+        >
+			<then>
+				<step
+					id="XZ"
+					description="Родитель левого у ставим нашу" 
+					level="-1"
+				>
+					<action>
+						@y.left.p @= @z;
+					</action>
+				</step>	
+			</then>
+		</if>
+		<step
+            id="Loop1Init"
+            description="Переносим родителя z в y"
+            level="-1"
+        >
+			<action>
+				@y.p = @z.p;
+			</action>
+		</step>	
+		<if
+            id               = "If"
+            description      = "Если родитель z == null"
+            test             = "@z.p == null"
+            level="-1"
+        >
+			<then>
+				<step id="StepInIf" description="XZ" level="-1"><action>
+					@root @= @y;
+				</action></step>
+			</then>
+			<else>
+				<if
+					id               = "If"
+					description      = "Если x левый сын"
+					test             = "@z == @z.p.left"
+					level="-1"
+				>
+				<then>
+					<step id="StepInIf" description="XZ" level="-1"><action>
+						@z.p.left @= @y;
+					</action></step>
+				</then>
+				<else>
+					<step id="StepInIf" description="XZ" level="-1"><action>
+						@z.p.right @= @y;
+					</action></step>
+				</else>
+				</if>
+			</else>
+		</if>
+		<step
+            id="Loop1Init"
+            description="Переносим родителя z в y"
+            level="-1"
+        >
+			<action>
+				@y.left @= @z;
+				@z.p @= @y;
+			</action>
+		</step>	
+		
+    </auto>
+	<auto id="RightRotate" description="Правый поворот">
+        <variable
+            description = ""
+            name        = "y"
+            type        = "Point"
+        />
+		<step id="Loop1Init" description="Инициализация нужных вершин" level="-1">
+			<action>
+				@y @= @z.left;
+				@z.left @= @y.right;
+			</action>
+		</step>
+		<if
+            id               = "If"
+            description      = "Если нет правого поддерева"
+            test             = "@y.right != null"
+            level="-1"
+        >
+			<then>
+				<step id="StepInIf"	description="Step" level="-1">
+					<action>
+						@y.right.p @= @z;
+					</action>
+				</step>
+				
+			</then>
+		</if>
+		<step id="Loop1Init" description="Переносим родителя z в y" level="-1">
+			<action>
+				@y.p = @z.p;
+			</action>
+		</step>	
+		<if
+            id               = "If"
+            description      = "Если родитель z == null"
+            test             = "@z.p == null"
+            level="-1"
+        >
+			<then>
+				<step id="StepInIf" description="XZ" level="-1"><action>
+					@root @= @y;
+				</action></step>
+			</then>
+			<else>
+				<if
+					id               = "If"
+					description      = "Если x правый сын"
+					test             = "@z == @z.p.right"
+					level="-1"
+				>
+				<then>
+					<step id="StepInIf" description="XZ" level="-1"><action>
+						@z.p.right @= @y;
+					</action></step>
+				</then>
+				<else>
+					<step id="StepInIf" description="XZ" level="-1"><action>
+						@z.p.left @= @y;
+					</action></step>
+				</else>
+				</if>
+			</else>
+		</if>
+		<step
+            id="Loop1Init"
+            description="Переносим родителя z в y"
+            level="-1"
+        >
+			<action>
+				@y.right @= @z;
+				@z.p @= @y;
+			</action>
+		</step>	
+		
+    </auto>
+	<auto id="findPoint" description="Поиск">
+		<step
+			id="Loop1Init"
+			description="Начинаем искать с корня"
+			level = "-1"
+		>
+			<action>
+				@x @= @root;
+				@flag = true;
+			</action>
+		</step>
+		<while
+            id="Loop1"
+            description="Цикл"
+            test="@x != null &amp;&amp; flag"
+            level="-1"
+        >
+			<if
+				id               = "If"
+				description      = "Если нашли"
+				test             = "@x.key == @key"
+				true-comment-ru="Вершина со значением {0} найдена"
+                true-comment-en="Node {0} found"
+				comment-args="new Integer(@key)"
+			>
+			<then>
+				<step id="StepInIf" description="XZ" level="-1"><action>
+					flag = false;
+				</action></step>
+			</then>
+			</if>
+			
+			<if
+				id               = "If"
+				description      = "Если нашли"
+				test             = "@x.key > @key"
+				true-comment-ru="Идем к левому сыну, потому что значение в этой вершине ({0}) больше искомого ({1})"
+                true-comment-en="Go to left child, cause value in this node ({0}) greater than ({1})"
+                false-comment-ru="Идем к правому сыну, потому что значение в этой вершине ({0}) меньше искомого ({1})"
+                false-comment-en="Go to right child, cause value in this node ({0}) smaller than ({1})"
+                comment-args="new Integer(@x.key), new Integer(@key)"
+			>
+			<then>
+				<step id="StepInIf" description="XZ" level="-1"><action>
+					@x @= @x.left;
+				</action></step>
+			</then>
+			<else>
+				<step id="StepInIf" description="XZ" level="-1"><action>
+					@x @= @x.right;
+				</action></step>
+			</else>
+			</if>
+		</while>
+		<if
+			id               = "If"
+			description      = "Если нашли"
+			test             = "flag"
+			level = "-1"
+		>
+		<then>
+			<step 
+				id="StepInIf" 
+				description="XZ" 
+				comment-ru="Вершина со значением {0} не найдена"
+				comment-en="Node {0} didn't found"
+				comment-args="new Integer(@key)"
+			>
+			<action>
+				@flag = true;
+			</action>
+			</step>
+		</then>
+		</if>
+	</auto>
+	<auto id="RBInsert" description="Вставка">
+		<variable
+            description = ""
+            name        = "y"
+            type        = "Point"
+        />	
+		<variable
+            description = ""
+            name        = "x2"
+            type        = "Point"
+        />
+		<step id="Loop1Init" description="Инициализация нужных вершин" level="-1">
+			<action>
+				@x2 @= root;
+				@y @= null;
+			</action>
+		</step>
+		<while
+            id="Loop1"
+            description="Цикл для нахождения места для вставки"
+            test="@x2 != null"
+            level="-1"
+        >
+			<step id="StepInWhile" description="XZ" level="-1">
+				<action>
+					@y @= @x2;
+				</action>
+			</step>
+			<if
+				id               = "If"
+				description      = "Сравниваем"
+				test             = "@x2.key > @z.key"
+				true-comment-ru="Идем к левому сыну, потому что значение в этой вершине ({0}) больше искомого ({1})"
+                true-comment-en="Go to left child, cause value in this node ({0}) greater than ({1})"
+                false-comment-ru="Идем к правому сыну, потому что значение в этой вершине ({0}) меньше искомого ({1})"
+                false-comment-en="Go to right child, cause value in this node ({0}) smaller than ({1})"
+                comment-args="new Integer(@x2.key), new Integer(@z.key)"
+			>
+			<then>
+				<step id="StepInIf" description="XZ" level="-1">
+				<action>
+					@x2 @= @x2.left;
+				</action>
+				</step>
+			</then>
+			<else>
+				<step id="StepInIf" description="XZ" level="-1">
+				<action>
+					@x2 @= @x2.right;
+				</action>
+				</step>
+			</else>
+			</if>
+		</while>
+		<step id="Loop2Init" 
+			  description="Устанавливаем отца Z" 
+			  level="-1"
+		>
+			<action>
+				@z.p @= @y;
+			</action>
+		</step>
+		<if
+			id               = "If"
+			description      = "не пусто ли"
+			test             = "@y == null"
+			level="-1"
+		>
+		<then>
+			<step id="StepInIf" description="XZ" level="-1">
+			<action>
+				@root @= @z;
+			</action>
+			</step>
+		</then>
+		<else>
+			<if
+				id               = "If"
+				description      = "проверяем"
+				test             = "@z.key &lt; @y.key"
+				true-comment-ru="Сделаем {0} левым сыном {1} и покрасим ее в красный цвет"
+                true-comment-en="Make {0} left child {1} and make it red"
+                false-comment-ru="Сделаем {0} правым сыном {1} и покрасим ее в красный цвет"
+                false-comment-en="Make {0} right child {1} and make it red"
+                comment-args="new Integer(@z.key), new Integer(@y.key)"
+			>
+			<then>
+				<step id="StepInIf" description="XZ" level="-1">
+				<action>
+					@y.left @= @z;
+				</action>
+				</step>
+			</then>
+			<else>
+				<step id="StepInIf" description="XZ" level="-1">
+				<action>
+					@y.right @= @z;
+				</action>
+				</step>
+			</else>
+			</if>
+		</else>
+		</if>
+		<step id="Loop"
+			  description="Назначение" 
+			  level="-1"
+		>
+			<action>
+				@z.left @= null;
+				@z.right @= null;
+				@z.color @= true;
+			</action>
+		</step>
+		<call-auto id="RBInsertFixup"/>
+	</auto>
+	<auto id="RBInsertFixup" description="Восстанавливаем красно-черные свойства">
+		<variable
+			description = "Текущий узел"
+			name        = "y"
+			type        = "Point"
+		/>
+		<while
+            id="Loop1"
+            description="Главный цикл"
+            test="z.p.color"
+            level="-1"
+        >
+			<if
+				id               = "If"
+				description      = "Проверяем является ли отец z левым сыном своего отца"
+				test             = "@z.p == @z.p.p.left"
+				true-comment-ru="отец({0}) {1} является левым своего отца сыном {2}"
+                true-comment-en=""
+                false-comment-ru="отец({0}) {1} является правым своего отца сыном {2}"
+                false-comment-en=""
+                comment-args="new Integer(@z.p.key), new Integer(@z.key), new Integer(@z.p.p.key)"
+			>
+			<then>
+				<step 
+					id="XZ"
+					description="Назначение" 
+					level="-1"
+				>
+				<action>
+					@y @= @z.p.p.right;
+				</action>
+				</step>
+				<if
+					id               = "If"
+					description      = "Проверяем является ли y красным"
+					test             = "@y.color"
+					level="-1"
+				>
+				<then>
+					<step 
+						id="StepInIf" 
+						description="Случай 1" 
+						comment-ru="Случай 1"
+						comment-en=""
+					>
+					<action>
+						@z.p.color @= false;
+						@y.color @= false;
+						@z.p.p.color @= true;
+						@z @= @z.p.p;
+					</action>
+					</step>
+				</then>
+				<else>
+					<if
+						id               = "If"
+						description      = "Проверяем является ли y красным"
+						test             = "@z == @z.p.right"
+						level="-1"
+					>
+					<then>
+						<step 
+							id="StepInIf" 
+							description="Случай 2" 
+							comment-ru="Случай 2"
+							comment-en=""
+						>
+						<action>
+							@z @= @z.p;
+						</action>
+						</step>
+						<call-auto id="LeftRotate"/>
+					</then>
+					</if>
+					<step 
+						id="StepInIf" 
+						description="Случай 3" 
+						comment-ru="Случай 3"
+						comment-en=""
+					>
+					<action>
+						@z.p.color @= false;
+						@z.p.p.color @= true;
+						
+						@z @= @z.p.p;
+					</action>
+					</step>
+					<call-auto id="RightRotate"/>
+				</else>
+				</if>
+			</then>
+			<else>
+				<step 
+					id="XZ"
+					description="Назначение" 
+					level="-1"
+				>
+				<action>
+					@y @= @z.p.p.left;
+				</action>
+				</step>
+				<if
+					id               = "If"
+					description      = "Проверяем является ли y красным"
+					test             = "@y.color"
+					level="-1"
+				>
+				<then>
+					<step 
+						id="StepInIf" 
+						description="Случай 1" 
+						comment-ru="Случай 1"
+						comment-en=""
+					>
+					<action>
+						@z.p.color @= false;
+						@y.color @= false;
+						@z.p.p.color @= true;
+						@z @= @z.p.p;
+					</action>
+					</step>
+				</then>
+				<else>
+					<if
+						id               = "If"
+						description      = "Проверяем является ли y красным"
+						test             = "@z == @z.p.left"
+						level="-1"
+					>
+					<then>
+						<step 
+							id="StepInIf" 
+							description="Случай 2" 
+							comment-ru="Случай 2"
+							comment-en=""
+						>
+						<action>
+							@z @= @z.p;
+						</action>
+						</step>
+						<call-auto id="RightRotate"/>
+					</then>
+					</if>
+					<step 
+						id="StepInIf" 
+						description="Случай 3" 
+						comment-ru="Случай 3"
+						comment-en=""
+					>
+					<action>
+						@z.p.color @= false;
+						@z.p.p.color @= true;
+						@z @= @z.p.p;
+					</action>
+					</step>
+					<call-auto id="LeftRotate"/>
+				</else>
+				</if>
+			</else>
+			</if>
+		</while>
+		<if
+			id               = "If"
+			description      = "Проверяем является ли y красным"
+			test             = "@root.color == true"
+			level="-1"
+		>
+		<then>
+			<step 
+				id="StepInIf" 
+				description="XZ" 
+				comment-ru="Корень оказался красным, покрасим его в черный цвет"
+				comment-en=""
+			>
+				<action>
+					@root.color @= false;
+				</action>
+			</step>
+		</then>
+		</if>
+	</auto>
+	<auto id="RBDelete" description="Удаление">
+		<variable
+			description = "Текущий узел"
+			name        = "x2"
+			type        = "Point"
+		/>
+		<variable
+			description = "Текущий узел"
+			name        = "y"
+			type        = "Point"
+		/>
+		<step id="Loop1Init" description="Инициализация нужных вершин" level="-1">
+			<action>
+				@x2 @= null;
+				@y @= null;
+			</action>
+		</step>
+		<if
+			id               = "If"
+			description      = "Проверяем"
+			test             = "(@z.left == null) || (@z.right == null)"
+			level="-1"
+		>
+		<then>
+			<step id="StepInIf" description="XZ" level="-1">
+				<action>
+					@y @= @z;
+				</action>
+			</step>
+		</then>
+		<else>
+			<if
+				id               = "If"
+				description      = "Проверяем"
+				test             = "@z.right != null"
+				level="-1"
+			>
+			<then>
+				<step id="StepInIf" description="XZ" level="-1">
+					<action>
+						@y @= @z.right;
+					</action>
+				</step>
+				<while
+					id="Loop1"
+					description="Цикл для нахождения самой маленькой вершины в поддереве с корнем у"
+					test="y.left != null"
+					level="-1"
+				>
+				<step id="StepInIf" description="XZ" level="-1">
+					<action>
+						@y @= @y.left;
+					</action>
+				</step>
+				</while>
+			</then>
+			<else>
+				<step id="StepInIf" description="XZ" level="-1">
+					<action>
+						@x2 @= @z;
+						@y @= @z.p;
+					</action>
+				</step>
+				<while
+					id="Loop1"
+					description="Цикл"
+					test="(@y != null) &amp;&amp; (@x2 == @y.right)"
+					level="-1"
+				>
+				<step id="StepInIf" description="XZ" level="-1">
+					<action>
+						@x2 @= @y;
+						@y @= @y.p;
+					</action>
+				</step>
+				</while>
+			</else>
+			</if>
+		</else>
+		</if>
+		<if
+			id               = "If"
+			description      = "Нету левого поддерева у У"
+			test             = "@y.left != null"
+			level="-1"
+		>
+		<then>
+			<step id="StepInIf" description="XZ" level="-1">
+				<action>
+					@x2 @= @y.left;
+				</action>
+			</step>
+		</then>
+		<else>
+			<step id="StepInIf" description="XZ" level="-1">
+				<action>
+					@x2 @= @y.right;
+				</action>
+			</step>
+		</else>
+		</if>
+		<step id="Step" description="XZ" level="-1">
+			<action>
+				@x2.p @= @y.p; 
+			</action>
+		</step>
+		<if
+			id               = "If"
+			description      = "Нету левого поддерева у У"
+			test             = "@y.p == null"
+			level="-1"
+		>
+		<then>
+			<step id="StepInIf" description="XZ" level="-1">
+				<action>
+					@root @= @x2;
+				</action>
+			</step>
+		</then>
+		<else>
+			<if
+				id               = "If"
+				description      = "Проверяем"
+				test             = "y == y.p.left"
+				level="-1"
+			>
+			<then>
+				<step id="StepInIf" description="XZ" level="-1">
+					<action>
+						@y.p.left @= @x2;
+					</action>
+				</step>
+			</then>
+			<else>
+				<step id="StepInIf" description="XZ" level="-1">
+					<action>
+						@y.p.reght @= @x2;
+					</action>
+				</step>
+			</else>
+			</if>
+		</else>
+		</if>
+		<if
+			id               = "If"
+			description      = "Нету левого поддерева у У"
+			test             = "@y != @z"
+			level="-1"
+		>
+		<then>
+			<step id="StepInIf" description="XZ" level="-1">
+				<action>
+					@z.key @= @y.key;
+				</action>
+			</step>
+		</then>
+		</if>
+		<if
+			id               = "If"
+			description      = "Нарушали ли красно-черные свойства"
+			test             = "!y.color"
+			level="-1"
+		>
+		<then>
+			<step id="StepInIf" description="Надо чтоб правильно работало" level="-1">
+				<action>
+					@z @= @x2;
+				</action>
+			</step>
+			<call-auto id="RBDeleteFixup"/>
+		</then>
+		</if>
+	</auto>
+	<auto id="RBDeleteFixup" description="Восстановление красно-черных свойств после удаления">
+		<variable
+			description = "Вспомогательная вершина"
+			name        = "w"
+			type        = "Point"
+		/>
+		<step id="StepInIf" description="XZ" level="-1">
+			<action>
+				@x @= @z;
+			</action>
+		</step>
+		<while
+            id="Loop1"
+            description="Главный цикл"
+            test="(@x != @root) &amp;&amp; (!@x.color)"
+            level="-1"
+        >
+		<if
+			id               = "If"
+			description      = "Является ли х левым сыном"
+			test             = "@x == @x.p.left"
+			level="-1"
+		>
+		<then>
+			<step id="StepInIf" description="XZ" level="-1">
+				<action>
+					@w @= @x.p.right;
+				</action>
+			</step>
+			<if
+				id               = "If"
+				description      = "Случай 1"
+				test             = "w.color"
+				level="-1"
+			>
+			<then>
+				<step id="StepInIf" description="XZ" level="-1">
+					<action>
+						@w.color @= false;
+						@x.p.color @= true;
+						@z @= @x.p;
+					</action>
+				</step>
+				<call-auto id="LeftRotate"/>
+				<step id="StepInIf" description="XZ" level="-1">
+					<action>
+						@w @= @x.p.right;
+					</action>
+				</step>
+			</then>
+			</if>
+			<if
+				id               = "If"
+				description      = "Случай 2"
+				test             = "(!@w.left.color) &amp;&amp; (!@w.right.color)"
+				level="-1"
+			>
+			<then>
+				<step id="StepInIf" description="XZ" level="-1">
+					<action>
+						@w.color @= true;
+						@x @= @x.p;
+					</action>
+				</step>
+			</then>
+			<else>
+				<if
+					id               = "If"
+					description      = "Случай 3"
+					test             = "!@w.right.color"
+					level="-1"
+				>
+				<then>
+					<step id="StepInIf" description="XZ" level="-1">
+						<action>
+							@w.left.color @= false;
+							@w.color @= true;
+							@z = @w;
+						</action>
+					</step>
+					<call-auto id="RightRotate"/>
+					<step id="StepInIf" description="XZ" level="-1">
+						<action>
+							@w @= @x.p.right;
+						</action>
+					</step>
+				</then>
+				</if>
+				<!---случай 4-->
+				<step id="StepInIf" description="XZ" level="-1">
+					<action>
+						@w.color @= @x.p.color;
+						@x.p.color @= false;
+						@w.right.color @= false;
+						@z @= @x.p;
+					</action>
+				</step>
+				<call-auto id="LeftRotate"/>
+				<step id="StepInIf" description="XZ" level="-1">
+					<action>
+						@x @= @root;
+					</action>
+				</step>
+			</else>
+			</if>
+		</then>
+		<else>
+			<step id="StepInIf" description="XZ" level="-1">
+				<action>
+					@w @= @x.p.left;
+				</action>
+			</step>
+			<if
+				id               = "If"
+				description      = "Случай 1"
+				test             = "w.color"
+				level="-1"
+			>
+			<then>
+				<step id="StepInIf" description="XZ" level="-1">
+					<action>
+						@w.color @= false;
+						@x.p.color @= true;
+						@z @= @x.p;
+					</action>
+				</step>
+				<call-auto id="LeftRotate"/>
+				<step id="StepInIf" description="XZ" level="-1">
+					<action>
+						@w @= @x.p.left;
+					</action>
+				</step>
+			</then>
+			</if>
+			<if
+				id               = "If"
+				description      = "Случай 2"
+				test             = "(!@w.left.color) &amp;&amp; (!@w.right.color)"
+				level="-1"
+			>
+			<then>
+				<step id="StepInIf" description="XZ" level="-1">
+					<action>
+						@w.color @= true;
+						@x @= @x.p;
+					</action>
+				</step>
+			</then>
+			<else>
+				<if
+					id               = "If"
+					description      = "Случай 3"
+					test             = "!@w.left.color"
+					level="-1"
+				>
+				<then>
+					<step id="StepInIf" description="XZ" level="-1">
+						<action>
+							@w.right.color @= false;
+							@w.color @= true;
+							@z @= @w;
+						</action>
+					</step>
+					<call-auto id="RightRotate"/>
+					<step id="StepInIf" description="XZ" level="-1">
+						<action>
+							@w @= @x.p.left;
+						</action>
+					</step>
+				</then>
+				</if>
+				<!---случай 4-->
+				<step id="StepInIf" description="XZ" level="-1">
+					<action>
+						@w.color @= @x.p.color;
+						@x.p.color @= false;
+						@w.left.color @= false;
+						@z @= @x.p;
+					</action>
+				</step>
+				<call-auto id="LeftRotate"/>
+				<step id="StepInIf" description="XZ" level="-1">
+					<action>
+						@x @= @root;
+					</action>
+				</step>
+			</else>
+			</if>
+		</else>
+		</if>
+		</while>
+		<step id="StepInIf" description="XZ" level="-1">
+			<action>
+				@x.color @= false;
+			</action>
+		</step>
+	</auto>
+</algorithm>

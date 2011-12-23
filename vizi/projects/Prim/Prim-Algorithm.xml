@@ -1,0 +1,503 @@
+<?xml version="1.0" encoding="WINDOWS-1251"?>
+
+<algorithm>
+
+	<variable
+		description="Матрица смежностей"
+		name="a"
+		type="int[][]"
+		value="new int[21][21]"  
+	/>
+
+	<variable
+		description="Массив ключей вершин"
+		name="key"
+		type="int[]"
+		value="new int[21]"  
+	/>
+
+	<variable
+		description="Массив меток вершин"
+		name="q"
+		type="boolean[]"
+		value="new boolean[21]"  
+	/>
+
+	<variable
+		description="Массив меток вершин при проверке графа"
+		name="w"
+		type="boolean[]"
+		value="new boolean[21]"  
+	/>
+
+	<variable
+		description="Массив родителей вершин"
+		name="p"
+		type="int[]"
+		value="new int[21]"  
+	/>
+
+	<variable
+		description="Стек"
+		name="st"
+		type="int[]"
+		value="new int[21]"  
+	/>
+
+	<variable
+		description="Количество вершин в черном ящике"
+		name="m"
+		type="int"
+		value="0"
+	/>
+
+	<variable
+		description="Количество вершин"
+		name="countVertex"
+		type="int"
+		value="0"
+	/>
+
+	<variable
+		description="Минимальная вершина"
+		name="min"
+		type="int"
+		value="0"
+	/>
+
+	<variable
+		description="Идентификатор шага алгоритма"
+		name="step"
+		type="int"
+		value="0"
+	/>
+
+	<variable
+		description="Переменная цикла"
+		name="i"
+		type="int"
+		value="0"
+	/>
+
+	<variable
+		description="Переменная цикла"
+		name="j"
+		type="int"
+		value="0"
+	/>
+
+	<variable
+		description="Размер стека"
+		name="nstack"
+		type="int"
+		value="0"
+	/>
+
+	<variable
+		description="Комментарии"
+		name="comment"
+		type="String"
+		value="new String()"
+	/>
+
+	<variable
+		description="Экземпляр визуализатора"
+		name="visualizer"
+		type="PrimVisualizer"
+		value="null"    
+	/>
+
+	<data>
+		<toString>
+			return("");
+		</toString>
+	</data>
+
+	<auto
+		id="Main"
+		description="Главный автомат"
+	>
+		<start
+			comment-ru="На экране изображен граф, в котором требуется найти дерево минимального веса"
+			comment-en="There is a graph on the screen, minimal spanning tree is needed to find in"
+		>
+		</start>
+
+		<call-auto
+			id="CheckGraph"
+			level="-1"
+		/>	
+
+		<if
+			id="connectednessCheck"
+			description="Провека графа на связность"
+			test="@m == @countVertex"
+			level="0"
+			true-comment-en="Graph is connected, so minimal spanning tree exists"
+			true-comment-ru="Граф связный, значит минимальное остовное дерево существует"
+			false-comment-en="Graph is disconnected, so minimal spanning tree doesn`t exist"
+			false-comment-ru="Граф несвязный, значит минимальное остовное дерево не существует"
+		>
+			<then>
+				<call-auto
+					id="PrimAlgorithm"
+					level="0"
+				/>	
+
+				<step
+					id="MarkStep5"
+					description="Пометка шага 5"
+					level="-1"
+					comment-en="Mark Step 5"
+					comment-ru="Пометка шага 5"
+				>
+					<action>
+						@step @= 5;
+					</action>   
+				</step>
+			</then>
+		</if>
+
+		<finish
+			comment-en="Algorithm finished"
+			comment-ru="Алгоритм завершен"
+		>
+			<draw>
+				@visualizer.updateView();
+			</draw>
+		</finish>
+	</auto>  
+
+	<auto
+		id="PrimAlgorithm"
+		description="Алгоритм Прима"
+	>
+		<step
+			id="InitLoop1"
+			description="Инициализация цикла 1"
+			level="-1"
+			comment-en="Init Loop 1"
+			comment-ru="Инициализация цикла 1"
+		>
+			<action>
+				@m @= @countVertex;
+				@i @= 1;
+				@min @= 0;
+			</action>   
+		</step>
+
+		<while
+			id="Loop1"
+			description="Цикл 1"
+			test="(@i &lt;= @countVertex)"
+			level="-1"
+		>
+			<step
+				id="StepLoop1"
+				description="Шаг цикла 1"
+				level="-1"
+				comment-en="Step Loop 1"
+				comment-ru="Шаг цикла 1"
+			>
+				<action>
+					@q[@i] @= true;
+					@key[@i] @= 1000000;
+					@i @= @i + 1;	
+				</action>
+			</step>	
+		</while>
+
+		<step
+			id="InitKeys"
+			description="Инициализация ключей вершин"
+			level="0"
+			comment-en="Init keys of vertex"
+			comment-ru="Иницализация ключей вершин"
+		>
+			<draw>
+				@visualizer.updateView();	
+			</draw>   
+			<action>
+				@key[1] @= 0;	
+			</action>
+		</step>
+
+		<while
+			id="MainLoop"
+			description="Главный цикл"
+			test="@m &gt; 0"
+			level="-1"
+		>
+			<call-auto
+				id="extractMinimum"
+				level="-1"
+			/>	
+
+			<step
+				id="ExtractMin"
+				description="Извлечение из черного ящика минимальной вершины"
+				level="0"
+				comment-en="We extract from a black box of vertex {0} with minimal key and add it in a tree"
+				comment-ru="Извлекаем из черного ящика вершину {0} с минимальным ключом и добавляем ее в дерево"
+				comment-args="new Integer(@min)"
+			>
+				<draw>
+					@visualizer.updateView();	
+				</draw>	
+				<action>
+					@step @= 1;
+					@nstack @= 0;
+				</action>	
+			</step>
+
+			<call-auto
+				id="updateKeys"
+				level="-1"
+			/>	
+
+			<if
+				id="EndCondition"
+				description="Проверка конца алгоритма"
+				level="-1"
+				test="@m &gt; 1"
+			>
+				<then>
+					<step
+						id="UpdateKeysOfVertex"
+						description="Обновление ключей вершин"
+						level="0"
+						comment-en="Update keys of vertexes: {0}"
+						comment-ru="Обновление ключей вершин: {0}"
+						comment-args="@comment"
+					>
+						<draw>
+							@visualizer.updateView();	
+						</draw>	
+						<action>
+						</action>	
+					</step>
+				</then>
+			</if>
+			<step
+				id="Decrement"
+				description="Декремент"
+				level="-1"
+				comment-en="Decrement of main loop"
+				comment-ru="Декремент главного цикла"
+			>
+				<action>
+					@m @= @m - 1;
+					@step @= 2;
+				</action>	
+			</step>
+		</while>
+	</auto>
+
+	<auto
+		id="extractMinimum"
+		description="Автомат извлечения из черного ящика вершины с минимальным ключом"
+	>	
+		<step
+			id="InitLoop2"
+			description="Инициализация цикла 2"
+			level="-1"
+			comment-en="Init loop 2"
+			comment-ru="Инициализация цикла 2"
+		>
+			<action>
+				@min @= 0;
+				@i @= 1;	
+			</action>	
+		</step>
+
+		<while
+			id="Loop2"
+			description="Цикл2"
+			test="(@i &lt;= @countVertex)"
+			level="-1"
+		>
+			<step
+				id="StepLoop2"
+				description="шаг цикла 2"
+				level="-1"
+				comment-en="Step Loop 2"
+				comment-ru="Шаг цикла 2"
+			>
+				<action>
+					if ((@q[@i]) &amp; ((@min == 0) || (@key[@min] &gt; @key[@i]))) {
+					@min @= @i;
+					}
+					@i @= @i + 1;
+				</action>
+			</step>
+		</while>	
+
+		<step
+			id="MarkMinimalVertex"
+			description="Помечаем минимальную вершину"
+			level="-1"
+			comment-en="Mark minimal vertex"
+			comment-ru="Помечаем минимальную вершину"
+		>
+			<action>
+				@q[@min] @= false;
+			</action>	
+		</step>
+	</auto>
+
+	<auto
+		id="updateKeys"
+		description="Автомат обновления ключей вершин"
+	>
+		<step
+			id="InitLoop3"
+			description="Инициализация цикла 3"
+			level="-1"
+			comment-en="Init loop 3"
+			comment-ru="Инициализация цикла 3"
+		>
+			<action>
+				@i @= 1;	
+			</action>	
+		</step>
+
+		<while
+			id="Loop3"
+			description="Цикл3"
+			test="(@i &lt;= @countVertex)"
+			level="-1"
+		>
+			<step
+				id="StepLoop3"
+				description="шаг цикла 3"
+				level="-1"
+				comment-en="Step Loop 3"
+				comment-ru="Шаг цикла 3"
+			>
+				<action>
+					if ((@q[@i]) &amp; (0 &lt; @a[@min][@i]) &amp; (@a[@min][@i] &lt; @key[@i])) {
+						@p[@i] @= @min;
+						@key[@i] @= @a[@min][@i];
+						@nstack @= @nstack + 1;
+						@st[@nstack] @= @i;
+					}
+					@i @= @i + 1;
+				</action>
+			</step>
+		</while>
+
+		<step
+			id="InitLoop6"
+			description="Инициализация цикла 6"
+			level="-1"
+			comment-en="Init loop 6"
+			comment-ru="Инициализация цикла 6"
+		>
+			<action>
+				@i @= 1;
+				@comment @= "";	
+			</action>	
+		</step>
+
+		<while
+			id="Loop6"
+			description="Цикл6"
+			test="(@i &lt;= @nstack)"
+			level="-1"
+		>
+			<step
+				id="StepLoop6"
+				description="шаг цикла 6"
+				level="-1"
+				comment-en="Step Loop 6"
+				comment-ru="Шаг цикла 6"
+			>
+				<action>
+				        if (@i &gt; 1) {
+						@comment @= @comment + ", ";
+					}
+					@comment @= @comment + Integer.toString(@st[@i]);
+					@i @= @i + 1;
+				</action>
+			</step>
+		</while>
+	</auto>
+
+	<auto
+		id="CheckGraph"
+		description="Проверка графа"
+	>
+		<step
+			id="InitLoop4"
+			description="Инициализация цикла 4"
+			level="-1"
+			comment-en="Init Loop 4"
+			comment-ru="Инициализация цикла 4"
+		>
+			<action>
+				@w[1] @= true;
+				@st[1] @= 1;
+				@nstack @= 1;
+				@m = 1;
+			</action>   
+		</step>
+
+		<while
+			id="Loop4"
+			description="Цикл 4"
+			test="(@nstack &gt; 0)"
+			level="-1"
+		>
+			<step
+				id="StepLoop4"
+				description="Шаг цикла 4"
+				level="-1"
+				comment-en="Step loop 4"
+				comment-ru="Шаг цикла 4"
+			>
+				<action>
+					@i @= @st[@nstack];
+					@nstack = @nstack - 1;
+				</action>
+			</step>	
+
+			<step
+				id="InitLoop5"
+				description="Инициализация цикла 5"
+				level="-1"
+				comment-en="Init Loop 5"
+				comment-ru="Инициализация цикла 5"
+			>
+				<action>
+					@j @= 1;
+				</action>   
+			</step>
+
+			<while
+				id="Loop5"
+				description="Цикл 5"
+				test="(@j &lt;= @countVertex)"
+				level="-1"
+			>
+				<step
+					id="StepLoop5"
+					description="Шаг цикла 5"
+					level="-1"
+					comment-en="Step loop 5"
+					comment-ru="Шаг цикла 5"
+				>
+					<action>
+						if (!(@w[@j]) &amp; (@a[@i][@j] &gt; 0)) {
+							@w[@j] @= true;
+							@nstack @= @nstack + 1;
+							@st[@nstack] @= @j;
+							@m @= @m + 1;
+						}
+						@j @= @j + 1;	
+					</action>
+				</step>	
+			</while>
+		</while>
+	</auto>
+
+</algorithm>

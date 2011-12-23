@@ -1,0 +1,1583 @@
+<?xml version="1.0" encoding="WINDOWS-1251"?>
+
+<!--  
+        "LongInteger" algoritm description (example)
+        Version: $Id: GinInteger-Algorithm.xml,v 1.2 2004/03/18 11:37:15 geo Exp $
+-->
+
+<algorithm>
+    <variable 
+        description = "Экземпляр апплета"
+        name        = "visualizer"
+        type        = "LongIntegerVisualizer"
+        value       = "null"
+    />
+<!--    <variable
+        description = "Массив для числел"
+        name        = "mass"
+        type        = "int[][]"
+        value       = "new int[3][8]"
+    />
+    <variable
+        description = "Массив для длинн чисел"
+        name        = "l"
+        type        = "int[]"
+        value       = "new int[]{0, 0, 0, 0}"
+    />-->
+    <variable
+        description = "Массив для данных"
+        name        = "store"
+        type        = "int[][]"
+        value       = "new int[200][100]"
+    />
+    <variable
+        description = "Максимальная длинна"
+        name        = "maxL"
+        type        = "int"
+        value       = "0"
+    />
+    <variable
+        description = "Массив для длинн чисел"
+        name        = "storeL"
+        type        = "int[]"
+        value       = "new int[200]"
+    />
+    <variable 
+        description = "Переменная для пропуска коментариев"
+        name        = "commentLevel"
+        type        = "int"
+        value       = "10000"
+    />
+    <variable 
+        description = "Переменная цикла"
+        name        = "i"
+        type        = "int"
+        value       = "0"
+    />
+    <variable 
+        description = "Переменная цикла"
+        name        = "j"
+        type        = "int"
+        value       = "0"
+    />
+    <variable
+        description = "Временная"
+        name        = "t"
+        type        = "int"
+        value       = "0"
+    />
+    <variable
+        description = "Копирование из этой строчки"
+        name        = "indFrom"
+        type        = "int"
+        value       = "0"
+    />
+    <variable
+        description = "Копирование в эту строчку"
+        name        = "indTo"
+        type        = "int"
+        value       = "0"
+    />
+    <variable
+        description = "Копирование начиная с"
+        name        = "indFirst"
+        type        = "int"
+        value       = "0"
+    />
+    <variable
+        description = "Копирование длинною"
+        name        = "indLength"
+        type        = "int"
+        value       = "0"
+    />
+    <variable
+        description = "Номер текущей строчки хранения данных в рекурсии"
+        name        = "storeInd"
+        type        = "int"
+        value       = "0"
+    />
+    <variable 
+        description = "Русская Строка"
+        name        = "sRu"
+        type        = "String"
+        value       = "new String()"
+    />
+    <variable 
+        description = "English String"
+        name        = "sEn"
+        type        = "String"
+        value       = "new String()"
+    />
+    <variable 
+        description = "Значёк текущего действия"
+        name        = "smu"
+        type        = "String"
+        value       = "new String(new char[]{'+'})"
+    />
+    <variable 
+        description = "Какое число больше"
+        name        = "firstBig"
+        type        = "boolean"
+        value       = "true"
+    />
+    <variable 
+        description = "Переменная остатка"
+        name        = "ost"
+        type        = "int"
+        value       = "0"
+    />
+    <variable 
+        description = "Временная переменная остатка"
+        name        = "tempOst"
+        type        = "int"
+        value       = "0"
+    />
+    <variable
+        description = "Количество отрезаемых разрядов"
+        name        = "k"
+        type        = "int"
+        value       = "0"
+    />
+    <data>
+        <toString>
+            return "" + @storeInd;
+        </toString>
+    </data>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <auto id="Sum" description="Складывает">
+        <step
+            id="LoopInit"
+            description="Начало цикла"
+            level="-1"
+        >
+            <action>
+                @i @= 0;
+                @ost @= 0;
+                @smu @= "+";
+                @tempOst @= 0;
+            </action>
+        </step>
+
+        <while
+            id="Loop"
+            description="Цикл"
+            test="@i &lt; Math.max(@storeL[0], @storeL[1])"
+            level="-1"
+        >
+            <step
+                id="showItem"
+                description="Следующий шаг"
+                comment-ru="Берём очередные ({2}-ые с конца) цифры чисел: {0} и {1}"
+                comment-en="Take next digits in the integers: {0} and {1}"
+                comment-args="new Integer(@store[0][@i]), new Integer(@store[1][@i]), new Integer(@i + 1)"
+                level="1"
+            >
+                <draw>
+                    @visualizer.showIntegers(@i, @i, -1, 1, 1, 0);
+                    @visualizer.showTemp(0, 0);
+                </draw>
+                <action>
+                    @tempOst @= -10000;
+                </action>
+            </step>
+
+            <step
+                id="sumShow"
+                description="Складываем разряды"
+                comment-ru="Складываем: {0} + {1} = {2}. К результату прибавляем остаток k. Итого: t = {3}"
+                comment-en="Sum up: {0} + {1} = {2}. Add remainder k. Result: t = {3}"
+                comment-args="new Integer(@store[0][@i]), new Integer(@store[1][@i]), new Integer(@store[0][@i] + @store[1][@i]), new Integer(@tempOst)"
+            >
+                <draw>
+                    @visualizer.showIntegers(@i, @i, @i, 1, 1, 0);
+                    @visualizer.showTemp(2, 1);
+                </draw>
+                <action>
+                    @tempOst @= @store[0][@i] + @store[1][@i] + @ost;
+                </action>
+            </step>
+
+            <step
+                id="sumWrite"
+                description="Записываем: t mod 10"
+                comment-ru="Записываем: t mod 10 = {0}"
+                comment-en="Write: t mod 10 = {0}"
+                comment-args="new Integer(@tempOst % 10)"
+            >
+                <draw>
+                    @visualizer.showIntegers(@i, @i, @i, 3, 3, 2);
+                    @visualizer.showTemp(1, 0);
+                </draw>
+                <action>
+                    @store[2][@i] @= @tempOst % 10;
+                    @ost @= -10000;
+                </action>
+            </step>
+
+            <step
+                id="remainderSumWrite"
+                description="Записываем: k div 10"
+                comment-ru="Остаток: k = t div 10 = {0}"
+                comment-en="Remainder: k = t div 10 = {0}"
+                comment-args="new Integer(@tempOst / 10)"
+            >
+                <draw>
+                    @visualizer.showIntegers(@i, @i, @i, 3, 3, 0);
+                    @visualizer.showTemp(1, 2);
+                </draw>
+                <action>
+                    @ost @= @tempOst / 10;
+                </action>
+            </step>
+
+            <step
+                    id="inc"
+                    description="Инкремент"
+                    level="-1"
+            >
+                    <action>
+                        @i @= @i + 1;
+                    </action>
+             </step>
+        </while>
+
+        <if 
+            id="testOverF"
+            description="Если остаток не равен 0"
+            test="@ost != 0"
+            level="-1"
+        >
+            <then>
+                <step
+                    id="showOverF"
+                    description="Результат: переполнение"
+                    comment-ru="ПЕРЕПОЛНЕНИЕ!  (Остаток не равен 0)"
+                    comment-en="repletion (remainder not 0)"
+                >
+                    <draw>
+                        @visualizer.showIntegers(@i, @i, @i, 0, 0, 0);
+                        @visualizer.showTemp(0, 2);
+                    </draw>
+                    <action>
+                        @sRu @= @sRu + " (переполнение)";
+                        @sEn @= @sEn + " (repletion)";
+                    </action>
+                </step>
+            </then>
+        </if>
+
+    </auto>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <auto id="Mines" description="Вычитает">
+        <step
+            id="LoopInit"
+            description="Начало цикла"
+            level="-1"
+        >
+            <action>
+                @i @= 0;
+                @smu @= "-";
+                @ost @= 0;
+                @tempOst @= 0;
+            </action>
+        </step>
+
+        <while
+            id="Loop"
+            description="Цикл"
+            test="@i &lt; @maxL"
+            level="-1"
+        >
+            <step
+                id="showItem"
+                description="Следующий шаг"
+                comment-ru="Берём очередные ({2}-ые с конца) цифры чисел: {0} и {1}"
+                comment-en="Take next digits of integers: {0} and {1}"
+                comment-args="new Integer(@store[0][@i]), new Integer(@store[1][@i]), new Integer(@i + 1)"
+                level="1"
+            >
+            <draw>
+                @visualizer.showIntegers(@i, @i, -1, 1, 1, 0);
+                @visualizer.showTemp(0, 0);
+            </draw>
+            <action>
+                    @tempOst @= -10000;
+            </action>
+            </step>
+
+            <step
+                id="mines"
+                description="Вычитание разрядов"
+                comment-ru="Вычитаем: {0} - {1} = {2}. Прибавляем к результату остаток k. Итого: t = {3}"
+                comment-en="Subtraction: {0} - {1} = {2}. Add to remainder k. Result: t = {3}"
+                comment-args="new Integer(@store[0][@i]), new Integer(@store[1][@i]), new Integer(@store[0][@i] - @store[1][@i]), new Integer(@tempOst)"
+            >
+            <draw>
+                @visualizer.showIntegers(@i, @i, @i, 1, 1, 0);
+                @visualizer.showTemp(2, 1);
+            </draw>
+            <action>
+                @tempOst @= @store[0][@i] - @store[1][@i] + @ost;
+            </action>
+            </step>
+
+            <step
+                id="minesWrite"
+                description="Записываем: t mod 10"
+                comment-ru="Записываем: t mod 10 = {0}"
+                comment-en="Write: t mod 10 = {0}"
+                comment-args="new Integer(@store[2][@i])"
+            >
+                <draw>
+                    @visualizer.showIntegers(@i, @i, @i, 3, 3, 2);
+                    @visualizer.showTemp(1, 0);
+                </draw>
+                <action>
+                    @store[2][@i] @= (@tempOst + 1000) % 10;
+                    @ost @= -10000;
+                </action>
+            </step>
+
+            <step
+                id="remainderMinesWrite"
+                description="Записываем: t / 10"
+                comment-ru="Остаток: k = [t / 10] = {0}"
+                comment-en="Remainder: k = [t / 10] = {0}"
+                comment-args="new Integer(@ost)"
+            >
+                <draw>
+                    @visualizer.showIntegers(@i, @i, @i, 3, 3, 0);
+                    @visualizer.showTemp(1, 2);
+                </draw>
+                <action>
+                    @ost @= (int)Math.floor(@tempOst / 10.);
+                </action>
+            </step>
+
+            <step
+                id="inc"
+                description="Инкремент"
+                level="-1"
+            >
+                <action>
+                    @i @= @i + 1;
+                </action>
+             </step>
+        </while>
+
+    </auto>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <auto id="power" description="Умножает">
+        <step
+            id="LoopInit"
+            description="Начало цикла"
+            level="-1"
+        >
+            <action>
+                @j @= 0;
+                @smu @= "*";
+            </action>
+        </step>
+
+        <while
+            id="Loop"
+            description="Цикл"
+            test="@j &lt; @storeL[1]"
+            level="-1"
+        >
+            <step
+                id="LoopInit2"
+                description="Начало цикла"
+                level="-1"
+            >
+                <action>
+                    @i @= 0;
+                </action>
+            </step>
+
+            <step
+                id="show3"
+                description="Шаг по второму числу"
+                comment-ru="Берём следующую ({0}-ую) цифру второго числа"
+                comment-en="Take next digit of second integer" 
+                comment-args="new Integer(@j + 1)"
+                level="1"
+            >
+                <draw>
+                    @visualizer.showIntegers(-1, @j, -1, 0, 1, 0);
+                    @visualizer.showTemp(0, 0);
+                </draw>
+                <action>
+                    @tempOst @= -10000;
+                    @ost @= 0;
+                </action>
+            </step>
+
+            <while
+                id="Loop"
+                description="Цикл"
+                test="@i &lt; @storeL[0]"
+                level="-1"
+            >
+                <step
+                    id="show2"
+                    description="Шаг по первому числу"
+                    comment-ru="Берём следующую ({0}-ую) цифру первого числа"
+                    comment-en="Take next digit of first integer"
+                    comment-args="new Integer(@i + 1)"
+                >
+                    <draw>
+                        @visualizer.showIntegers(@i, @j, -1, 1, 1, 0);
+                        @visualizer.showTemp(0, 0);
+                    </draw>
+                    <action>
+                        @tempOst @= -10000;
+                    </action>
+                </step>
+
+                <step
+                    id="poow"
+                    description="Умножение разрядов"
+                    comment-ru="Умножаем: {0} * {1} = {2}. К полученному значению прибавляем {3}-ую с конца цифру ответа, а так же прибавляем остаток k. Итого: t = {4}"
+                    comment-en="Multiply: {0} * {1} = {2}. Add {3}'s digit from end of result and remainder k. Result t = {4}"
+                    comment-args="new Integer(@store[0][@i]), new Integer(@store[1][@j]), new Integer(@store[0][@i] * @store[1][@j]), new Integer(@i + @j + 1), new Integer(@tempOst)"
+                >
+                    <draw>
+                        @visualizer.showIntegers(@i, @j, @i + @j, 1, 1, 1);
+                        @visualizer.showTemp(2, 1);
+                    </draw>
+                    <action>
+                        @tempOst @= @store[0][@i] * @store[1][@j] + @store[2][@i + @j] + @ost;
+                    </action>
+                </step>
+
+                <step
+                    id="poowWrite"
+                    description="Записываем: t mod 10"
+                    comment-ru="Записываем: t mod 10 = {0}"
+                    comment-en="Write: t mod 10 = {0}"
+                    comment-args="new Integer(@store[2][@i + @j])"
+                >
+                    <draw>
+                        @visualizer.showIntegers(@i, @j, @i + @j, 3, 3, 2);
+                        @visualizer.showTemp(1, 0);
+                    </draw>
+                    <action>
+                        @store[2][@i + @j] @= @tempOst % 10;
+                        @ost @= -10000;
+                    </action>
+                </step>
+
+                <step
+                    id="poowRemainderWrite"
+                    description="Записываем: t div 10"
+                    comment-ru="Остаток: k = t div 10 = {0}"
+                    comment-en="Remainder: k = t div 10 = {0}"
+                    comment-args="new Integer(@ost)"
+                >
+                    <draw>
+                        @visualizer.showIntegers(@i, @j, @i + @j, 3, 3, 0);
+                        @visualizer.showTemp(1, 2);
+                    </draw>
+                    <action>
+                        @ost @= @tempOst / 10;
+                    </action>
+                </step>
+
+                <step
+                    id="inc"
+                    description="Инкремент"
+                    level="-1"
+                >
+                    <action>
+                        @i @= @i + 1;
+                    </action>
+                 </step>
+            </while>
+
+            <if 
+                id="testpowerRemainder"
+                description="Если остаток не равен нулю"
+                test="@ost &gt; 0"
+                level="-1"
+            >
+                <then>
+                    <step
+                        id="writeRemainderpower"
+                        description="Записываем в следующий разряд"
+                        comment-ru="Первое число закончилось, но остаток не равен нулю, поэтому записываем его"
+                        comment-en="First integer is at end, but remainder not 0, therefore write it"
+                    > 
+                        <draw>
+                            @visualizer.showIntegers(@i, @j, @i + @j + 1, 3, 3, 2);
+                            @visualizer.showTemp(0, 1);
+                        </draw>
+                        <action>
+                            @tempOst @= -10000;
+                            @i @= @i - 1;
+                            @store[2][@i + @j + 1] @= @ost;
+                        </action>
+                    </step>
+                </then>
+            </if>
+
+            <step
+                id="inc"
+                description="Инкремент"
+                level="-1"
+            >
+                <action>
+                    @j @= @j + 1;
+                </action>
+             </step>
+        </while>
+
+    </auto>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <auto id="testFirstBig" description="Проверяет какое число по модулю больше">
+        <step
+            id="LoopInit3"
+            description="Начало цикла"
+            level="-1"
+        >
+            <action>
+                @i @= @store[0].length / 2 - 1;
+                @firstBig @= true;
+            </action>
+        </step>
+
+        <while
+            id="Loop"
+            description="Цикл"
+            test="@i &gt;= 0"
+            level="-1"
+        >
+
+            <if
+                id="ifNot"
+                description="Если вторая цифра больше"
+                test="@store[0][@i] &lt; @store[1][@i]"
+                level="-1"
+            >
+            <then>
+                <step
+                    id="exit1"
+                    description="Второе число больше"
+                    level="-1"
+                >
+                <action>
+                    @firstBig @= false; 
+                    @i @= -1;
+                </action>
+                </step>
+            </then>
+            <else>
+                <if
+                    id="ifYes"
+                    description="Если первая цифра больше"
+                    test="@store[0][@i] &gt; @store[1][@i]"
+                    level="-1"
+                >
+                <then>
+                    <step
+                        id="exit2"
+                        description="Первое число больше"
+                        level="-1"
+                    >
+                    <action>
+                        @i @= -1;
+                    </action>
+                    </step>
+                </then>
+                </if>
+            </else>
+            </if>
+
+            <step
+                id="inc"
+                description="Инкремент"
+                level="-1"
+            >
+                <action>
+                    @i @= @i - 1;
+                </action>
+             </step>
+
+        </while>
+    </auto>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <auto id="Replace" description="Меняет числа местами">
+        <step id="LoopInit" description="Начало цикла" level="-1"><action>
+                @i @= 0;
+        </action></step>
+
+        <while id="Loop" description="Цикл" test="@i &lt; @store[0].length" level="-1">
+            <step id="inc" description="Инкремент" level="-1"><action>
+                    @t @= @store[0][@i];
+                    @store[0][@i] @= @store[1][@i];
+                    @store[1][@i] @= @t;
+                    @i @= @i + 1;
+             </action></step>
+        </while>
+    </auto>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <auto id="SuperClear" description="Очищает содержимое (storeInd + 10)..(storeInd + 15)">
+        <step id="SCEnter" description="Начало цикла" level="-1"><action>
+            @indTo @= @storeInd + 10;
+            @i @= @indTo;
+        </action></step>
+
+        <while id="WhileSuperClear" description="цикл" test="@i &lt; (@storeInd + 16)" level="-1">
+            <call-auto id="Clear"/>
+            <step id="stepSuperClearInWhile" description="Шаг цикла" level="-1"><action>
+                @storeL[@i] @= 1;
+                @i @= @i + 1;
+                @indTo @= @i;
+            </action></step>
+        </while>
+    </auto>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <auto id="Clear" description="Очищает содержимое indTo">
+        <step id="startClear" description="Начало цикла" level="-1"><action>
+            @t @= 0;
+            @storeL[@indTo] @= 0;
+        </action></step>
+
+        <while id="WhileClear" description="Цикл" test="@t &lt; @store[@indFrom].length" level="-1">
+            <step id="stepClearInWhile" description="Шаг цикла" level="-1"><action> @store[@indTo][@t] @= 0; @t += 1;</action></step>
+        </while>
+    </auto>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <auto id="Copy" description="Копирует число из indFrom в indTo">
+        <call-auto id="Clear"/>
+
+        <step id="startCopy" description="Начало цикла" level="-1"><action>
+            @i @= 0;
+            @storeL[@indTo] @= @indLength;
+        </action></step>
+
+        <while id="WhileCopy" description="Цикл" test="@i &lt; @indLength" level="-1">
+            <step id="stepCopyInWhile" description="Шаг цикла" level="-1"><action> @store[@indTo][@i] @= @store[@indFrom][@i + @indFirst]; @i += 1;</action></step>
+        </while>
+    </auto>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <auto id="FastSum" description="Быстро складывает и вычитает до ответа">
+        <variable description="Конечная длинна" name="leng" type="int"/>
+ 
+        <step id="fastSumEnter" description="Начало цикла" level="-1"><action>
+            @i @= 0;
+            @leng @= 1;
+            @indTo @= @storeInd + 2;
+        </action></step>
+
+        <call-auto id="Clear"/>
+
+        <while id="FastSumWhile" description="Цикл" test="@i &lt; @store[0].length" level="-1">
+            <if id="doSumIf1" description="Цифра1" test="(@i - 2 * @k) &gt;= 0" level="-1"><then><step id="doSumStep1" description="Прибавляем" level="-1"><action>
+                @store[@indTo][@i] @= @store[@indTo][@i] + @store[@storeInd + 3][@i - 2 * @k];
+            </action></step></then></if>
+
+            <if id="doSumIf2" description="Цифра2" test="(@i - @k) &gt;= 0" level="-1"><then><step id="doSumStep2" description="Прибавляем" level="-1"><action>
+                @store[@indTo][@i] @= @store[@indTo][@i] - @store[@storeInd + 3][@i - @k];
+            </action></step></then></if>
+
+            <if id="doSumIf3" description="Цифра3" test="(@i - @k) &gt;= 0" level="-1"><then><step id="doSumStep3" description="Прибавляем" level="-1"><action>
+                @store[@indTo][@i] @= @store[@indTo][@i] + @store[@storeInd + 6][@i - @k];
+            </action></step></then></if>
+
+            <if id="doSumIf4" description="Цифра4" test="(@i - @k) &gt;= 0" level="-1"><then><step id="doSumStep4" description="Прибавляем" level="-1"><action>
+                @store[@indTo][@i] @= @store[@indTo][@i] - @store[@storeInd + 7][@i - @k];
+            </action></step></then></if>
+
+            <step id="doSumStep5" description="Инкремент" level="-1"><action>
+                @store[@indTo][@i] @= @store[@indTo][@i] + @store[@storeInd + 7][@i];
+                @i @= @i + 1;
+            </action></step>
+
+            <if id="testL" description="Проверка длинны" test="@store[@indTo][@i - 1] != 0" level="-1"><then><step id="doL" description="Запись длинны" level="-1"><action>
+                @leng @= @i;
+            </action></step></then></if>
+
+            <while id="testMoreNine" description="Если больше 9" test="@store[@indTo][@i - 1] &gt; 9" level="-1"><step id="doMinesTen" description="Уменьшаем" level="-1"><action>
+                @store[@indTo][@i] @= @store[@indTo][@i] + 1;
+                @store[@indTo][@i - 1] @= @store[@indTo][@i - 1] - 10;
+            </action></step></while>
+            <while id="testLessNull" description="Если меньше 0" test="@store[@indTo][@i - 1] &lt; 0" level="-1"><step id="doPlusTen" description="Увеличиваем" level="-1"><action>
+                @store[@indTo][@i] @= @store[@indTo][@i] - 1;
+                @store[@indTo][@i - 1] @= @store[@indTo][@i - 1] + 10;
+            </action></step></while>
+       </while>
+
+        <step id="FastSumExit" description="Присвоение длинны" level="-1"><action>
+            @storeL[@indTo] @= @leng;
+        </action></step>
+    </auto>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <auto id="KarSum" description="Быстро складывает 2 числа">
+        <variable description="Длинна числа" name="leng" type="int"/>
+ 
+        <step id="karSumEnter" description="Начало цикла" level="-1"><action>
+            @i @= 0;
+            @leng @= 1;
+            @indTo @= @storeInd + 10;
+        </action></step>
+
+        <call-auto id="Clear"/>
+
+        <while id="karSumWhile" description="Цикл" test="@i &lt; @store[0].length" level="-1">
+
+            <step id="doSumStep" description="Шаг цикла" level="-1"><action>
+                @store[@indTo][@i] @= @store[@indTo][@i] + @store[@storeInd + 8][@i] + @store[@storeInd + 9][@i];
+                @i @= @i + 1;
+            </action></step>
+
+            <if id="testL" description="Проверка длинны" test="@store[@indTo][@i - 1] != 0" level="-1"><then><step id="doL" description="Запись длинны" level="-1"><action>
+                @leng @= @i;
+            </action></step></then></if>
+
+            <if id="testMoreNine" description="Если больше 9" test="@store[@indTo][@i - 1] &gt; 9" level="-1"><then><step id="doL" description="Уменьшаем" level="-1"><action>
+                @store[@indTo][@i] @= @store[@indTo][@i] + @store[@indTo][@i - 1] / 10;
+                @store[@indTo][@i - 1] @= @store[@indTo][@i - 1] % 10;
+            </action></step></then></if>
+       </while>
+
+        <step id="FastSumExit" description="Присвоение длинны" level="-1"><action>
+            @storeL[@indTo] @= @leng;
+        </action></step>
+    </auto>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <auto id="Karpower" description="Умножает Карацубой">
+        <call-auto id="SuperClear"/>
+
+        <step id="KarEnter" description="Начало умножения" level="-1">
+            <action>
+                @storeInd @= @storeInd + 8;
+                @k @= Math.max(@storeL[@storeInd] / 2, @storeL[@storeInd + 1] / 2);
+                @t @= Math.max(@storeL[@storeInd], @storeL[@storeInd + 1]);
+                @storeL[@storeInd] @= @t;
+                @storeL[@storeInd + 1] @= @t;
+            </action>
+        </step>
+
+        <step id="KarEnterShow" description="Визуализирование" comment-ru="Нужно умножить данные числа" comment-en="We mast multiply this integers">
+            <draw>
+                @visualizer.showTempPower(0);
+            </draw>
+            <action>
+            </action>
+        </step>
+
+    <if id="karLength" description="Если нельзя умножить быстро" test="@k != 0" level="-1"><then>
+        <step id="KarSplitShow" description="Визуализирование" comment-ru="Разбиваем каждое число и обозначаем части A{0}, B{0}, C{0}, D{0}. Длинну части B равную длинне части D обозначим за 'k' = {1}" comment-en="Devide this integers to parts, witch name will be A{0}, B{0}, C{0}, D{0}. k = length(B) = length(D)" comment-args="new Integer(@storeInd / 8), new Integer(@k)">
+            <draw>
+                @visualizer.showTempPower(1);
+            </draw>
+            <action>
+            </action>
+        </step>
+        
+<!-- A * C -->
+        <step id="ACShow" description="Визуализирование" comment-ru="Умножаем: A{0} * C{0}" comment-en="Multiply: A{0} * C{0}" comment-args="new Integer(@storeInd / 8)">
+            <draw>
+                @visualizer.showTempPower(2);
+            </draw>
+            <action>
+            </action>
+        </step>
+        
+        <step id="PrepareA" description="Готовим А" level="-1">
+            <action>
+                @indFrom @= @storeInd;
+                @indTo @= @storeInd + 8;
+                @k @= Math.max(@storeL[@storeInd] / 2, @storeL[@storeInd + 1] / 2);
+                @indFirst @= @k;
+                @indLength @= @storeL[@storeInd] - @k;
+            </action>
+        </step>
+        <call-auto id="Copy"/>
+
+        <step id="PrepareC" description="Готовим С" level="-1">
+            <action>
+                @indFrom @= @storeInd + 1;
+                @indTo @= @storeInd + 9;
+                @indFirst @= @k;
+                @indLength @= @storeL[@storeInd + 1] - @k;
+            </action>
+        </step>
+        <call-auto id="Copy"/>
+
+        <call-auto id="Karpower"/>
+
+        <step id="CopyResultAC" description="Получаем результат" level="-1">
+            <action>
+                @indFrom @= @storeInd + 10;
+                @indTo @= @storeInd + 3;
+                @indFirst @= 0;
+                @indLength @= @storeL[@storeInd + 10];
+            </action>
+        </step>
+        <call-auto id="Copy"/>
+
+        <step id="ResultAC" description="Визуализирование" comment-ru="В результате умножения A{0} * C{0} получили:" comment-en="At the result of multiply A{0} * B{0}" comment-args="new Integer(@storeInd / 8)">
+            <draw>
+                @visualizer.showTempPower(3);
+            </draw>
+            <action>
+            </action>
+        </step>
+<!-- A * C -->
+
+<!-- B * D -->
+        <step id="BDShow" description="Визуализирование" comment-ru="Умножаем: B{0} * D{0}" comment-en="Multiply: B{0} * D{0}" comment-args="new Integer(@storeInd / 8)">
+            <draw>
+                @visualizer.showTempPower(4);
+            </draw>
+            <action>
+            </action>
+        </step>
+        
+        <step id="PrepareB" description="Готовим В" level="-1">
+            <action>
+                @indFrom @= @storeInd;
+                @indTo @= @storeInd + 8;
+                @k @= Math.max(@storeL[@storeInd] / 2, @storeL[@storeInd + 1] / 2);
+                @indFirst @= 0;
+                @indLength @= @k;
+            </action>
+        </step>
+        <call-auto id="Copy"/>
+
+        <step id="PrepareD" description="Готовим D" level="-1">
+            <action>
+                @indFrom @= @storeInd + 1;
+                @indTo @= @storeInd + 9;
+                @indFirst @= 0;
+                @indLength @= @k;
+            </action>
+        </step>
+        <call-auto id="Copy"/>
+
+        <call-auto id="Karpower"/>
+
+        <step id="CopyResultBD" description="Получаем результат" level="-1">
+            <action>
+                @indFrom @= @storeInd + 10;
+                @indTo @= @storeInd + 7;
+                @indFirst @= 0;
+                @indLength @= @storeL[@storeInd + 10];
+            </action>
+        </step>
+        <call-auto id="Copy"/>
+
+        <step id="ResultBD" description="Визуализирование" comment-ru="В результате умножения B{0} * D{0} получили:" comment-en="At the result B{0} * C{0}" comment-args="new Integer(@storeInd / 8)">
+            <draw>
+                @visualizer.showTempPower(5);
+            </draw>
+            <action>
+            </action>
+        </step>
+<!-- B * D -->
+
+<!-- A + B -->
+        <step id="PrepareAp" description="Готовим А" level="-1">
+            <action>
+                @indFrom @= @storeInd;
+                @indTo @= @storeInd + 8;
+                @k @= Math.max(@storeL[@storeInd] / 2, @storeL[@storeInd + 1] / 2);
+                @indFirst @= @k;
+                @indLength @= @storeL[@storeInd] - @k;
+            </action>
+        </step>
+        <call-auto id="Copy"/>
+
+        <step id="PrepareBp" description="Готовим В" level="-1">
+            <action>
+                @indFrom @= @storeInd;
+                @indTo @= @storeInd + 9;
+                @indFirst @= 0;
+                @indLength @= @k;
+            </action>
+        </step>
+        <call-auto id="Copy"/>
+
+        <call-auto id="KarSum"/>
+
+        <step id="CopyResultAplusB" description="Получаем результат" level="-1">
+            <action>
+                @indFrom @= @storeInd + 10;
+                @indTo @= @storeInd + 4;
+                @indFirst @= 0;
+                @indLength @= @storeL[@storeInd + 10];
+            </action>
+        </step>
+        <call-auto id="Copy"/>
+<!-- A + B -->
+        
+<!-- C + D -->
+        <step id="PrepareCp" description="Готовим С" level="-1">
+            <action>
+                @indFrom @= @storeInd + 1;
+                @indTo @= @storeInd + 8;
+                @k @= Math.max(@storeL[@storeInd] / 2, @storeL[@storeInd + 1] / 2);
+                @indFirst @= @k;
+                @indLength @= @storeL[@storeInd + 1] - @k;
+            </action>
+        </step>
+        <call-auto id="Copy"/>
+
+        <step id="PrepareDp" description="Готовим D" level="-1">
+            <action>
+                @indFrom @= @storeInd + 1;
+                @indTo @= @storeInd + 9;
+                @indFirst @= 0;
+                @indLength @= @k;
+            </action>
+        </step>
+        <call-auto id="Copy"/>
+
+        <call-auto id="KarSum"/>
+
+        <step id="CopyResultCplusD" description="Получаем результат" level="-1">
+            <action>
+                @indFrom @= @storeInd + 10;
+                @indTo @= @storeInd + 5;
+                @indFirst @= 0;
+                @indLength @= @storeL[@storeInd + 10];
+            </action>
+        </step>
+        <call-auto id="Copy"/>
+<!-- C + D -->
+
+<!-- (A+B) * (C+D) -->
+        <step id="ApBCpDShow" description="Визуализирование" comment-ru="Умножаем: (A{0} + B{0}) * (C{0} + D{0})" comment-en="Multiply: (A{0} + B{0}) * (C{0} + D{0})" comment-args="new Integer(@storeInd / 8)">
+            <draw>
+                @visualizer.showTempPower(6);
+            </draw>
+            <action>
+            </action>
+        </step>
+        
+        <step id="PrepareApB" description="Готовим А + В" level="-1">
+            <action>
+                @indFrom @= @storeInd+ 4;
+                @indTo @= @storeInd + 8;
+                @indFirst @= 0;
+                @indLength @= @storeL[@storeInd + 4];
+            </action>
+        </step>
+        <call-auto id="Copy"/>
+
+        <step id="PrepareCpD" description="Готовим С + D" level="-1">
+            <action>
+                @indFrom @= @storeInd + 5;
+                @indTo @= @storeInd + 9;
+                @indFirst @= 0;
+                @indLength @= @storeL[@storeInd + 5];
+            </action>
+        </step>
+        <call-auto id="Copy"/>
+
+        <call-auto id="Karpower"/>
+
+        <step id="CopyResultApBCpD" description="Получаем результат" level="-1">
+            <action>
+                @indFrom @= @storeInd + 10;
+                @indTo @= @storeInd + 6;
+                @indFirst @= 0;
+                @indLength @= @storeL[@storeInd + 10];
+            </action>
+        </step>
+        <call-auto id="Copy"/>
+
+        <step id="ResultApBCpD" description="Визуализирование" comment-ru="В результате умножения (A{0} + B{0}) * (C{0} + D{0}) получили:" comment-en="At the result (A{0} + B{0}) * (C{0} + D{0})" comment-args="new Integer(@storeInd / 8)">
+            <draw>
+                @visualizer.showTempPower(7);
+            </draw>
+            <action>
+            </action>
+        </step>
+<!-- (A+B) * (C+D) -->
+
+        <step id="takeIntegerForSum" description="Визуализирование" comment-ru="Берём результаты трёх умножений A{0} * C{0}, (A{0} + B{0}) * (C{0} + D{0}), B{0} * D{0}" comment-en="Take the result of 3 multiplying:  A{0} * C{0}, (A{0} + B{0}) * (C{0} + D{0}), B{0} * D{0} " comment-args="new Integer(@storeInd / 8)">
+            <draw>
+                @visualizer.showTempPower(8);
+            </draw>
+            <action>
+                @k @= Math.max(@storeL[@storeInd] / 2, @storeL[@storeInd + 1] / 2);
+            </action>
+        </step>
+        <step id="ReSumShow" description="Визуализирование" comment-ru="Складываем числа, умноженные на 10 в соответствующей степени. За '0..0' в схеме обозначенно k (= {0}) нулей подряд" comment-en="Sum up this integer, multiplying to self power of 10. '0..0' is mean k (= {0}) nuls without a break" comment-args="new Integer(@k)">
+            <draw>
+                @visualizer.showSum(0);
+            </draw>
+            <action>
+                @k @= Math.max(@storeL[@storeInd] / 2, @storeL[@storeInd + 1] / 2);
+            </action>
+        </step>
+        
+        <step id="prepareFastSum" description="Готовимся складывать" level="-1">
+            <action>
+                @k @= Math.max(@storeL[@storeInd] / 2, @storeL[@storeInd + 1] / 2);
+            </action>
+        </step>
+        <call-auto id="FastSum"/>
+
+        <step id="SumShow" description="Визуализирование" comment-ru="Умножение {0}-ого уровня завершено" comment-en="Multiplying {0} is completed" comment-args="new Integer(@storeInd / 8)">
+            <draw>
+                @visualizer.showSum(1);
+            </draw>
+            <action>
+                @k @= Math.max(@storeL[@storeInd] / 2, @storeL[@storeInd + 1] / 2);
+            </action>
+        </step>
+    </then><else>
+ 
+        <step id="simplepower" description="Умножаем по простому" level="-1"><action>
+            @storeL[@storeInd + 2] @= 1;
+            @store[@storeInd + 2][0] @= @store[@storeInd][0] * @store[@storeInd + 1][0];
+        </action></step>
+
+        <if id="longpower" description="Если больше 9" test="@store[@storeInd + 2][0] &gt; 9" level="-1"><then><step id="antiLong" description="Уменьшаем" level="-1"><action>
+            @store[@storeInd + 2][1] @= @store[@storeInd + 2][0] / 10;
+            @store[@storeInd + 2][0] @= @store[@storeInd + 2][0] % 10;
+            @storeL[@storeInd + 2] @= 2;
+        </action></step></then></if>
+
+        <step id="showSimplepower" description="Визуализирование" comment-ru="Просто умножаем 2 цифры" comment-en="Simpel multiply of 2 digit" comment-args="new Integer(@storeInd / 8)">
+            <draw>
+                @visualizer.showSum(2);
+            </draw>
+            <action>
+            </action>
+        </step>
+
+    </else>
+    </if>
+         
+        <step id="KarExit" description="Завершение" level="-1">
+            <action>
+                @storeInd @= @storeInd - 8;
+            </action>
+        </step>
+    </auto>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <auto id="KarpowerMain" description="Умножает Карацубой">
+        <call-auto id="SuperClear"/>
+
+        <step id="KarEnter" description="Начало умножения" level="-1">
+            <action>
+                @storeInd @= @storeInd + 8;
+                @k @= Math.max(@storeL[@storeInd] / 2, @storeL[@storeInd + 1] / 2);
+                @t @= Math.max(@storeL[@storeInd], @storeL[@storeInd + 1]);
+                @storeL[@storeInd] @= @t;
+                @storeL[@storeInd + 1] @= @t;
+            </action>
+        </step>
+
+        <step id="KarEnterShow" description="Визуализирование" level="1" comment-ru="Нужно умножить данные числа" comment-en="We mast multiply this integers">
+            <draw>
+                @visualizer.showTempPower(0);
+            </draw>
+            <action>
+            </action>
+        </step>
+
+    <if id="karLength" description="Если нельзя умножить быстро" test="@k != 0" level="-1"><then>
+        <step id="KarSplitShow" description="Визуализирование" level="1" comment-ru="Разбиваем каждое число и обозначаем части A{0}, B{0}, C{0}, D{0}. Длинну части B равную длинне части D обозначим за 'k' = {1}" comment-en="Devide this integers to parts, witch name will be A{0}, B{0}, C{0}, D{0}. k = length(B) = length(D)" comment-args="new Integer(@storeInd / 8), new Integer(@k)">
+            <draw>
+                @visualizer.showTempPower(1);
+            </draw>
+            <action>
+            </action>
+        </step>
+        
+<!-- A * C -->
+        <step id="ACShow" description="Визуализирование" level="1" comment-ru="Умножаем: A{0} * C{0}" comment-en="Multiply: A{0} * C{0}" comment-args="new Integer(@storeInd / 8)">
+            <draw>
+                @visualizer.showTempPower(2);
+            </draw>
+            <action>
+            </action>
+        </step>
+        
+        <step id="PrepareA" description="Готовим А" level="-1">
+            <action>
+                @indFrom @= @storeInd;
+                @indTo @= @storeInd + 8;
+                @k @= Math.max(@storeL[@storeInd] / 2, @storeL[@storeInd + 1] / 2);
+                @indFirst @= @k;
+                @indLength @= @storeL[@storeInd] - @k;
+            </action>
+        </step>
+        <call-auto id="Copy"/>
+
+        <step id="PrepareC" description="Готовим С" level="-1">
+            <action>
+                @indFrom @= @storeInd + 1;
+                @indTo @= @storeInd + 9;
+                @indFirst @= @k;
+                @indLength @= @storeL[@storeInd + 1] - @k;
+            </action>
+        </step>
+        <call-auto id="Copy"/>
+
+        <call-auto id="Karpower"/>
+
+        <step id="CopyResultAC" description="Получаем результат" level="-1">
+            <action>
+                @indFrom @= @storeInd + 10;
+                @indTo @= @storeInd + 3;
+                @indFirst @= 0;
+                @indLength @= @storeL[@storeInd + 10];
+            </action>
+        </step>
+        <call-auto id="Copy"/>
+
+        <step id="ResultAC" description="Визуализирование" level="1" comment-ru="В результате умножения A{0} * C{0} получили:" comment-en="At the result of multiply A{0} * B{0}" comment-args="new Integer(@storeInd / 8)">
+            <draw>
+                @visualizer.showTempPower(3);
+            </draw>
+            <action>
+            </action>
+        </step>
+<!-- A * C -->
+
+<!-- B * D -->
+        <step id="BDShow" description="Визуализирование" level="1" comment-ru="Умножаем: B{0} * D{0}" comment-en="Multiply: B{0} * D{0}" comment-args="new Integer(@storeInd / 8)">
+            <draw>
+                @visualizer.showTempPower(4);
+            </draw>
+            <action>
+            </action>
+        </step>
+        
+        <step id="PrepareB" description="Готовим В" level="-1">
+            <action>
+                @indFrom @= @storeInd;
+                @indTo @= @storeInd + 8;
+                @k @= Math.max(@storeL[@storeInd] / 2, @storeL[@storeInd + 1] / 2);
+                @indFirst @= 0;
+                @indLength @= @k;
+            </action>
+        </step>
+        <call-auto id="Copy"/>
+
+        <step id="PrepareD" description="Готовим D" level="-1">
+            <action>
+                @indFrom @= @storeInd + 1;
+                @indTo @= @storeInd + 9;
+                @indFirst @= 0;
+                @indLength @= @k;
+            </action>
+        </step>
+        <call-auto id="Copy"/>
+
+        <call-auto id="Karpower"/>
+
+        <step id="CopyResultBD" description="Получаем результат" level="-1">
+            <action>
+                @indFrom @= @storeInd + 10;
+                @indTo @= @storeInd + 7;
+                @indFirst @= 0;
+                @indLength @= @storeL[@storeInd + 10];
+            </action>
+        </step>
+        <call-auto id="Copy"/>
+
+        <step id="ResultBD" description="Визуализирование" level="1" comment-ru="В результате умножения B{0} * D{0} получили:" comment-en="At the result B{0} * C{0}" comment-args="new Integer(@storeInd / 8)">
+            <draw>
+                @visualizer.showTempPower(5);
+            </draw>
+            <action>
+            </action>
+        </step>
+<!-- B * D -->
+
+<!-- A + B -->
+        <step id="PrepareAp" description="Готовим А" level="-1">
+            <action>
+                @indFrom @= @storeInd;
+                @indTo @= @storeInd + 8;
+                @k @= Math.max(@storeL[@storeInd] / 2, @storeL[@storeInd + 1] / 2);
+                @indFirst @= @k;
+                @indLength @= @storeL[@storeInd] - @k;
+            </action>
+        </step>
+        <call-auto id="Copy"/>
+
+        <step id="PrepareBp" description="Готовим В" level="-1">
+            <action>
+                @indFrom @= @storeInd;
+                @indTo @= @storeInd + 9;
+                @indFirst @= 0;
+                @indLength @= @k;
+            </action>
+        </step>
+        <call-auto id="Copy"/>
+
+        <call-auto id="KarSum"/>
+
+        <step id="CopyResultAplusB" description="Получаем результат" level="-1">
+            <action>
+                @indFrom @= @storeInd + 10;
+                @indTo @= @storeInd + 4;
+                @indFirst @= 0;
+                @indLength @= @storeL[@storeInd + 10];
+            </action>
+        </step>
+        <call-auto id="Copy"/>
+<!-- A + B -->
+        
+<!-- C + D -->
+        <step id="PrepareCp" description="Готовим С" level="-1">
+            <action>
+                @indFrom @= @storeInd + 1;
+                @indTo @= @storeInd + 8;
+                @k @= Math.max(@storeL[@storeInd] / 2, @storeL[@storeInd + 1] / 2);
+                @indFirst @= @k;
+                @indLength @= @storeL[@storeInd + 1] - @k;
+            </action>
+        </step>
+        <call-auto id="Copy"/>
+
+        <step id="PrepareDp" description="Готовим D" level="-1">
+            <action>
+                @indFrom @= @storeInd + 1;
+                @indTo @= @storeInd + 9;
+                @indFirst @= 0;
+                @indLength @= @k;
+            </action>
+        </step>
+        <call-auto id="Copy"/>
+
+        <call-auto id="KarSum"/>
+
+        <step id="CopyResultCplusD" description="Получаем результат" level="-1">
+            <action>
+                @indFrom @= @storeInd + 10;
+                @indTo @= @storeInd + 5;
+                @indFirst @= 0;
+                @indLength @= @storeL[@storeInd + 10];
+            </action>
+        </step>
+        <call-auto id="Copy"/>
+<!-- C + D -->
+
+<!-- (A+B) * (C+D) -->
+        <step id="ApBCpDShow" description="Визуализирование" level="1" comment-ru="Умножаем: (A{0} + B{0}) * (C{0} + D{0})" comment-en="Multiply: (A{0} + B{0}) * (C{0} + D{0})" comment-args="new Integer(@storeInd / 8)">
+            <draw>
+                @visualizer.showTempPower(6);
+            </draw>
+            <action>
+            </action>
+        </step>
+        
+        <step id="PrepareApB" description="Готовим А + В" level="-1">
+            <action>
+                @indFrom @= @storeInd+ 4;
+                @indTo @= @storeInd + 8;
+                @indFirst @= 0;
+                @indLength @= @storeL[@storeInd + 4];
+            </action>
+        </step>
+        <call-auto id="Copy"/>
+
+        <step id="PrepareCpD" description="Готовим С + D" level="-1">
+            <action>
+                @indFrom @= @storeInd + 5;
+                @indTo @= @storeInd + 9;
+                @indFirst @= 0;
+                @indLength @= @storeL[@storeInd + 5];
+            </action>
+        </step>
+        <call-auto id="Copy"/>
+
+        <call-auto id="Karpower"/>
+
+        <step id="CopyResultApBCpD" description="Получаем результат" level="-1">
+            <action>
+                @indFrom @= @storeInd + 10;
+                @indTo @= @storeInd + 6;
+                @indFirst @= 0;
+                @indLength @= @storeL[@storeInd + 10];
+            </action>
+        </step>
+        <call-auto id="Copy"/>
+
+        <step id="ResultApBCpD" description="Визуализирование" level="1" comment-ru="В результате умножения (A{0} + B{0}) * (C{0} + D{0}) получили:" comment-en="At the result (A{0} + B{0}) * (C{0} + D{0})" comment-args="new Integer(@storeInd / 8)">
+            <draw>
+                @visualizer.showTempPower(7);
+            </draw>
+            <action>
+            </action>
+        </step>
+<!-- (A+B) * (C+D) -->
+
+        <step id="takeIntegerForSum" description="Визуализирование" level="1" comment-ru="Берём результаты трёх умножений A{0} * C{0}, (A{0} + B{0}) * (C{0} + D{0}), B{0} * D{0}" comment-en="Take the result of 3 multiplying:  A{0} * C{0}, (A{0} + B{0}) * (C{0} + D{0}), B{0} * D{0} " comment-args="new Integer(@storeInd / 8)">
+            <draw>
+                @visualizer.showTempPower(8);
+            </draw>
+            <action>
+                @k @= Math.max(@storeL[@storeInd] / 2, @storeL[@storeInd + 1] / 2);
+            </action>
+        </step>
+        <step id="ReSumShow" description="Визуализирование" level="1" comment-ru="Складываем числа, умноженные на 10 в соответствующей степени. За '0..0' в схеме обозначенно k (= {0}) нулей подряд" comment-en="Sum up this integer, multiplying to self power of 10. '0..0' is mean k (= {0}) nuls without a break" comment-args="new Integer(@k)">
+            <draw>
+                @visualizer.showSum(0);
+            </draw>
+            <action>
+                @k @= Math.max(@storeL[@storeInd] / 2, @storeL[@storeInd + 1] / 2);
+            </action>
+        </step>
+        
+        <step id="prepareFastSum" description="Готовимся складывать" level="-1">
+            <action>
+                @k @= Math.max(@storeL[@storeInd] / 2, @storeL[@storeInd + 1] / 2);
+            </action>
+        </step>
+        <call-auto id="FastSum"/>
+
+        <step id="SumShow" description="Визуализирование" level="1" comment-ru="Умножение {0}-ого уровня завершено" comment-en="Multiplying {0} is completed" comment-args="new Integer(@storeInd / 8)">
+            <draw>
+                @visualizer.showSum(1);
+            </draw>
+            <action>
+                @k @= Math.max(@storeL[@storeInd] / 2, @storeL[@storeInd + 1] / 2);
+            </action>
+        </step>
+    </then><else>
+ 
+        <step id="simplepower" description="Умножаем по простому" level="-1"><action>
+            @storeL[@storeInd + 2] @= 1;
+            @store[@storeInd + 2][0] @= @store[@storeInd][0] * @store[@storeInd + 1][0];
+        </action></step>
+
+        <if id="longpower" description="Если больше 9" test="@store[@storeInd + 2][0] &gt; 9" level="-1"><then><step id="antiLong" description="Уменьшаем" level="-1"><action>
+            @store[@storeInd + 2][1] @= @store[@storeInd + 2][0] / 10;
+            @store[@storeInd + 2][0] @= @store[@storeInd + 2][0] % 10;
+            @storeL[@storeInd + 2] @= 2;
+        </action></step></then></if>
+
+        <step id="showSimplepower" description="Визуализирование" level="1" comment-ru="Просто умножаем 2 цифры" comment-en="Simpel multiply of 2 digit" comment-args="new Integer(@storeInd / 8)">
+            <draw>
+                @visualizer.showSum(2);
+            </draw>
+            <action>
+            </action>
+        </step>
+
+    </else>
+    </if>
+         
+        <step id="KarExit" description="Завершение" level="-1">
+            <action>
+                @storeInd @= @storeInd - 8;
+            </action>
+        </step>
+    </auto>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <auto id="Main" description="Главный автомат">
+
+        <start
+            comment-ru="Выберите что сделать с этими числами"
+            comment-en="Choice. What do you want to do?"
+        >
+            <draw>
+                @i = 0;
+                @j = 0;
+                @ost = -10000; 
+                @tempOst = -10000;
+                @storeInd = 0;
+                @commentLevel = 10001;
+                @visualizer.showIntegers(-1, -1, -1, 0, 0, 0);
+            </draw>
+        </start>
+
+        <step id="startStep3" description="Обнуляем ответ" comment-ru="-1" level="-1"><action>
+            @i @= 0; 
+        </action></step>
+        <while id="startWhile" description="Цикл" test="@i &lt; @store[2].length" level="-1">
+            <step id="startStepInWhile" description="Шаг цикла" level="-1"><action> @store[2][@i] @= 0; @i += 1;</action></step>
+        </while>
+         
+        <if
+            id="SumChoice"
+            description="Сложение"
+            test="@visualizer.combobox1.getSelectedIndex() == 0"
+            level="-1"
+        >
+            <then>
+                <step
+                    id="sumEnter"
+                    description="Выполняем сложение"
+                    comment-ru="Складываем"
+                    comment-en="Sum up"
+                    level="-1"
+                >
+                    <draw>
+                         @visualizer.showIntegers(-1, -1, -1, 0, 0, 0);
+                         @visualizer.showTemp(0, 0);
+                    </draw>
+                    <action> 
+                        @i @= 0;
+                        @smu @= "+"; 
+                        @sRu @= new String("Сложение завершено");
+                        @sEn @= new String("Sum completed");
+                    </action>
+                </step>
+                <call-auto id="Sum"/>
+            </then>
+        </if>
+
+        <if
+            id="MinesChoice"
+            description="Вычитание"
+            test="@visualizer.combobox1.getSelectedIndex() == 1"
+            level="-1"
+        >
+            <then>
+                <call-auto id="testFirstBig"/>
+
+                <step
+                    id="minesEnter"
+                    description="Выполняем вычитание"
+                    comment-ru="Вычитаем"
+                    comment-en="Subtraction"
+                    level="-1"
+                >
+                    <draw>
+                         @visualizer.showIntegers(-1, -1, -1, 0, 0, 0);
+                         @visualizer.showTemp(0, 0);
+                    </draw>
+                    <action> 
+                        @i @= 0;
+                        @smu @= "-"; 
+                        @sRu @= new String("Вычитание завершено");
+                        @sEn @= new String("Subtraction completed");
+                    </action>
+                </step>
+
+                <if
+                    id="canReplace"
+                    description="Сравнение чисел"
+                    test="!@firstBig"
+                    level="-1"
+                >
+                <then>
+                    <step
+                        id="replaceEnter"
+                        description="Проверка знака"
+                        comment-ru="Первое меньше второго. Меняем их местами."
+                        comment-en="First less then second. Change them placesx."
+                    >
+                        <draw>
+                             @visualizer.showIntegers(-1, -1, -1, 0, 0, 0);
+                             @visualizer.showTemp(0, 0);
+                        </draw>
+                        <action> 
+                        </action>
+                    </step>
+                    <call-auto id="Replace"/>
+                </then>
+                </if>
+
+                <call-auto id="Mines"/>
+            </then>
+        </if>
+
+        <if
+            id="powerChoice"
+            description="Простое умножение"
+            test="@visualizer.combobox1.getSelectedIndex() == 2"
+            level="-1"
+        >
+            <then>
+                <step
+                    id="choicepower"
+                    description="Выполняем умножение"
+                    comment-ru="Умножаем классическим способом"
+                    comment-en="Power"
+                    level="-1"
+                >
+                    <draw>
+                         @visualizer.showIntegers(-1, -1, -1, 0, 0, 0);
+                         @visualizer.showTemp(0, 0);
+                    </draw>
+                    <action>
+                        @i @= 0;
+                        @smu @= "*"; 
+                        @sRu @= new String("Умножение завершено");
+                        @sEn @= new String("Power completed");
+                    </action>
+                </step>
+                <call-auto id="power"/>
+            </then>
+        </if>
+
+        <if
+            id="KarpowerChoice"
+            description="Умножение алгоритмом Карацубы"
+            test="@visualizer.combobox1.getSelectedIndex() == 3"
+            level="-1"
+        >
+            <then>
+                <step
+                    id="choiceKarpower"
+                    description="Выполняем алгоритм Карацубы"
+                    comment-ru="Алгоритм умножения Карацубы."
+                    comment-en="Algoritm Karachuba's power"
+                    level="-1"
+                >
+                    <draw>
+                        @visualizer.showIntegers(-1, -1, -1, 0, 0, 0);
+                    </draw>
+                    <action> 
+                        @smu @= "**";
+                        @storeInd @= -8;
+                        @i @= 0;
+                        @sRu @= new String("Умножение алгоритмом Карацубы завершено");
+                        @sEn @= new String("Algoritm Karatchuba's power completed");
+                    </action>
+                </step>
+
+                <call-auto id="KarpowerMain"/>
+
+                <step id="karExit" description="Завершение" level="-1"><action>
+                    @i @= 0;
+                    @storeInd @= 0;
+                </action></step>
+            </then>
+        </if>
+
+        <finish
+            comment-ru="{0}"
+            comment-en="{1}"
+            comment-args="new String(@sRu), new String(@sEn)"
+        >
+            <draw>
+                @i = -10000;
+                @j = -10000;
+                @ost = -10000;
+                @tempOst = -10000;
+                @commentLevel = 10000;
+                @visualizer.antiSOFE = true;
+                @visualizer.rePaint();
+                @visualizer.showIntegers(-1, -1, -1, 0, 0, 0);
+            </draw>
+        </finish>
+    </auto>
+</algorithm>

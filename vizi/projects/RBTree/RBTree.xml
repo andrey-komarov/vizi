@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="WINDOWS-1251"?>
+
+<!DOCTYPE visualizer PUBLIC
+    "-//IFMO Vizi//Visualizer description"
+    "http://ips.ifmo.ru/vizi/dtd/visualizer.dtd"
+[
+    <!ENTITY algorithm SYSTEM "RBTree-Algorithm.xml">
+    <!ENTITY configuration SYSTEM "RBTree-Configuration.xml">
+]>
+
+<visualizer
+           id = "RBTree"
+           package = "ru.ifmo.vizi.rbtree"
+           main-class = "RBTreeVisualizer"
+
+           preferred-width = "600"
+           preferred-height = "400"
+
+           name-ru = "Красно-черное дерево"
+           name-en = "Red-Black Tree"
+
+           author-ru = "Фёдор Коротков"
+           author-en = "Fedor Korotkov"
+           author-email = "fmkorotkov@rain.ifmo.ru"
+
+           supervisor-ru = "Георгий Корнеев"
+           supervisor-en = "Georgiy Korneev"
+           supervisor-email = "kgeorgiy@rain.ifmo.ru"
+
+           copyright-ru = "Copyright \u00A9 Кафедра КТ, СПбГУ ИТМО, 2008"
+           copyright-en = "Copyright \u00A9 Computer Technologies Department, SPbSU IFMO, 2008"
+    >
+    &algorithm;
+    &configuration;
+</visualizer> 

@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="WINDOWS-1251"?>
+
+<configuration>
+    <property 
+        description = "Comment pane height"
+        param       = "comment-height"
+        value       = "40"
+    />
+    <property
+    	description		= "Shift of edges"
+    	param			= "shift"
+    	value			= "0.2"
+    />
+    <adjustablePanel
+        description = "Length of string"
+        param           = "length"
+        caption-ru      = "Длина: {0,number,####}"
+        caption-en      = "Length: {0,number,####}"
+        hint-ru         = "Длина строки"
+        hint-en         = "Length of string"
+        value           = "5"
+        minimum         = "1"
+        maximum         = "30"
+        unitIncrement   = "1"
+        blockIncrement  = "2"
+        blockInterval   = "500"
+    >
+        <button
+            param       = "incrementButton"
+            caption-ru  = "&gt;&gt;"
+            caption-en  = "&gt;&gt;"
+            hint-ru     = "Увеличить длину строки"
+            hint-en     = "Increase length of string"
+        />
+        <button
+            param       = "decrementButton"
+            caption-ru  = "&lt;&lt;"
+            caption-en  = "&lt;&lt;"
+            hint-ru     = "Уменьшить длину строки"
+            hint-en     = "Decrease length of string"
+        />
+    </adjustablePanel>
+	<button
+		description = "Sets string to current value in textfield"
+		param		= "button-add"
+		caption-ru	= "Ввести"
+		caption-en	= "Enter"
+		hint-ru		= "Ввести строку из поля ввода"
+		hint-en		= "Sets string to current value in textfield"
+	/>
+    <button
+        description = "Fills the string with random characters"
+        param       = "button-random"
+        caption-ru  = "Случайно"
+        caption-en  = "Random"
+        hint-ru     = "Заполнить строку случайными символами"
+        hint-en     = "Fill the string with random characters"
+    />
+    <button
+        description = "Show or hide terminal states"
+        param       = "button-showterm"
+        caption-ru  = "Показать/скрыть конечные состояния"
+        caption-en  = "Show/hide terminal states"
+        hint-ru     = "Показать/скрыть конечные состояния"
+        hint-en     = "Show/hide terminal states"
+    />
+    <message
+        description = 'Comment for "String" parameter in the output file'
+        param       = "StringComment"
+        message-ru  = "Строка ('a' ... 'z'), длина {0} ... {1} "
+        message-en  = "String ('a' ... 'z'), length {0} ... {1}"
+    />
+    <message
+        description = 'Comment for "Step" parameter in the output file'
+        param       = "StepComment"
+        message-ru  = "Номер шага"
+        message-en  = "Current step"
+    />
+
+    <message
+        description = 'Message for the "Max" label'
+        param       = "max-message"
+        message-ru  = "max = {0}"
+        message-en  = "max = {0}"
+    />
+    <message
+        description = 'Comment for "ArrayLength" parameter in the output file'
+        param       = "ArrayLengthComment"
+        message-ru  = "Длина массива ({0} ... {1})"
+        message-en  = "Array length ({0} ... {1})"
+    />
+    <message
+        description = 'Comment for "Elements" parameter in the output file'
+        param       = "ElementsComment"
+        message-ru  = "Элементы массива ({0} ... {1})"
+        message-en  = "Array elements ({0} ... {1})"
+    />
+    <property
+    	description	= "Cooment for wrong length of string"
+    	param		= "OutOfBoundComment"
+    	value		= "Wrong length of string"
+    />
+    <property
+    	description = "Comment for wrong character"
+    	param		= "WrongCharacterComment"
+    	value		= "Wrong character '{1}' at position {0}"
+    />
+    <styleset
+        description = "Array style set"
+        param       = "array"
+    >
+        <style
+            description     = "Ordinary cell"
+            text-color      = "000000"
+            text-align      = "0.5"
+            border-color    = "000000"
+            border-status   = "true"
+            fill-color      = "FFFFFF"
+            fill-status     = "true"
+            aspect-status   = "false"
+            padding         = "0.2"
+        >
+            <font
+                face        = "Serif"
+                size        = "12"
+                style       = "plain"
+            />
+        </style>
+        <style
+            description     = "New cell"
+            fill-color      = "AAAAAA"
+        />
+        <style
+            description     = "Local cell"
+            fill-color      = "DDDDDD"
+        />
+        <style
+            description     = "Ordinary terminate cell"
+            fill-color      = "FFFFFF"
+            border-color    = "EEEEEE"
+        />
+        <style
+            description     = "New terminate cell"
+            fill-color      = "AAAAAA"
+            border-color    = "EEEEEE"
+        />
+        <style
+            description     = "Local terminate cell"
+            fill-color      = "DDDDDD"
+            border-color    = "EEEEEE"
+        />
+        <style
+            description     = "Terminate cell"
+            fill-color      = "777777"
+            border-color    = "000000"
+        />
+    </styleset>
+    <group
+        description = "Save/Load dialog configuration"
+        param       = "SaveLoadDialog"
+    >
+        <property
+            description = "Height of the comment pane"
+            param       = "CommentPane-lines"
+            value       = "2"
+        />
+        <property
+            description = "Width of the text area"
+            param       = "columns"
+            value       = "40"
+        />
+        <property
+            description = "Height of the text area"
+            param       = "rows"
+            value       = "7"
+        />
+    </group>
+    <color
+    	description		= "Color of edges"
+    	param			= "edges"
+    	value			= "000000"
+    />
+    <color
+    	description		= "Color of suffix links"
+    	param			= "suffix"
+    	value			= "BBBBBB"
+    />
+</configuration>

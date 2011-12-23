@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="WINDOWS-1251"?>
+
+<!--
+    "LongInteger" visualizer configuration (example).
+    Shared for LongInteger.xml and LongIntegerAR.xml
+    Version: $Id: LongInteger-Configuration.xml,v 1.3 2004/03/23 16:39:34 geo Exp $
+-->
+
+<configuration>
+    <property 
+        description = "Comment pane height"
+        param       = "comment-height"
+        value       = "40"
+    />
+    <adjustablePanel
+        description = "Number of elements in the array"
+        param           = "elements"
+        caption-ru      = "Цифр: {0,number,####}"
+        caption-en      = "Digint: {0,number,####}"
+        hint-ru         = "Количество цифр в числе"
+        hint-en         = "Number of digits in Integer"
+        value           = "4"
+        minimum         = "1"
+        maximum         = "30"
+        unitIncrement   = "1"
+        blockIncrement  = "2"
+        blockInterval   = "500"
+    >
+        <button
+            param       = "incrementButton"
+            caption-ru  = "&gt;&gt;"
+            caption-en  = "&gt;&gt;"
+            hint-ru     = "Увеличить количество элементов"
+            hint-en     = "Increase number of elements"
+        />
+        <button
+            param       = "decrementButton"
+            caption-ru  = "&lt;&lt;"
+            caption-en  = "&lt;&lt;"
+            hint-ru     = "Уменьшить количество элементов"
+            hint-en     = "Decrease number of elements"
+        />
+    </adjustablePanel>
+    <button
+        description = "Fills the array with random values"
+        param       = "button-random"
+        caption-ru  = "Случайно"
+        caption-en  = "Random"
+        hint-ru     = "Заполнить массив случайными значениями"
+        hint-en     = "Fill the array with random values"
+    />
+    <button
+        description = "Start edit value"
+        param       = "button-edit"
+        caption-ru  = "Ввод чисел"
+        caption-en  = "Edit"
+        hint-ru     = "Ввести значения вручную"
+        hint-en     = "Enter value"
+    />
+    <button
+        description = "Finish edit value"
+        param       = "button-apply"
+        caption-ru  = "Записать"
+        caption-en  = "Apply"
+        hint-ru     = "Записать значения"
+        hint-en     = "Record value"
+    />
+    <message
+        description = 'Number of choice'
+        param       = "choice1-kol"
+        message-ru  = "4"
+        message-en  = "4"
+    />
+    <message
+        description = 'Make sum'
+        param       = "choice1-message1"
+        message-ru  = "Сложение"
+        message-en  = "Sum up"
+    />
+    <message
+        description = 'Make mines'
+        param       = "choice1-message2"
+        message-ru  = "Вычитание"
+        message-en  = "Subtraction"
+    />
+    <message
+        description = 'Make poower'
+        param       = "choice1-message3"
+        message-ru  = "Умножение классическое"
+        message-en  = "Classic Power"
+    />
+    <message
+        description = 'Make Karatchuba poower'
+        param       = "choice1-message4"
+        message-ru  = "Алгогитм Карацубы"
+        message-en  = "Karatsuba's algoritm"
+    />
+    <message
+        description = 'Comment for "ArrayLength" parameter in the output file'
+        param       = "ArrayLengthComment"
+        message-ru  = "Длина чисел ({0} ... {1})"
+        message-en  = "Integer length ({0} ... {1})"
+    />
+    <message
+        description = 'Comment for "Digits" parameter in the output file'
+        param       = "ElementsComment"
+        message-ru  = "Цифры {2} числа"
+        message-en  = "Digits {2} integer"
+    />
+    <message
+        description = 'Comment for "Choice" parameter in the output file'
+        param       = "ChoiceComment"
+        message-ru  = "Что сделать (1: Сложить, 2: Вычесть, 3: Умножить, 4: Карацуба)"
+        message-en  = "What we do"
+    />
+    <message
+        description = 'Comment for "Step" parameter in the output file'
+        param       = "StepComment"
+        message-ru  = "Номер шага"
+        message-en  = "Current step"
+    />
+    <message
+        description = 'Message for the label t'
+        param       = "t-message"
+        message-ru  = "p="
+        message-en  = "p="
+    />
+    <message
+        description = 'Message for the label k'
+        param       = "k-message"
+        message-ru  = "k="
+        message-en  = "k="
+    />
+    <styleset
+        description = "Array style set"
+        param       = "array"
+    >
+        <style
+            description     = "Ordinary cell"
+            text-color      = "000000"
+            text-align      = "0.5"
+            border-color    = "000000"
+            border-status   = "true"
+            fill-color      = "eeeeee"
+            fill-status     = "true"
+            aspect-status   = "false"
+            padding         = "0.2"
+        >
+            <font
+                face        = "Serif"
+                size        = "12"
+                style       = "plain"
+            />
+        </style>
+        <style
+            description     = "Selected cell"
+            fill-color      = "cccccc"
+        />
+        <style
+            description     = "Work cell"
+            text-color      = "eeeeee"
+            fill-color      = "808080"
+        />
+        <style
+            description     = "Item cell"
+            fill-color      = "b0b0b0"
+        />
+    </styleset>
+    <style
+        description     = 'Style of the label'
+        param           = "label-style-l"
+        text-align      = "0.0"
+        message-align   = "0.0"
+        border-status   = "false"
+        fill-status     = "false"
+    >
+        <font size="16"/>
+    </style>
+    <style
+        description     = 'Style of the label'
+        param           = "label-style-r"
+        text-align      = "1.0"
+        message-align   = "1.0"
+        border-status   = "false"
+        fill-status     = "false"
+    >
+        <font size="16"/>
+    </style>
+    <property
+        description = "Maximum possible value of the element"
+        param       = "max-value"
+        value       = "9"
+    />
+    <property
+        description = "Widest possible value of the element"
+        param       = "max-value-string"
+        value       = "8"
+    />
+    <group
+        description = "Save/Load dialog configuration"
+        param       = "SaveLoadDialog"
+    >
+        <property
+            description = "Height of the comment pane"
+            param       = "CommentPane-lines"
+            value       = "2"
+        />
+        <property
+            description = "Width of the text area"
+            param       = "columns"
+            value       = "40"
+        />
+        <property
+            description = "Height of the text area"
+            param       = "rows"
+            value       = "9"
+        />
+    </group>
+</configuration>
