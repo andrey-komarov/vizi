@@ -1,6 +1,0 @@
-1. Fix bug with save/load duplicate edges (fixed)
-2. Add spanning tree not found case (fixed).
-3. Add comments (fixed).
-4. Hide edges
-	a) version A (done)
-	b) version B
