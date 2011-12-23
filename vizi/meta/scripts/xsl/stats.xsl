@@ -35,18 +35,18 @@
                 <br/>
                 <table border="1">
                     <tr>
-                        <th colspan="2">Общая статистика</th>
+                        <th colspan="2">РћР±С‰Р°СЏ СЃС‚Р°С‚РёСЃС‚РёРєР°</th>
                     </tr><tr>
-                        <td>Количество автоматов</td>
+                        <td>РљРѕР»РёС‡РµСЃС‚РІРѕ Р°РІС‚РѕРјР°С‚РѕРІ</td>
                         <td><xsl:value-of select="2 * count(auto)"/></td>
                     </tr><tr>
-                        <td>Количество пар автоматов</td>
+                        <td>РљРѕР»РёС‡РµСЃС‚РІРѕ РїР°СЂ Р°РІС‚РѕРјР°С‚РѕРІ</td>
                         <td><xsl:value-of select="count(auto)"/></td>
                     </tr><tr>
-                        <td>Количество состояний</td>
+                        <td>РљРѕР»РёС‡РµСЃС‚РІРѕ СЃРѕСЃС‚РѕСЏРЅРёР№</td>
                         <td><xsl:value-of select="2 * count(auto) + count(.//*[@state])"/></td>
                     </tr><tr>
-                        <th colspan="2">Количество состояний в автоматах</th>
+                        <th colspan="2">РљРѕР»РёС‡РµСЃС‚РІРѕ СЃРѕСЃС‚РѕСЏРЅРёР№ РІ Р°РІС‚РѕРјР°С‚Р°С…</th>
                     </tr>
                     <xsl:for-each select="auto">
                         <tr>

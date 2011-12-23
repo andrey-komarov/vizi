@@ -21,7 +21,7 @@
         <xsl:call-template name="createFile">
             <xsl:with-param name="suffix" select="'Debug'"/>
             <xsl:with-param name="variables">
-                <variable header="public final AutoStack stack = new AutoStack();" comment="Ñòåê."/>
+                <variable header="public final AutoStack stack = new AutoStack();" comment="Ð¡Ñ‚ÐµÐº."/>
             </xsl:with-param>
         </xsl:call-template>
     </xsl:template>

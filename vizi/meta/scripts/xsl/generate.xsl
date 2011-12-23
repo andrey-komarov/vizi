@@ -31,7 +31,7 @@
     </xsl:template>
 
     <xsl:template name="createConstructor">
-        <method header="public {@id}(Locale locale)" comment="Конструктор для языка">
+        <method header="public {@id}(Locale locale)" comment="РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ РґР»СЏ СЏР·С‹РєР°">
             <line value='super("{@package}.Comments", locale);'/>
             <line>init(new Main(), d);</line>
         </method>
@@ -42,10 +42,10 @@
             header="private final class {@id} extends BaseAutomata implements Automata" 
             comment="{@description}."
         >
-            <variable comment="Начальное состояние автомата.">
+            <variable comment="РќР°С‡Р°Р»СЊРЅРѕРµ СЃРѕСЃС‚РѕСЏРЅРёРµ Р°РІС‚РѕРјР°С‚Р°.">
                 <xsl:text>private final int START_STATE = 0;</xsl:text>
             </variable>
-            <variable comment="Конечное состояние автомата.">
+            <variable comment="РљРѕРЅРµС‡РЅРѕРµ СЃРѕСЃС‚РѕСЏРЅРёРµ Р°РІС‚РѕРјР°С‚Р°.">
                 <xsl:text>private final int END_STATE = </xsl:text>
                 <xsl:value-of select="1 + count(.//*[@state])"/>
                 <xsl:text>;</xsl:text>
@@ -53,20 +53,20 @@
 
             <method 
                 header  = "public {@id}()" 
-                comment = "Конструктор."
+                comment = "РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ."
             >
                 <line>super(</line>
                 <line value='    "{@id}",'/>
-                <line>    0, // Номер начального состояния</line>
-                <line value='    {1 + count(.//*[@state])}, // Номер конечного состояния'/>
+                <line>    0, // РќРѕРјРµСЂ РЅР°С‡Р°Р»СЊРЅРѕРіРѕ СЃРѕСЃС‚РѕСЏРЅРёСЏ</line>
+                <line value='    {1 + count(.//*[@state])}, // РќРѕРјРµСЂ РєРѕРЅРµС‡РЅРѕРіРѕ СЃРѕСЃС‚РѕСЏРЅРёСЏ'/>
                 <line>    new String[]{</line>
-                <line>        "Начальное состояние", </line>
+                <line>        "РќР°С‡Р°Р»СЊРЅРѕРµ СЃРѕСЃС‚РѕСЏРЅРёРµ", </line>
                 <xsl:for-each select=".//*[@state]">
                     <line value='        "{@description}",'/>
                 </xsl:for-each>
-                <line>        "Конечное состояние"</line>
+                <line>        "РљРѕРЅРµС‡РЅРѕРµ СЃРѕСЃС‚РѕСЏРЅРёРµ"</line>
                 <line>    }, new int[]{</line>
-                <line>        Integer.MAX_VALUE, // Начальное состояние, </line>
+                <line>        Integer.MAX_VALUE, // РќР°С‡Р°Р»СЊРЅРѕРµ СЃРѕСЃС‚РѕСЏРЅРёРµ, </line>
                 <xsl:for-each select=".//*[@state]">
                     <xsl:choose>
                         <xsl:when test="name() != 'call-auto'">
@@ -77,44 +77,44 @@
                         </xsl:otherwise>
                     </xsl:choose>
                 </xsl:for-each>
-                <line>        Integer.MAX_VALUE, // Конечное состояние</line>
+                <line>        Integer.MAX_VALUE, // РљРѕРЅРµС‡РЅРѕРµ СЃРѕСЃС‚РѕСЏРЅРёРµ</line>
                 <line>    }</line>
                 <line>);</line>
             </method>
             <method 
                 header  = "protected void doStepForward(int level)" 
-                comment = "Сделать один шаг автомата в перед."
+                comment = "РЎРґРµР»Р°С‚СЊ РѕРґРёРЅ С€Р°Рі Р°РІС‚РѕРјР°С‚Р° РІ РїРµСЂРµРґ."
             >
                 <xsl:call-template name="directStep"/>
                 <xsl:call-template name="directAction"/>
             </method>
             <method 
                 header  = "protected void doStepBackward(int level)" 
-                comment = "Сделать один шаг автомата назад."
+                comment = "РЎРґРµР»Р°С‚СЊ РѕРґРёРЅ С€Р°Рі Р°РІС‚РѕРјР°С‚Р° РЅР°Р·Р°Рґ."
             >
                 <xsl:call-template name="reverseAction"/>
                 <xsl:call-template name="reverseStep"/>
             </method>
 
-            <method header="public String getComment()" comment="Комментарий к текущему состоянию">
+            <method header="public String getComment()" comment="РљРѕРјРјРµРЅС‚Р°СЂРёР№ Рє С‚РµРєСѓС‰РµРјСѓ СЃРѕСЃС‚РѕСЏРЅРёСЋ">
                 <line>String comment = "";</line>
                 <line>Object[] args = null;</line>
-                <switch header="state" comment="Выбор комментария">
+                <switch header="state" comment="Р’С‹Р±РѕСЂ РєРѕРјРјРµРЅС‚Р°СЂРёСЏ">
                     <xsl:apply-templates select=".//*[@state] | start | finish" mode="getComment"/>
                 </switch>
                 <line>return java.text.MessageFormat.format(comment, args);</line>
             </method>
 
-            <method header="public void drawState()" comment="Выполняет действия по отрисовке состояния">
+            <method header="public void drawState()" comment="Р’С‹РїРѕР»РЅСЏРµС‚ РґРµР№СЃС‚РІРёСЏ РїРѕ РѕС‚СЂРёСЃРѕРІРєРµ СЃРѕСЃС‚РѕСЏРЅРёСЏ">
                 <switch header="state">
                     <xsl:if test="start/draw">
-                        <case label="START_STATE" comment="Начальное состояние">
+                        <case label="START_STATE" comment="РќР°С‡Р°Р»СЊРЅРѕРµ СЃРѕСЃС‚РѕСЏРЅРёРµ">
                             <xsl:apply-templates select="start/draw"/>
                         </case>
                     </xsl:if>
                     <xsl:apply-templates mode="draw"/>
                     <xsl:if test="finish/draw">
-                        <case label="END_STATE" comment="Конечное состояние">
+                        <case label="END_STATE" comment="РљРѕРЅРµС‡РЅРѕРµ СЃРѕСЃС‚РѕСЏРЅРёРµ">
                             <xsl:apply-templates select="finish/draw"/>
                         </case>
                     </xsl:if>
@@ -162,7 +162,7 @@
     -->
     <xsl:template match="start" mode="getComment">
         <xsl:if test="@comment">
-            <case label="START_STATE" comment="Начальное состояние">
+            <case label="START_STATE" comment="РќР°С‡Р°Р»СЊРЅРѕРµ СЃРѕСЃС‚РѕСЏРЅРёРµ">
                 <line value='comment = {ancestor::algorithm/@id}.this.getComment("{ancestor::auto/@id}.START_STATE");'/>
                 <xsl:if test="@comment-args">
                     <xsl:call-template name="madeArguments"/>
@@ -184,7 +184,7 @@
 
     <xsl:template match="finish" mode="getComment">
         <xsl:if test="@comment">
-            <case label="END_STATE" comment="Конечное состояние">
+            <case label="END_STATE" comment="РљРѕРЅРµС‡РЅРѕРµ СЃРѕСЃС‚РѕСЏРЅРёРµ">
                 <line value='comment = {ancestor::algorithm/@id}.this.getComment("{ancestor::auto/@id}.END_STATE");'/>
                 <xsl:if test="@comment-args">
                     <xsl:call-template name="madeArguments"/>
@@ -238,9 +238,9 @@
         Direct step
     -->
     <xsl:template name="directStep">
-        <switch header="state" comment="Переход в следующее состояние">
+        <switch header="state" comment="РџРµСЂРµС…РѕРґ РІ СЃР»РµРґСѓСЋС‰РµРµ СЃРѕСЃС‚РѕСЏРЅРёРµ">
             <xsl:variable name="firstNotStartNode" select="*[name() != 'start'][1]"/>
-            <case label="START_STATE" comment="Начальное состояние">
+            <case label="START_STATE" comment="РќР°С‡Р°Р»СЊРЅРѕРµ СЃРѕСЃС‚РѕСЏРЅРёРµ">
                 <xsl:if test="(name($firstNotStartNode)='while') and not($firstNotStartNode/@rtest)">
                     <line>stack.pushBoolean(false);</line>
                 </xsl:if>
@@ -346,7 +346,7 @@
         Direct action
     -->
     <xsl:template name="directAction">
-        <switch header="state" comment="Действие в текущем состоянии">
+        <switch header="state" comment="Р”РµР№СЃС‚РІРёРµ РІ С‚РµРєСѓС‰РµРј СЃРѕСЃС‚РѕСЏРЅРёРё">
             <xsl:for-each select=".//*[@state]">
                 <case label="{@state}" comment="{@description}">
                     <xsl:apply-templates select="." mode="directAction"/>
@@ -464,7 +464,7 @@
         Reverse action
     -->
     <xsl:template name="reverseAction">
-        <switch header="state" comment="Обращение действия в текущем состоянии">
+        <switch header="state" comment="РћР±СЂР°С‰РµРЅРёРµ РґРµР№СЃС‚РІРёСЏ РІ С‚РµРєСѓС‰РµРј СЃРѕСЃС‚РѕСЏРЅРёРё">
             <xsl:for-each select=".//*[@state]">
                 <case label="{@state}" comment="{@description}">
                     <xsl:apply-templates select="." mode="reverseAction"/>
@@ -507,13 +507,13 @@
         Reverse step
     -->
     <xsl:template name="reverseStep">
-        <switch header="state" comment="Переход в предыдущее состояние">
+        <switch header="state" comment="РџРµСЂРµС…РѕРґ РІ РїСЂРµРґС‹РґСѓС‰РµРµ СЃРѕСЃС‚РѕСЏРЅРёРµ">
             <xsl:for-each select=".//*[@state]">
                 <case label="{@state}" comment="{@description}">
                     <xsl:apply-templates select="self::*" mode="reverseStep"/>
                 </case>
             </xsl:for-each>
-            <case label="END_STATE" comment="Начальное состояние">
+            <case label="END_STATE" comment="РќР°С‡Р°Р»СЊРЅРѕРµ СЃРѕСЃС‚РѕСЏРЅРёРµ">
                 <xsl:call-template name="setState">
                     <xsl:with-param name="state" select="*[@state][last()]/@endState"/>
                 </xsl:call-template>

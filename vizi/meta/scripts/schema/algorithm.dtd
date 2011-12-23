@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- Îïèñàíèå ëîãèêè âèçóàëèçàòîðîâ -->
+<!-- ÐžÐ¿Ð¸ÑÐ°Ð½Ð¸Ðµ Ð»Ð¾Ð³Ð¸ÐºÐ¸ Ð²Ð¸Ð·ÑƒÐ°Ð»Ð¸Ð·Ð°Ñ‚Ð¾Ñ€Ð¾Ð² -->
 <!ELEMENT algorithm (import*, variable*, data?, toString?, auto+, method*)>
 <!ATTLIST algorithm
     type                CDATA       #IMPLIED
 >
 
-<!-- Îïèñàíèå èìïîðòèðóåìûõ êëàññîâ è ïàêåòîâ -->
+<!-- ÐžÐ¿Ð¸ÑÐ°Ð½Ð¸Ðµ Ð¸Ð¼Ð¿Ð¾Ñ€Ñ‚Ð¸Ñ€ÑƒÐµÐ¼Ñ‹Ñ… ÐºÐ»Ð°ÑÑÐ¾Ð² Ð¸ Ð¿Ð°ÐºÐµÑ‚Ð¾Ð² -->
 <!ELEMENT import (#PCDATA)*>
 <!ATTLIST import
 >
 
-<!-- Îïèñàíèå ïåðåìåííûõ -->
+<!-- ÐžÐ¿Ð¸ÑÐ°Ð½Ð¸Ðµ Ð¿ÐµÑ€ÐµÐ¼ÐµÐ½Ð½Ñ‹Ñ… -->
 <!ELEMENT variable (#PCDATA)*>
 <!ATTLIST variable
     description         CDATA       #REQUIRED
@@ -20,26 +20,26 @@
     value               CDATA       #IMPLIED
 >
 
-<!-- Îïèñàíèå ìîäåëè äàííûõ -->
+<!-- ÐžÐ¿Ð¸ÑÐ°Ð½Ð¸Ðµ Ð¼Ð¾Ð´ÐµÐ»Ð¸ Ð´Ð°Ð½Ð½Ñ‹Ñ… -->
 <!ELEMENT data (variable*, toString)>
 <!ATTLIST data
 >
 
-<!-- Îïèñàíèå ïðîöåäóðû ïðåîáðàçîâàíèå ìîäåëè äàííûõ â ñòðîêó -->
+<!-- ÐžÐ¿Ð¸ÑÐ°Ð½Ð¸Ðµ Ð¿Ñ€Ð¾Ñ†ÐµÐ´ÑƒÑ€Ñ‹ Ð¿Ñ€ÐµÐ¾Ð±Ñ€Ð°Ð·Ð¾Ð²Ð°Ð½Ð¸Ðµ Ð¼Ð¾Ð´ÐµÐ»Ð¸ Ð´Ð°Ð½Ð½Ñ‹Ñ… Ð² ÑÑ‚Ñ€Ð¾ÐºÑƒ -->
 <!ELEMENT toString (#PCDATA)*>
 <!ATTLIST toString
 >
 
 <!ENTITY % automata-steps "step | call-auto | if | while">
 
-<!-- Îïèñàíèå àâòîìàòà -->
+<!-- ÐžÐ¿Ð¸ÑÐ°Ð½Ð¸Ðµ Ð°Ð²Ñ‚Ð¾Ð¼Ð°Ñ‚Ð° -->
 <!ELEMENT auto (variable*, start?, (%automata-steps;)+, finish?)>
 <!ATTLIST auto
     id                  ID          #REQUIRED
     description         CDATA       #REQUIRED
 >
 
-<!-- Èñõîäíîå ñîñòîÿíèå àâòîìàòà -->
+<!-- Ð˜ÑÑ…Ð¾Ð´Ð½Ð¾Ðµ ÑÐ¾ÑÑ‚Ð¾ÑÐ½Ð¸Ðµ Ð°Ð²Ñ‚Ð¾Ð¼Ð°Ñ‚Ð° -->
 <!ELEMENT start (draw?)>
 <!ATTLIST start
     comment-ru          CDATA       #IMPLIED
@@ -47,7 +47,7 @@
     comment-args        CDATA       #IMPLIED
 >
 
-<!-- Êîíå÷íîå ñîñòîÿíèå àâòîìàòà -->
+<!-- ÐšÐ¾Ð½ÐµÑ‡Ð½Ð¾Ðµ ÑÐ¾ÑÑ‚Ð¾ÑÐ½Ð¸Ðµ Ð°Ð²Ñ‚Ð¾Ð¼Ð°Ñ‚Ð° -->
 <!ELEMENT finish (draw?)>
 <!ATTLIST finish
     comment-ru          CDATA       #IMPLIED
@@ -55,7 +55,7 @@
     comment-args        CDATA       #IMPLIED
 >
 
-<!-- Ïðîñòîé øàã àâòîìàòà -->
+<!-- ÐŸÑ€Ð¾ÑÑ‚Ð¾Ð¹ ÑˆÐ°Ð³ Ð°Ð²Ñ‚Ð¾Ð¼Ð°Ñ‚Ð° -->
 <!ELEMENT step (draw?, (action | (direct, reverse?)))>
 <!ATTLIST step
     id                  NMTOKEN     #IMPLIED
@@ -66,22 +66,22 @@
     comment-args        CDATA       #IMPLIED
 >
 
-<!-- Ïðÿìîé øàã àëãîðèòìà -->
+<!-- ÐŸÑ€ÑÐ¼Ð¾Ð¹ ÑˆÐ°Ð³ Ð°Ð»Ð³Ð¾Ñ€Ð¸Ñ‚Ð¼Ð° -->
 <!ELEMENT direct (#PCDATA)*>
 <!ATTLIST direct
 >
 
-<!-- Îáðàòíûé øàã àëãîðèòìà -->
+<!-- ÐžÐ±Ñ€Ð°Ñ‚Ð½Ñ‹Ð¹ ÑˆÐ°Ð³ Ð°Ð»Ð³Ð¾Ñ€Ð¸Ñ‚Ð¼Ð° -->
 <!ELEMENT reverse (#PCDATA)*>
 <!ATTLIST reverse
 >
 
-<!-- Àâòîìàòè÷åñêè îáðàùàåìûé øàã àëãîðèòìà -->
+<!-- ÐÐ²Ñ‚Ð¾Ð¼Ð°Ñ‚Ð¸Ñ‡ÐµÑÐºÐ¸ Ð¾Ð±Ñ€Ð°Ñ‰Ð°ÐµÐ¼Ñ‹Ð¹ ÑˆÐ°Ð³ Ð°Ð»Ð³Ð¾Ñ€Ð¸Ñ‚Ð¼Ð° -->
 <!ELEMENT action (#PCDATA)*>
 <!ATTLIST action
 >
 
-<!-- Îòîáðàæåíèå ñîñòîÿíèÿ -->
+<!-- ÐžÑ‚Ð¾Ð±Ñ€Ð°Ð¶ÐµÐ½Ð¸Ðµ ÑÐ¾ÑÑ‚Ð¾ÑÐ½Ð¸Ñ -->
 <!ELEMENT draw (#PCDATA)*>
 <!ATTLIST draw
 >
@@ -94,14 +94,14 @@
 <!ATTLIST draw-false
 >
 
-<!-- Âûçîâ âëîæåííîãî àâòîìàòà -->
+<!-- Ð’Ñ‹Ð·Ð¾Ð² Ð²Ð»Ð¾Ð¶ÐµÐ½Ð½Ð¾Ð³Ð¾ Ð°Ð²Ñ‚Ð¾Ð¼Ð°Ñ‚Ð° -->
 <!ELEMENT call-auto EMPTY>
 <!ATTLIST call-auto
     id                  IDREF       #REQUIRED
     level               CDATA       "0"
 >
 
-<!-- Âûáîð -->
+<!-- Ð’Ñ‹Ð±Ð¾Ñ€ -->
 <!ELEMENT if ((draw | (draw-true, draw-false))?, then, else?)>
 <!ATTLIST if
     id                  NMTOKEN     #IMPLIED
@@ -116,17 +116,17 @@
     comment-args        CDATA       #IMPLIED
 >
 
-<!-- Ïîëîæèòåëüíàÿ âåòâü if -->
+<!-- ÐŸÐ¾Ð»Ð¾Ð¶Ð¸Ñ‚ÐµÐ»ÑŒÐ½Ð°Ñ Ð²ÐµÑ‚Ð²ÑŒ if -->
 <!ELEMENT then (%automata-steps;)*>
 <!ATTLIST then
 >
 
-<!-- Îòðèöàòåëüíàÿ âåòâü if -->
+<!-- ÐžÑ‚Ñ€Ð¸Ñ†Ð°Ñ‚ÐµÐ»ÑŒÐ½Ð°Ñ Ð²ÐµÑ‚Ð²ÑŒ if -->
 <!ELEMENT else (%automata-steps;)*>
 <!ATTLIST else
 >
 
-<!-- Öèêë ñ ïðåäóñëîâèåì -->
+<!-- Ð¦Ð¸ÐºÐ» Ñ Ð¿Ñ€ÐµÐ´ÑƒÑÐ»Ð¾Ð²Ð¸ÐµÐ¼ -->
 <!ELEMENT while ((draw | (draw-true, draw-false))?, (%automata-steps;)+)>
 <!ATTLIST while
     id                  NMTOKEN     #IMPLIED
@@ -141,7 +141,7 @@
     comment-args        CDATA       #IMPLIED
 >
 
-<!-- Ìåòîä -->
+<!-- ÐœÐµÑ‚Ð¾Ð´ -->
 <!ELEMENT method (#PCDATA)*>
 <!ATTLIST method
     header              CDATA       #REQUIRED

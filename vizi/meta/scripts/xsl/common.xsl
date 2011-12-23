@@ -27,12 +27,12 @@
             <class header="public final class {@id}{$suffix} {$extends}">
                 <xsl:copy-of select="method"/>
 
-                <variable header="public final Data d = new Data();" comment="Ìîäåëü äàííûõ."/>
+                <variable header="public final Data d = new Data();" comment="ĞœĞ¾Ğ´ĞµĞ»ÑŒ Ğ´Ğ°Ğ½Ğ½Ñ‹Ñ…."/>
                 <xsl:copy-of select="$variables"/>
 
                 <xsl:call-template name="createConstructor"/>
 
-                <class header="public final class Data" comment="Äàííûå.">
+                <class header="public final class Data" comment="Ğ”Ğ°Ğ½Ğ½Ñ‹Ğµ.">
                     <xsl:for-each select="data/variable">
                         <!-- Deprecated variables declarations -->
                         <variable comment="{@description}.">
@@ -54,7 +54,7 @@
                         </variable>
                     </xsl:for-each>
                     <xsl:for-each select="auto/variable">
-                        <variable comment="{@description} (Ïğîöåäóğà {../@id}).">
+                        <variable comment="{@description} (ĞŸÑ€Ğ¾Ñ†ĞµĞ´ÑƒÑ€Ğ° {../@id}).">
                             <xsl:text>public </xsl:text>
                             <xsl:value-of select="@type"/>
                             <xsl:text> </xsl:text>

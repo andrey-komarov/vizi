@@ -63,7 +63,7 @@
             <xsl:if test="not(@description)">
                 <xsl:attribute name="description">
                     <xsl:value-of select="//auto[@id = current()/@id]/@description"/>
-                    <xsl:text> (автомат)</xsl:text>
+                    <xsl:text> (Р°РІС‚РѕРјР°С‚)</xsl:text>
                 </xsl:attribute>
             </xsl:if>
         </call-auto>
@@ -89,7 +89,7 @@
             </xsl:attribute>
 
             <xsl:copy-of select="draw|draw-true|draw-false"/>
-            <then state="{$state + 1}" level="-1" description="{@description} (окончание)">
+            <then state="{$state + 1}" level="-1" description="{@description} (РѕРєРѕРЅС‡Р°РЅРёРµ)">
                 <xsl:apply-templates select="then/*" mode="algorithm"/>
             </then>
             <else>
