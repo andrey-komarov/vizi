@@ -20,12 +20,12 @@ public final class KarkkainenVisualizer
     implements AdjustmentListener
 {
     /**
-     * └тЄюьрЄ рыуюЁшЄьр ╩ Ёъърщэхэр
+     * ╨Р╨▓╤В╨╛╨╝╨░╤В ╨░╨╗╨│╨╛╤А╨╕╤В╨╝╨░ ╨Ъ╤П╤А╨║╨║╨░╨╣╨╜╨╡╨╜╨░
      */
     private final Karkkainen auto;
 
     /**
-     * ─рээ√х ртЄюьрЄр рыуюЁшЄьр ╩ Ёъърщэхэр
+     * ╨Ф╨░╨╜╨╜╤Л╨╡ ╨░╨▓╤В╨╛╨╝╨░╤В╨░ ╨░╨╗╨│╨╛╤А╨╕╤В╨╝╨░ ╨Ъ╤П╤А╨║╨║╨░╨╣╨╜╨╡╨╜╨░
      */
     private final Karkkainen.Data data;
 
@@ -198,7 +198,7 @@ public final class KarkkainenVisualizer
 
 
     private void init(char[] str) {
-        //Очистка панели
+        //╨Л╨╖╨Б╨▒╨▓╨Д┬а ╨З┬а┬н╥Р┬л╨Б
         for (int i = 0; i < all.size(); i++) {
             ((MyArrayContainer)all.elementAt(i)).arr.visible = false;
         }
@@ -211,18 +211,18 @@ public final class KarkkainenVisualizer
         }
         s.remove(clientPane);
 
-        //Перемотка алгоритма в начало и инициализация
+        //╨П╥Р╨░╥Р┬м┬о╨▓╨Д┬а ┬а┬л╨И┬о╨░╨Б╨▓┬м┬а ╤Ю ┬н┬а╨╖┬а┬л┬о ╨Б ╨Б┬н╨Б╨╢╨Б┬а┬л╨Б┬з┬а╨╢╨Б╨┐
 
         rewind(0);
         data.s = str;
         int size = data.s.length;
 
-        //Построение всех фигур
+        //╨П┬о╨▒╨▓╨░┬о╥Р┬н╨Б╥Р ╤Ю╨▒╥Р╨╡ ╨┤╨Б╨И╨│╨░
         all = new Vector();
-        //Выделение нужных даных непосредственно из алгоритма.
+        //тАЪ╨╗┬д╥Р┬л╥Р┬н╨Б╥Р ┬н╨│┬ж┬н╨╗╨╡ ┬д┬а┬н╨╗╨╡ ┬н╥Р╨З┬о╨▒╨░╥Р┬д╨▒╨▓╤Ю╥Р┬н┬н┬о ╨Б┬з ┬а┬л╨И┬о╨░╨Б╨▓┬м┬а.
         (new KarkkainenAlgorythm()).suffArray(data);
 
-        //Вычисление некоторых констант
+        //тАЪ╨╗╨╖╨Б╨▒┬л╥Р┬н╨Б╥Р ┬н╥Р╨Д┬о╨▓┬о╨░╨╗╨╡ ╨Д┬о┬н╨▒╨▓┬а┬н╨▓
         double sx;
         if (data.s.length % 3 == 1) {
             aspectRatio = (2.0 * (4 + data.recStr.length)) / (3 + data.s.length);        
@@ -238,7 +238,7 @@ public final class KarkkainenVisualizer
 
         int recStrN = data.recStr.length;
              
-        {   //Номера над строками
+        {   //╨М┬о┬м╥Р╨░┬а ┬н┬а┬д ╨▒╨▓╨░┬о╨Д┬а┬м╨Б
             data.sNumSt = new int[data.s.length];
             fill(data.sNumSt, 1);
             int[] tmp = new int[data.s.length];
@@ -249,7 +249,7 @@ public final class KarkkainenVisualizer
             all.insertElementAt(new MyArrayContainer(sNum, tmp, data.sNumSt, styleArray), all.size());
         } 
 
-        //Рекурсивно построенные строки
+        //╤Т╥Р╨Д╨│╨░╨▒╨Б╤Ю┬н┬о ╨З┬о╨▒╨▓╨░┬о╥Р┬н┬н╨╗╥Р ╨▒╨▓╨░┬о╨Д╨Б
         data.recStrSt = new int[recStrN][];
         recStr = new MyArray[recStrN];
         data.recStrNumSt = new int[recStrN][];
@@ -286,7 +286,7 @@ public final class KarkkainenVisualizer
         for (int i = 0; i < recStrN; i++) {
           //  System.out.println(i);
             int n = data.recStr[i].length;
-            int n12 = n - (n + 2) / 3; //Количество нужных суффиксов
+            int n12 = n - (n + 2) / 3; //╨Й┬о┬л╨Б╨╖╥Р╨▒╨▓╤Ю┬о ┬н╨│┬ж┬н╨╗╨╡ ╨▒╨│╨┤╨┤╨Б╨Д╨▒┬о╤Ю
             tripples[i] = new MyArray[n12];
             data.tripplesSt[i] = new int[n12][];
             int c = 0;

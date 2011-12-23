@@ -72,7 +72,7 @@
             src="${target.dir}"
             dest="${build.vizi}/${vizi.package.path}"
             includes="**/*.properties"
-            encoding="Cp1251"
+            encoding="UTF-8"
         />
     </target>
 

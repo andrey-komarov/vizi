@@ -5,12 +5,12 @@ import java.util.Locale;
 
 public final class BTree extends BaseAutoReverseAutomata {
     /**
-      * Модель данных.
+      * РњРѕРґРµР»СЊ РґР°РЅРЅС‹С….
       */
     public final Data d = new Data();
 
     /**
-      * Конструктор для языка
+      * РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ РґР»СЏ СЏР·С‹РєР°
       */
     public BTree(Locale locale) {
         super("ru.ifmo.vizi.btree.Comments", locale); 
@@ -18,51 +18,51 @@ public final class BTree extends BaseAutoReverseAutomata {
     }
 
     /**
-      * Данные.
+      * Р”Р°РЅРЅС‹Рµ.
       */
     public final class Data {
         /**
-          * Экземпляр апплета.
+          * Р­РєР·РµРјРїР»СЏСЂ Р°РїРїР»РµС‚Р°.
           */
         public BTreeVisualizer visualizer = null;
 
         /**
-          * Признаки листов.
+          * РџСЂРёР·РЅР°РєРё Р»РёСЃС‚РѕРІ.
           */
         public boolean[] leaf = new boolean[26];
 
         /**
-          * Кол-во ключей.
+          * РљРѕР»-РІРѕ РєР»СЋС‡РµР№.
           */
         public int[] n = new int[26];
 
         /**
-          * Ключи.
+          * РљР»СЋС‡Рё.
           */
         public char[][] key = new char[26][26];
 
         /**
-          * Ссылки.
+          * РЎСЃС‹Р»РєРё.
           */
         public int[][] c = new int[26][26];
 
         /**
-          * Кол-во узлов.
+          * РљРѕР»-РІРѕ СѓР·Р»РѕРІ.
           */
         public int num = 1;
 
         /**
-          * Текущий узел.
+          * РўРµРєСѓС‰РёР№ СѓР·РµР».
           */
         public int x = 1;
 
         /**
-          * Ключ.
+          * РљР»СЋС‡.
           */
         public char k = 'A';
 
         /**
-          * Корень дерева.
+          * РљРѕСЂРµРЅСЊ РґРµСЂРµРІР°.
           */
         public int root = 1;
 
@@ -82,7 +82,7 @@ public final class BTree extends BaseAutoReverseAutomata {
         public int m = 0;
 
         /**
-          * Русская Строка.
+          * Р СѓСЃСЃРєР°СЏ РЎС‚СЂРѕРєР°.
           */
         public String sRu = new String();
 
@@ -92,22 +92,22 @@ public final class BTree extends BaseAutoReverseAutomata {
         public String sEn = new String();
 
         /**
-          *  (Процедура SplitChild).
+          *  (РџСЂРѕС†РµРґСѓСЂР° SplitChild).
           */
         public int SplitChild_z;
 
         /**
-          * Переменная цикла (Процедура SplitChild).
+          * РџРµСЂРµРјРµРЅРЅР°СЏ С†РёРєР»Р° (РџСЂРѕС†РµРґСѓСЂР° SplitChild).
           */
         public int SplitChild_j;
 
         /**
-          * Переменная цикла (Процедура InsertNonfull).
+          * РџРµСЂРµРјРµРЅРЅР°СЏ С†РёРєР»Р° (РџСЂРѕС†РµРґСѓСЂР° InsertNonfull).
           */
         public boolean InsertNonfull_flag;
 
         /**
-          * Переменная цикла (Процедура InsertNonfull).
+          * РџРµСЂРµРјРµРЅРЅР°СЏ С†РёРєР»Р° (РџСЂРѕС†РµРґСѓСЂР° InsertNonfull).
           */
         public int InsertNonfull_i;
 
@@ -117,83 +117,83 @@ public final class BTree extends BaseAutoReverseAutomata {
     }
 
     /**
-      * Разрезает вершину.
+      * Р Р°Р·СЂРµР·Р°РµС‚ РІРµСЂС€РёРЅСѓ.
       */
     private final class SplitChild extends BaseAutomata implements Automata {
         /**
-          * Начальное состояние автомата.
+          * РќР°С‡Р°Р»СЊРЅРѕРµ СЃРѕСЃС‚РѕСЏРЅРёРµ Р°РІС‚РѕРјР°С‚Р°.
           */
         private final int START_STATE = 0;
 
         /**
-          * Конечное состояние автомата.
+          * РљРѕРЅРµС‡РЅРѕРµ СЃРѕСЃС‚РѕСЏРЅРёРµ Р°РІС‚РѕРјР°С‚Р°.
           */
         private final int END_STATE = 16;
 
         /**
-          * Конструктор.
+          * РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ.
           */
         public SplitChild() {
             super( 
                 "SplitChild", 
-                0, // Номер начального состояния 
-                16, // Номер конечного состояния 
+                0, // РќРѕРјРµСЂ РЅР°С‡Р°Р»СЊРЅРѕРіРѕ СЃРѕСЃС‚РѕСЏРЅРёСЏ 
+                16, // РќРѕРјРµСЂ РєРѕРЅРµС‡РЅРѕРіРѕ СЃРѕСЃС‚РѕСЏРЅРёСЏ 
                 new String[]{ 
-                    "Начальное состояние",  
-                    "Начало цикла", 
-                    "Цикл", 
+                    "РќР°С‡Р°Р»СЊРЅРѕРµ СЃРѕСЃС‚РѕСЏРЅРёРµ",  
+                    "РќР°С‡Р°Р»Рѕ С†РёРєР»Р°", 
+                    "Р¦РёРєР»", 
                     "XZ", 
                     "XZ", 
-                    "XZ (окончание)", 
-                    "Начало цикла", 
-                    "Цикл", 
+                    "XZ (РѕРєРѕРЅС‡Р°РЅРёРµ)", 
+                    "РќР°С‡Р°Р»Рѕ С†РёРєР»Р°", 
+                    "Р¦РёРєР»", 
                     "XZ", 
-                    "Начало цикла", 
-                    "Цикл", 
+                    "РќР°С‡Р°Р»Рѕ С†РёРєР»Р°", 
+                    "Р¦РёРєР»", 
                     "XZ", 
-                    "Начало цикла", 
-                    "Цикл", 
+                    "РќР°С‡Р°Р»Рѕ С†РёРєР»Р°", 
+                    "Р¦РёРєР»", 
                     "XZ", 
                     "XZ", 
-                    "Конечное состояние" 
+                    "РљРѕРЅРµС‡РЅРѕРµ СЃРѕСЃС‚РѕСЏРЅРёРµ" 
                 }, new int[]{ 
-                    Integer.MAX_VALUE, // Начальное состояние,  
-                    -1, // Начало цикла 
-                    -1, // Цикл 
+                    Integer.MAX_VALUE, // РќР°С‡Р°Р»СЊРЅРѕРµ СЃРѕСЃС‚РѕСЏРЅРёРµ,  
+                    -1, // РќР°С‡Р°Р»Рѕ С†РёРєР»Р° 
+                    -1, // Р¦РёРєР» 
                     -1, // XZ 
                     -1, // XZ 
-                    -1, // XZ (окончание) 
-                    -1, // Начало цикла 
-                    -1, // Цикл 
+                    -1, // XZ (РѕРєРѕРЅС‡Р°РЅРёРµ) 
+                    -1, // РќР°С‡Р°Р»Рѕ С†РёРєР»Р° 
+                    -1, // Р¦РёРєР» 
                     -1, // XZ 
-                    -1, // Начало цикла 
-                    -1, // Цикл 
+                    -1, // РќР°С‡Р°Р»Рѕ С†РёРєР»Р° 
+                    -1, // Р¦РёРєР» 
                     -1, // XZ 
-                    -1, // Начало цикла 
-                    -1, // Цикл 
+                    -1, // РќР°С‡Р°Р»Рѕ С†РёРєР»Р° 
+                    -1, // Р¦РёРєР» 
                     -1, // XZ 
                     -1, // XZ 
-                    Integer.MAX_VALUE, // Конечное состояние 
+                    Integer.MAX_VALUE, // РљРѕРЅРµС‡РЅРѕРµ СЃРѕСЃС‚РѕСЏРЅРёРµ 
                 } 
             ); 
         }
 
         /**
-          * Сделать один шаг автомата в перед.
+          * РЎРґРµР»Р°С‚СЊ РѕРґРёРЅ С€Р°Рі Р°РІС‚РѕРјР°С‚Р° РІ РїРµСЂРµРґ.
           */
         protected void doStepForward(int level) {
-            // Переход в следующее состояние
+            // РџРµСЂРµС…РѕРґ РІ СЃР»РµРґСѓСЋС‰РµРµ СЃРѕСЃС‚РѕСЏРЅРёРµ
             switch (state) {
-                case START_STATE: { // Начальное состояние
-                    state = 1; // Начало цикла
+                case START_STATE: { // РќР°С‡Р°Р»СЊРЅРѕРµ СЃРѕСЃС‚РѕСЏРЅРёРµ
+                    state = 1; // РќР°С‡Р°Р»Рѕ С†РёРєР»Р°
                     break;
                 }
-                case 1: { // Начало цикла
+                case 1: { // РќР°С‡Р°Р»Рѕ С†РёРєР»Р°
                     stack.pushBoolean(false); 
-                    state = 2; // Цикл
+                    state = 2; // Р¦РёРєР»
                     break;
                 }
-                case 2: { // Цикл
+                case 2: { // Р¦РёРєР»
                     if (d.SplitChild_j <= d.t - 1) {
                         state = 3; // XZ
                     } else {
@@ -203,65 +203,65 @@ public final class BTree extends BaseAutoReverseAutomata {
                 }
                 case 3: { // XZ
                     stack.pushBoolean(true); 
-                    state = 2; // Цикл
+                    state = 2; // Р¦РёРєР»
                     break;
                 }
                 case 4: { // XZ
                     if (!d.leaf[d.y]) {
-                        state = 6; // Начало цикла
+                        state = 6; // РќР°С‡Р°Р»Рѕ С†РёРєР»Р°
                     } else {
                         stack.pushBoolean(false); 
-                        state = 5; // XZ (окончание)
+                        state = 5; // XZ (РѕРєРѕРЅС‡Р°РЅРёРµ)
                     }
                     break;
                 }
-                case 5: { // XZ (окончание)
-                    state = 9; // Начало цикла
+                case 5: { // XZ (РѕРєРѕРЅС‡Р°РЅРёРµ)
+                    state = 9; // РќР°С‡Р°Р»Рѕ С†РёРєР»Р°
                     break;
                 }
-                case 6: { // Начало цикла
+                case 6: { // РќР°С‡Р°Р»Рѕ С†РёРєР»Р°
                     stack.pushBoolean(false); 
-                    state = 7; // Цикл
+                    state = 7; // Р¦РёРєР»
                     break;
                 }
-                case 7: { // Цикл
+                case 7: { // Р¦РёРєР»
                     if (d.SplitChild_j <= d.t) {
                         state = 8; // XZ
                     } else {
                         stack.pushBoolean(true); 
-                        state = 5; // XZ (окончание)
+                        state = 5; // XZ (РѕРєРѕРЅС‡Р°РЅРёРµ)
                     }
                     break;
                 }
                 case 8: { // XZ
                     stack.pushBoolean(true); 
-                    state = 7; // Цикл
+                    state = 7; // Р¦РёРєР»
                     break;
                 }
-                case 9: { // Начало цикла
+                case 9: { // РќР°С‡Р°Р»Рѕ С†РёРєР»Р°
                     stack.pushBoolean(false); 
-                    state = 10; // Цикл
+                    state = 10; // Р¦РёРєР»
                     break;
                 }
-                case 10: { // Цикл
+                case 10: { // Р¦РёРєР»
                     if (d.m <= d.SplitChild_j) {
                         state = 11; // XZ
                     } else {
-                        state = 12; // Начало цикла
+                        state = 12; // РќР°С‡Р°Р»Рѕ С†РёРєР»Р°
                     }
                     break;
                 }
                 case 11: { // XZ
                     stack.pushBoolean(true); 
-                    state = 10; // Цикл
+                    state = 10; // Р¦РёРєР»
                     break;
                 }
-                case 12: { // Начало цикла
+                case 12: { // РќР°С‡Р°Р»Рѕ С†РёРєР»Р°
                     stack.pushBoolean(false); 
-                    state = 13; // Цикл
+                    state = 13; // Р¦РёРєР»
                     break;
                 }
-                case 13: { // Цикл
+                case 13: { // Р¦РёРєР»
                     if (d.m <= d.SplitChild_j) {
                         state = 14; // XZ
                     } else {
@@ -271,7 +271,7 @@ public final class BTree extends BaseAutoReverseAutomata {
                 }
                 case 14: { // XZ
                     stack.pushBoolean(true); 
-                    state = 13; // Цикл
+                    state = 13; // Р¦РёРєР»
                     break;
                 }
                 case 15: { // XZ
@@ -280,9 +280,9 @@ public final class BTree extends BaseAutoReverseAutomata {
                 }
             }
 
-            // Действие в текущем состоянии
+            // Р”РµР№СЃС‚РІРёРµ РІ С‚РµРєСѓС‰РµРј СЃРѕСЃС‚РѕСЏРЅРёРё
             switch (state) {
-                case 1: { // Начало цикла
+                case 1: { // РќР°С‡Р°Р»Рѕ С†РёРєР»Р°
                     startSection();
                     storeField(d, "num");
                     d.num = d.num + 1;
@@ -298,7 +298,7 @@ public final class BTree extends BaseAutoReverseAutomata {
                     d.SplitChild_j = 1;
                     break;
                 }
-                case 2: { // Цикл
+                case 2: { // Р¦РёРєР»
                     break;
                 }
                 case 3: { // XZ
@@ -313,16 +313,16 @@ public final class BTree extends BaseAutoReverseAutomata {
                 case 4: { // XZ
                     break;
                 }
-                case 5: { // XZ (окончание)
+                case 5: { // XZ (РѕРєРѕРЅС‡Р°РЅРёРµ)
                     break;
                 }
-                case 6: { // Начало цикла
+                case 6: { // РќР°С‡Р°Р»Рѕ С†РёРєР»Р°
                     startSection();
                     storeField(d, "SplitChild_j");
                     d.SplitChild_j = 1;
                     break;
                 }
-                case 7: { // Цикл
+                case 7: { // Р¦РёРєР»
                     break;
                 }
                 case 8: { // XZ
@@ -332,7 +332,7 @@ public final class BTree extends BaseAutoReverseAutomata {
                     d.SplitChild_j = d.SplitChild_j + 1;
                     break;
                 }
-                case 9: { // Начало цикла
+                case 9: { // РќР°С‡Р°Р»Рѕ С†РёРєР»Р°
                     startSection();
                     storeArray(d.n, d.y);
                     d.n[d.y] = d.t - 1;
@@ -340,7 +340,7 @@ public final class BTree extends BaseAutoReverseAutomata {
                     d.SplitChild_j = d.n[d.x] + 1;
                     break;
                 }
-                case 10: { // Цикл
+                case 10: { // Р¦РёРєР»
                     break;
                 }
                 case 11: { // XZ
@@ -351,7 +351,7 @@ public final class BTree extends BaseAutoReverseAutomata {
                     d.SplitChild_j = d.SplitChild_j - 1;
                     break;
                 }
-                case 12: { // Начало цикла
+                case 12: { // РќР°С‡Р°Р»Рѕ С†РёРєР»Р°
                     startSection();
                     storeArray(d.c[d.x], d.m + 1);
                     d.c[d.x][d.m + 1] = d.SplitChild_z;
@@ -359,7 +359,7 @@ public final class BTree extends BaseAutoReverseAutomata {
                     d.SplitChild_j = d.n[d.x];
                     break;
                 }
-                case 13: { // Цикл
+                case 13: { // Р¦РёРєР»
                     break;
                 }
                 case 14: { // XZ
@@ -382,16 +382,16 @@ public final class BTree extends BaseAutoReverseAutomata {
         }
 
         /**
-          * Сделать один шаг автомата назад.
+          * РЎРґРµР»Р°С‚СЊ РѕРґРёРЅ С€Р°Рі Р°РІС‚РѕРјР°С‚Р° РЅР°Р·Р°Рґ.
           */
         protected void doStepBackward(int level) {
-            // Обращение действия в текущем состоянии
+            // РћР±СЂР°С‰РµРЅРёРµ РґРµР№СЃС‚РІРёСЏ РІ С‚РµРєСѓС‰РµРј СЃРѕСЃС‚РѕСЏРЅРёРё
             switch (state) {
-                case 1: { // Начало цикла
+                case 1: { // РќР°С‡Р°Р»Рѕ С†РёРєР»Р°
                     restoreSection();
                     break;
                 }
-                case 2: { // Цикл
+                case 2: { // Р¦РёРєР»
                     break;
                 }
                 case 3: { // XZ
@@ -401,36 +401,36 @@ public final class BTree extends BaseAutoReverseAutomata {
                 case 4: { // XZ
                     break;
                 }
-                case 5: { // XZ (окончание)
+                case 5: { // XZ (РѕРєРѕРЅС‡Р°РЅРёРµ)
                     break;
                 }
-                case 6: { // Начало цикла
+                case 6: { // РќР°С‡Р°Р»Рѕ С†РёРєР»Р°
                     restoreSection();
                     break;
                 }
-                case 7: { // Цикл
+                case 7: { // Р¦РёРєР»
                     break;
                 }
                 case 8: { // XZ
                     restoreSection();
                     break;
                 }
-                case 9: { // Начало цикла
+                case 9: { // РќР°С‡Р°Р»Рѕ С†РёРєР»Р°
                     restoreSection();
                     break;
                 }
-                case 10: { // Цикл
+                case 10: { // Р¦РёРєР»
                     break;
                 }
                 case 11: { // XZ
                     restoreSection();
                     break;
                 }
-                case 12: { // Начало цикла
+                case 12: { // РќР°С‡Р°Р»Рѕ С†РёРєР»Р°
                     restoreSection();
                     break;
                 }
-                case 13: { // Цикл
+                case 13: { // Р¦РёРєР»
                     break;
                 }
                 case 14: { // XZ
@@ -443,89 +443,89 @@ public final class BTree extends BaseAutoReverseAutomata {
                 }
             }
 
-            // Переход в предыдущее состояние
+            // РџРµСЂРµС…РѕРґ РІ РїСЂРµРґС‹РґСѓС‰РµРµ СЃРѕСЃС‚РѕСЏРЅРёРµ
             switch (state) {
-                case 1: { // Начало цикла
+                case 1: { // РќР°С‡Р°Р»Рѕ С†РёРєР»Р°
                     state = START_STATE; 
                     break;
                 }
-                case 2: { // Цикл
+                case 2: { // Р¦РёРєР»
                     if (stack.popBoolean()) {
                         state = 3; // XZ
                     } else {
-                        state = 1; // Начало цикла
+                        state = 1; // РќР°С‡Р°Р»Рѕ С†РёРєР»Р°
                     }
                     break;
                 }
                 case 3: { // XZ
-                    state = 2; // Цикл
+                    state = 2; // Р¦РёРєР»
                     break;
                 }
                 case 4: { // XZ
-                    state = 2; // Цикл
+                    state = 2; // Р¦РёРєР»
                     break;
                 }
-                case 5: { // XZ (окончание)
+                case 5: { // XZ (РѕРєРѕРЅС‡Р°РЅРёРµ)
                     if (stack.popBoolean()) {
-                        state = 7; // Цикл
+                        state = 7; // Р¦РёРєР»
                     } else {
                         state = 4; // XZ
                     }
                     break;
                 }
-                case 6: { // Начало цикла
+                case 6: { // РќР°С‡Р°Р»Рѕ С†РёРєР»Р°
                     state = 4; // XZ
                     break;
                 }
-                case 7: { // Цикл
+                case 7: { // Р¦РёРєР»
                     if (stack.popBoolean()) {
                         state = 8; // XZ
                     } else {
-                        state = 6; // Начало цикла
+                        state = 6; // РќР°С‡Р°Р»Рѕ С†РёРєР»Р°
                     }
                     break;
                 }
                 case 8: { // XZ
-                    state = 7; // Цикл
+                    state = 7; // Р¦РёРєР»
                     break;
                 }
-                case 9: { // Начало цикла
-                    state = 5; // XZ (окончание)
+                case 9: { // РќР°С‡Р°Р»Рѕ С†РёРєР»Р°
+                    state = 5; // XZ (РѕРєРѕРЅС‡Р°РЅРёРµ)
                     break;
                 }
-                case 10: { // Цикл
+                case 10: { // Р¦РёРєР»
                     if (stack.popBoolean()) {
                         state = 11; // XZ
                     } else {
-                        state = 9; // Начало цикла
+                        state = 9; // РќР°С‡Р°Р»Рѕ С†РёРєР»Р°
                     }
                     break;
                 }
                 case 11: { // XZ
-                    state = 10; // Цикл
+                    state = 10; // Р¦РёРєР»
                     break;
                 }
-                case 12: { // Начало цикла
-                    state = 10; // Цикл
+                case 12: { // РќР°С‡Р°Р»Рѕ С†РёРєР»Р°
+                    state = 10; // Р¦РёРєР»
                     break;
                 }
-                case 13: { // Цикл
+                case 13: { // Р¦РёРєР»
                     if (stack.popBoolean()) {
                         state = 14; // XZ
                     } else {
-                        state = 12; // Начало цикла
+                        state = 12; // РќР°С‡Р°Р»Рѕ С†РёРєР»Р°
                     }
                     break;
                 }
                 case 14: { // XZ
-                    state = 13; // Цикл
+                    state = 13; // Р¦РёРєР»
                     break;
                 }
                 case 15: { // XZ
-                    state = 13; // Цикл
+                    state = 13; // Р¦РёРєР»
                     break;
                 }
-                case END_STATE: { // Начальное состояние
+                case END_STATE: { // РќР°С‡Р°Р»СЊРЅРѕРµ СЃРѕСЃС‚РѕСЏРЅРёРµ
                     state = 15; // XZ
                     break;
                 }
@@ -533,12 +533,12 @@ public final class BTree extends BaseAutoReverseAutomata {
         }
 
         /**
-          * Комментарий к текущему состоянию
+          * РљРѕРјРјРµРЅС‚Р°СЂРёР№ Рє С‚РµРєСѓС‰РµРјСѓ СЃРѕСЃС‚РѕСЏРЅРёСЋ
           */
         public String getComment() {
             String comment = ""; 
             Object[] args = null; 
-            // Выбор комментария
+            // Р’С‹Р±РѕСЂ РєРѕРјРјРµРЅС‚Р°СЂРёСЏ
             switch (state) {
             }
 
@@ -546,7 +546,7 @@ public final class BTree extends BaseAutoReverseAutomata {
         }
 
         /**
-          * Выполняет действия по отрисовке состояния
+          * Р’С‹РїРѕР»РЅСЏРµС‚ РґРµР№СЃС‚РІРёСЏ РїРѕ РѕС‚СЂРёСЃРѕРІРєРµ СЃРѕСЃС‚РѕСЏРЅРёСЏ
           */
         public void drawState() {
             switch (state) {
@@ -559,84 +559,84 @@ public final class BTree extends BaseAutoReverseAutomata {
       */
     private final class InsertNonfull extends BaseAutomata implements Automata {
         /**
-          * Начальное состояние автомата.
+          * РќР°С‡Р°Р»СЊРЅРѕРµ СЃРѕСЃС‚РѕСЏРЅРёРµ Р°РІС‚РѕРјР°С‚Р°.
           */
         private final int START_STATE = 0;
 
         /**
-          * Конечное состояние автомата.
+          * РљРѕРЅРµС‡РЅРѕРµ СЃРѕСЃС‚РѕСЏРЅРёРµ Р°РІС‚РѕРјР°С‚Р°.
           */
         private final int END_STATE = 23;
 
         /**
-          * Конструктор.
+          * РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ.
           */
         public InsertNonfull() {
             super( 
                 "InsertNonfull", 
-                0, // Номер начального состояния 
-                23, // Номер конечного состояния 
+                0, // РќРѕРјРµСЂ РЅР°С‡Р°Р»СЊРЅРѕРіРѕ СЃРѕСЃС‚РѕСЏРЅРёСЏ 
+                23, // РќРѕРјРµСЂ РєРѕРЅРµС‡РЅРѕРіРѕ СЃРѕСЃС‚РѕСЏРЅРёСЏ 
                 new String[]{ 
-                    "Начальное состояние",  
+                    "РќР°С‡Р°Р»СЊРЅРѕРµ СЃРѕСЃС‚РѕСЏРЅРёРµ",  
                     "XZ", 
                     "XZ", 
-                    "Начало цикла", 
-                    "Если текущая вершина лист", 
-                    "Если текущая вершина лист (окончание)", 
+                    "РќР°С‡Р°Р»Рѕ С†РёРєР»Р°", 
+                    "Р•СЃР»Рё С‚РµРєСѓС‰Р°СЏ РІРµСЂС€РёРЅР° Р»РёСЃС‚", 
+                    "Р•СЃР»Рё С‚РµРєСѓС‰Р°СЏ РІРµСЂС€РёРЅР° Р»РёСЃС‚ (РѕРєРѕРЅС‡Р°РЅРёРµ)", 
                     "InThis", 
-                    "Цикл", 
+                    "Р¦РёРєР»", 
                     "XZ1", 
                     "XZ2", 
                     "XZ", 
-                    "Цикл", 
+                    "Р¦РёРєР»", 
                     "XZ1", 
                     "XZ2", 
                     "XZ", 
-                    "XZ (окончание)", 
+                    "XZ (РѕРєРѕРЅС‡Р°РЅРёРµ)", 
                     "XZ", 
-                    "Разрезает вершину (автомат)", 
-                    "XZ", 
-                    "XZ", 
-                    "XZ (окончание)", 
+                    "Р Р°Р·СЂРµР·Р°РµС‚ РІРµСЂС€РёРЅСѓ (Р°РІС‚РѕРјР°С‚)", 
                     "XZ", 
                     "XZ", 
-                    "Конечное состояние" 
+                    "XZ (РѕРєРѕРЅС‡Р°РЅРёРµ)", 
+                    "XZ", 
+                    "XZ", 
+                    "РљРѕРЅРµС‡РЅРѕРµ СЃРѕСЃС‚РѕСЏРЅРёРµ" 
                 }, new int[]{ 
-                    Integer.MAX_VALUE, // Начальное состояние,  
+                    Integer.MAX_VALUE, // РќР°С‡Р°Р»СЊРЅРѕРµ СЃРѕСЃС‚РѕСЏРЅРёРµ,  
                     -1, // XZ 
                     -1, // XZ 
-                    -1, // Начало цикла 
-                    -1, // Если текущая вершина лист 
-                    -1, // Если текущая вершина лист (окончание) 
+                    -1, // РќР°С‡Р°Р»Рѕ С†РёРєР»Р° 
+                    -1, // Р•СЃР»Рё С‚РµРєСѓС‰Р°СЏ РІРµСЂС€РёРЅР° Р»РёСЃС‚ 
+                    -1, // Р•СЃР»Рё С‚РµРєСѓС‰Р°СЏ РІРµСЂС€РёРЅР° Р»РёСЃС‚ (РѕРєРѕРЅС‡Р°РЅРёРµ) 
                     0, // InThis 
-                    -1, // Цикл 
+                    -1, // Р¦РёРєР» 
                     -1, // XZ1 
                     0, // XZ2 
                     0, // XZ 
-                    -1, // Цикл 
+                    -1, // Р¦РёРєР» 
                     -1, // XZ1 
                     -1, // XZ2 
                     -1, // XZ 
-                    -1, // XZ (окончание) 
+                    -1, // XZ (РѕРєРѕРЅС‡Р°РЅРёРµ) 
                     -1, // XZ 
-                    CALL_AUTO_LEVEL, // Разрезает вершину (автомат) 
+                    CALL_AUTO_LEVEL, // Р Р°Р·СЂРµР·Р°РµС‚ РІРµСЂС€РёРЅСѓ (Р°РІС‚РѕРјР°С‚) 
                     0, // XZ 
                     -1, // XZ 
-                    -1, // XZ (окончание) 
+                    -1, // XZ (РѕРєРѕРЅС‡Р°РЅРёРµ) 
                     -1, // XZ 
                     0, // XZ 
-                    Integer.MAX_VALUE, // Конечное состояние 
+                    Integer.MAX_VALUE, // РљРѕРЅРµС‡РЅРѕРµ СЃРѕСЃС‚РѕСЏРЅРёРµ 
                 } 
             ); 
         }
 
         /**
-          * Сделать один шаг автомата в перед.
+          * РЎРґРµР»Р°С‚СЊ РѕРґРёРЅ С€Р°Рі Р°РІС‚РѕРјР°С‚Р° РІ РїРµСЂРµРґ.
           */
         protected void doStepForward(int level) {
-            // Переход в следующее состояние
+            // РџРµСЂРµС…РѕРґ РІ СЃР»РµРґСѓСЋС‰РµРµ СЃРѕСЃС‚РѕСЏРЅРёРµ
             switch (state) {
-                case START_STATE: { // Начальное состояние
+                case START_STATE: { // РќР°С‡Р°Р»СЊРЅРѕРµ СЃРѕСЃС‚РѕСЏРЅРёРµ
                     state = 1; // XZ
                     break;
                 }
@@ -647,17 +647,17 @@ public final class BTree extends BaseAutoReverseAutomata {
                 }
                 case 2: { // XZ
                     if (d.InsertNonfull_flag) {
-                        state = 3; // Начало цикла
+                        state = 3; // РќР°С‡Р°Р»Рѕ С†РёРєР»Р°
                     } else {
                         state = END_STATE; 
                     }
                     break;
                 }
-                case 3: { // Начало цикла
-                    state = 4; // Если текущая вершина лист
+                case 3: { // РќР°С‡Р°Р»Рѕ С†РёРєР»Р°
+                    state = 4; // Р•СЃР»Рё С‚РµРєСѓС‰Р°СЏ РІРµСЂС€РёРЅР° Р»РёСЃС‚
                     break;
                 }
-                case 4: { // Если текущая вершина лист
+                case 4: { // Р•СЃР»Рё С‚РµРєСѓС‰Р°СЏ РІРµСЂС€РёРЅР° Р»РёСЃС‚
                     if (d.leaf[d.x]) {
                         state = 6; // InThis
                     } else {
@@ -665,17 +665,17 @@ public final class BTree extends BaseAutoReverseAutomata {
                     }
                     break;
                 }
-                case 5: { // Если текущая вершина лист (окончание)
+                case 5: { // Р•СЃР»Рё С‚РµРєСѓС‰Р°СЏ РІРµСЂС€РёРЅР° Р»РёСЃС‚ (РѕРєРѕРЅС‡Р°РЅРёРµ)
                     stack.pushBoolean(true); 
                     state = 2; // XZ
                     break;
                 }
                 case 6: { // InThis
                     stack.pushBoolean(false); 
-                    state = 7; // Цикл
+                    state = 7; // Р¦РёРєР»
                     break;
                 }
-                case 7: { // Цикл
+                case 7: { // Р¦РёРєР»
                     if ((1 <= d.InsertNonfull_i) && (d.k < d.key[d.x][d.InsertNonfull_i])) {
                         state = 8; // XZ1
                     } else {
@@ -685,20 +685,20 @@ public final class BTree extends BaseAutoReverseAutomata {
                 }
                 case 8: { // XZ1
                     stack.pushBoolean(true); 
-                    state = 7; // Цикл
+                    state = 7; // Р¦РёРєР»
                     break;
                 }
                 case 9: { // XZ2
                     stack.pushBoolean(true); 
-                    state = 5; // Если текущая вершина лист (окончание)
+                    state = 5; // Р•СЃР»Рё С‚РµРєСѓС‰Р°СЏ РІРµСЂС€РёРЅР° Р»РёСЃС‚ (РѕРєРѕРЅС‡Р°РЅРёРµ)
                     break;
                 }
                 case 10: { // XZ
                     stack.pushBoolean(false); 
-                    state = 11; // Цикл
+                    state = 11; // Р¦РёРєР»
                     break;
                 }
-                case 11: { // Цикл
+                case 11: { // Р¦РёРєР»
                     if ((1 <= d.InsertNonfull_i) && (d.k < d.key[d.x][d.InsertNonfull_i])) {
                         state = 12; // XZ1
                     } else {
@@ -708,7 +708,7 @@ public final class BTree extends BaseAutoReverseAutomata {
                 }
                 case 12: { // XZ1
                     stack.pushBoolean(true); 
-                    state = 11; // Цикл
+                    state = 11; // Р¦РёРєР»
                     break;
                 }
                 case 13: { // XZ2
@@ -720,19 +720,19 @@ public final class BTree extends BaseAutoReverseAutomata {
                         state = 16; // XZ
                     } else {
                         stack.pushBoolean(false); 
-                        state = 15; // XZ (окончание)
+                        state = 15; // XZ (РѕРєРѕРЅС‡Р°РЅРёРµ)
                     }
                     break;
                 }
-                case 15: { // XZ (окончание)
+                case 15: { // XZ (РѕРєРѕРЅС‡Р°РЅРёРµ)
                     state = 22; // XZ
                     break;
                 }
                 case 16: { // XZ
-                    state = 17; // Разрезает вершину (автомат)
+                    state = 17; // Р Р°Р·СЂРµР·Р°РµС‚ РІРµСЂС€РёРЅСѓ (Р°РІС‚РѕРјР°С‚)
                     break;
                 }
-                case 17: { // Разрезает вершину (автомат)
+                case 17: { // Р Р°Р·СЂРµР·Р°РµС‚ РІРµСЂС€РёРЅСѓ (Р°РІС‚РѕРјР°С‚)
                     if (child.isAtEnd()) {
                         child = null; 
                         state = 18; // XZ
@@ -748,28 +748,28 @@ public final class BTree extends BaseAutoReverseAutomata {
                         state = 21; // XZ
                     } else {
                         stack.pushBoolean(false); 
-                        state = 20; // XZ (окончание)
+                        state = 20; // XZ (РѕРєРѕРЅС‡Р°РЅРёРµ)
                     }
                     break;
                 }
-                case 20: { // XZ (окончание)
+                case 20: { // XZ (РѕРєРѕРЅС‡Р°РЅРёРµ)
                     stack.pushBoolean(true); 
-                    state = 15; // XZ (окончание)
+                    state = 15; // XZ (РѕРєРѕРЅС‡Р°РЅРёРµ)
                     break;
                 }
                 case 21: { // XZ
                     stack.pushBoolean(true); 
-                    state = 20; // XZ (окончание)
+                    state = 20; // XZ (РѕРєРѕРЅС‡Р°РЅРёРµ)
                     break;
                 }
                 case 22: { // XZ
                     stack.pushBoolean(false); 
-                    state = 5; // Если текущая вершина лист (окончание)
+                    state = 5; // Р•СЃР»Рё С‚РµРєСѓС‰Р°СЏ РІРµСЂС€РёРЅР° Р»РёСЃС‚ (РѕРєРѕРЅС‡Р°РЅРёРµ)
                     break;
                 }
             }
 
-            // Действие в текущем состоянии
+            // Р”РµР№СЃС‚РІРёРµ РІ С‚РµРєСѓС‰РµРј СЃРѕСЃС‚РѕСЏРЅРёРё
             switch (state) {
                 case 1: { // XZ
                     startSection();
@@ -780,23 +780,23 @@ public final class BTree extends BaseAutoReverseAutomata {
                 case 2: { // XZ
                     break;
                 }
-                case 3: { // Начало цикла
+                case 3: { // РќР°С‡Р°Р»Рѕ С†РёРєР»Р°
                     startSection();
                     storeField(d, "InsertNonfull_i");
                     d.InsertNonfull_i = d.n[d.x];
                     break;
                 }
-                case 4: { // Если текущая вершина лист
+                case 4: { // Р•СЃР»Рё С‚РµРєСѓС‰Р°СЏ РІРµСЂС€РёРЅР° Р»РёСЃС‚
                     break;
                 }
-                case 5: { // Если текущая вершина лист (окончание)
+                case 5: { // Р•СЃР»Рё С‚РµРєСѓС‰Р°СЏ РІРµСЂС€РёРЅР° Р»РёСЃС‚ (РѕРєРѕРЅС‡Р°РЅРёРµ)
                     break;
                 }
                 case 6: { // InThis
                     startSection();
                     break;
                 }
-                case 7: { // Цикл
+                case 7: { // Р¦РёРєР»
                     break;
                 }
                 case 8: { // XZ1
@@ -821,7 +821,7 @@ public final class BTree extends BaseAutoReverseAutomata {
                     startSection();
                     break;
                 }
-                case 11: { // Цикл
+                case 11: { // Р¦РёРєР»
                     break;
                 }
                 case 12: { // XZ1
@@ -839,7 +839,7 @@ public final class BTree extends BaseAutoReverseAutomata {
                 case 14: { // XZ
                     break;
                 }
-                case 15: { // XZ (окончание)
+                case 15: { // XZ (РѕРєРѕРЅС‡Р°РЅРёРµ)
                     break;
                 }
                 case 16: { // XZ
@@ -850,7 +850,7 @@ public final class BTree extends BaseAutoReverseAutomata {
                     d.y = d.c[d.x][d.InsertNonfull_i];
                     break;
                 }
-                case 17: { // Разрезает вершину (автомат)
+                case 17: { // Р Р°Р·СЂРµР·Р°РµС‚ РІРµСЂС€РёРЅСѓ (Р°РІС‚РѕРјР°С‚)
                     if (child == null) {
                         child = new SplitChild(); 
                         child.toStart(); 
@@ -866,7 +866,7 @@ public final class BTree extends BaseAutoReverseAutomata {
                 case 19: { // XZ
                     break;
                 }
-                case 20: { // XZ (окончание)
+                case 20: { // XZ (РѕРєРѕРЅС‡Р°РЅРёРµ)
                     break;
                 }
                 case 21: { // XZ
@@ -885,10 +885,10 @@ public final class BTree extends BaseAutoReverseAutomata {
         }
 
         /**
-          * Сделать один шаг автомата назад.
+          * РЎРґРµР»Р°С‚СЊ РѕРґРёРЅ С€Р°Рі Р°РІС‚РѕРјР°С‚Р° РЅР°Р·Р°Рґ.
           */
         protected void doStepBackward(int level) {
-            // Обращение действия в текущем состоянии
+            // РћР±СЂР°С‰РµРЅРёРµ РґРµР№СЃС‚РІРёСЏ РІ С‚РµРєСѓС‰РµРј СЃРѕСЃС‚РѕСЏРЅРёРё
             switch (state) {
                 case 1: { // XZ
                     restoreSection();
@@ -897,21 +897,21 @@ public final class BTree extends BaseAutoReverseAutomata {
                 case 2: { // XZ
                     break;
                 }
-                case 3: { // Начало цикла
+                case 3: { // РќР°С‡Р°Р»Рѕ С†РёРєР»Р°
                     restoreSection();
                     break;
                 }
-                case 4: { // Если текущая вершина лист
+                case 4: { // Р•СЃР»Рё С‚РµРєСѓС‰Р°СЏ РІРµСЂС€РёРЅР° Р»РёСЃС‚
                     break;
                 }
-                case 5: { // Если текущая вершина лист (окончание)
+                case 5: { // Р•СЃР»Рё С‚РµРєСѓС‰Р°СЏ РІРµСЂС€РёРЅР° Р»РёСЃС‚ (РѕРєРѕРЅС‡Р°РЅРёРµ)
                     break;
                 }
                 case 6: { // InThis
                     restoreSection();
                     break;
                 }
-                case 7: { // Цикл
+                case 7: { // Р¦РёРєР»
                     break;
                 }
                 case 8: { // XZ1
@@ -926,7 +926,7 @@ public final class BTree extends BaseAutoReverseAutomata {
                     restoreSection();
                     break;
                 }
-                case 11: { // Цикл
+                case 11: { // Р¦РёРєР»
                     break;
                 }
                 case 12: { // XZ1
@@ -940,14 +940,14 @@ public final class BTree extends BaseAutoReverseAutomata {
                 case 14: { // XZ
                     break;
                 }
-                case 15: { // XZ (окончание)
+                case 15: { // XZ (РѕРєРѕРЅС‡Р°РЅРёРµ)
                     break;
                 }
                 case 16: { // XZ
                     restoreSection();
                     break;
                 }
-                case 17: { // Разрезает вершину (автомат)
+                case 17: { // Р Р°Р·СЂРµР·Р°РµС‚ РІРµСЂС€РёРЅСѓ (Р°РІС‚РѕРјР°С‚)
                     if (child == null) {
                         child = new SplitChild(); 
                         child.toEnd(); 
@@ -963,7 +963,7 @@ public final class BTree extends BaseAutoReverseAutomata {
                 case 19: { // XZ
                     break;
                 }
-                case 20: { // XZ (окончание)
+                case 20: { // XZ (РѕРєРѕРЅС‡Р°РЅРёРµ)
                     break;
                 }
                 case 21: { // XZ
@@ -976,7 +976,7 @@ public final class BTree extends BaseAutoReverseAutomata {
                 }
             }
 
-            // Переход в предыдущее состояние
+            // РџРµСЂРµС…РѕРґ РІ РїСЂРµРґС‹РґСѓС‰РµРµ СЃРѕСЃС‚РѕСЏРЅРёРµ
             switch (state) {
                 case 1: { // XZ
                     state = START_STATE; 
@@ -984,21 +984,21 @@ public final class BTree extends BaseAutoReverseAutomata {
                 }
                 case 2: { // XZ
                     if (stack.popBoolean()) {
-                        state = 5; // Если текущая вершина лист (окончание)
+                        state = 5; // Р•СЃР»Рё С‚РµРєСѓС‰Р°СЏ РІРµСЂС€РёРЅР° Р»РёСЃС‚ (РѕРєРѕРЅС‡Р°РЅРёРµ)
                     } else {
                         state = 1; // XZ
                     }
                     break;
                 }
-                case 3: { // Начало цикла
+                case 3: { // РќР°С‡Р°Р»Рѕ С†РёРєР»Р°
                     state = 2; // XZ
                     break;
                 }
-                case 4: { // Если текущая вершина лист
-                    state = 3; // Начало цикла
+                case 4: { // Р•СЃР»Рё С‚РµРєСѓС‰Р°СЏ РІРµСЂС€РёРЅР° Р»РёСЃС‚
+                    state = 3; // РќР°С‡Р°Р»Рѕ С†РёРєР»Р°
                     break;
                 }
-                case 5: { // Если текущая вершина лист (окончание)
+                case 5: { // Р•СЃР»Рё С‚РµРєСѓС‰Р°СЏ РІРµСЂС€РёРЅР° Р»РёСЃС‚ (РѕРєРѕРЅС‡Р°РЅРёРµ)
                     if (stack.popBoolean()) {
                         state = 9; // XZ2
                     } else {
@@ -1007,10 +1007,10 @@ public final class BTree extends BaseAutoReverseAutomata {
                     break;
                 }
                 case 6: { // InThis
-                    state = 4; // Если текущая вершина лист
+                    state = 4; // Р•СЃР»Рё С‚РµРєСѓС‰Р°СЏ РІРµСЂС€РёРЅР° Р»РёСЃС‚
                     break;
                 }
-                case 7: { // Цикл
+                case 7: { // Р¦РёРєР»
                     if (stack.popBoolean()) {
                         state = 8; // XZ1
                     } else {
@@ -1019,18 +1019,18 @@ public final class BTree extends BaseAutoReverseAutomata {
                     break;
                 }
                 case 8: { // XZ1
-                    state = 7; // Цикл
+                    state = 7; // Р¦РёРєР»
                     break;
                 }
                 case 9: { // XZ2
-                    state = 7; // Цикл
+                    state = 7; // Р¦РёРєР»
                     break;
                 }
                 case 10: { // XZ
-                    state = 4; // Если текущая вершина лист
+                    state = 4; // Р•СЃР»Рё С‚РµРєСѓС‰Р°СЏ РІРµСЂС€РёРЅР° Р»РёСЃС‚
                     break;
                 }
-                case 11: { // Цикл
+                case 11: { // Р¦РёРєР»
                     if (stack.popBoolean()) {
                         state = 12; // XZ1
                     } else {
@@ -1039,20 +1039,20 @@ public final class BTree extends BaseAutoReverseAutomata {
                     break;
                 }
                 case 12: { // XZ1
-                    state = 11; // Цикл
+                    state = 11; // Р¦РёРєР»
                     break;
                 }
                 case 13: { // XZ2
-                    state = 11; // Цикл
+                    state = 11; // Р¦РёРєР»
                     break;
                 }
                 case 14: { // XZ
                     state = 13; // XZ2
                     break;
                 }
-                case 15: { // XZ (окончание)
+                case 15: { // XZ (РѕРєРѕРЅС‡Р°РЅРёРµ)
                     if (stack.popBoolean()) {
-                        state = 20; // XZ (окончание)
+                        state = 20; // XZ (РѕРєРѕРЅС‡Р°РЅРёРµ)
                     } else {
                         state = 14; // XZ
                     }
@@ -1062,7 +1062,7 @@ public final class BTree extends BaseAutoReverseAutomata {
                     state = 14; // XZ
                     break;
                 }
-                case 17: { // Разрезает вершину (автомат)
+                case 17: { // Р Р°Р·СЂРµР·Р°РµС‚ РІРµСЂС€РёРЅСѓ (Р°РІС‚РѕРјР°С‚)
                     if (child.isAtStart()) {
                         child = null; 
                         state = 16; // XZ
@@ -1070,14 +1070,14 @@ public final class BTree extends BaseAutoReverseAutomata {
                     break;
                 }
                 case 18: { // XZ
-                    state = 17; // Разрезает вершину (автомат)
+                    state = 17; // Р Р°Р·СЂРµР·Р°РµС‚ РІРµСЂС€РёРЅСѓ (Р°РІС‚РѕРјР°С‚)
                     break;
                 }
                 case 19: { // XZ
                     state = 18; // XZ
                     break;
                 }
-                case 20: { // XZ (окончание)
+                case 20: { // XZ (РѕРєРѕРЅС‡Р°РЅРёРµ)
                     if (stack.popBoolean()) {
                         state = 21; // XZ
                     } else {
@@ -1090,10 +1090,10 @@ public final class BTree extends BaseAutoReverseAutomata {
                     break;
                 }
                 case 22: { // XZ
-                    state = 15; // XZ (окончание)
+                    state = 15; // XZ (РѕРєРѕРЅС‡Р°РЅРёРµ)
                     break;
                 }
-                case END_STATE: { // Начальное состояние
+                case END_STATE: { // РќР°С‡Р°Р»СЊРЅРѕРµ СЃРѕСЃС‚РѕСЏРЅРёРµ
                     state = 2; // XZ
                     break;
                 }
@@ -1101,12 +1101,12 @@ public final class BTree extends BaseAutoReverseAutomata {
         }
 
         /**
-          * Комментарий к текущему состоянию
+          * РљРѕРјРјРµРЅС‚Р°СЂРёР№ Рє С‚РµРєСѓС‰РµРјСѓ СЃРѕСЃС‚РѕСЏРЅРёСЋ
           */
         public String getComment() {
             String comment = ""; 
             Object[] args = null; 
-            // Выбор комментария
+            // Р’С‹Р±РѕСЂ РєРѕРјРјРµРЅС‚Р°СЂРёСЏ
             switch (state) {
                 case 6: { // InThis
                     comment = BTree.this.getComment("InsertNonfull.DrawStep1"); 
@@ -1120,7 +1120,7 @@ public final class BTree extends BaseAutoReverseAutomata {
                     comment = BTree.this.getComment("InsertNonfull.DrawStep2"); 
                     break;
                 }
-                case 17: { // Разрезает вершину (автомат)
+                case 17: { // Р Р°Р·СЂРµР·Р°РµС‚ РІРµСЂС€РёРЅСѓ (Р°РІС‚РѕРјР°С‚)
                     comment = child.getComment(); 
                     args = new Object[0]; 
                     break;
@@ -1139,7 +1139,7 @@ public final class BTree extends BaseAutoReverseAutomata {
         }
 
         /**
-          * Выполняет действия по отрисовке состояния
+          * Р’С‹РїРѕР»РЅСЏРµС‚ РґРµР№СЃС‚РІРёСЏ РїРѕ РѕС‚СЂРёСЃРѕРІРєРµ СЃРѕСЃС‚РѕСЏРЅРёСЏ
           */
         public void drawState() {
             switch (state) {
@@ -1155,7 +1155,7 @@ public final class BTree extends BaseAutoReverseAutomata {
                     d.visualizer.showTree(d.x, 2);
                     break;
                 }
-                case 17: { // Разрезает вершину (автомат)
+                case 17: { // Р Р°Р·СЂРµР·Р°РµС‚ РІРµСЂС€РёРЅСѓ (Р°РІС‚РѕРјР°С‚)
                     child.drawState(); 
                     break;
                 }
@@ -1172,84 +1172,84 @@ public final class BTree extends BaseAutoReverseAutomata {
     }
 
     /**
-      * Добавляет ключ в дерево.
+      * Р”РѕР±Р°РІР»СЏРµС‚ РєР»СЋС‡ РІ РґРµСЂРµРІРѕ.
       */
     private final class Insert extends BaseAutomata implements Automata {
         /**
-          * Начальное состояние автомата.
+          * РќР°С‡Р°Р»СЊРЅРѕРµ СЃРѕСЃС‚РѕСЏРЅРёРµ Р°РІС‚РѕРјР°С‚Р°.
           */
         private final int START_STATE = 0;
 
         /**
-          * Конечное состояние автомата.
+          * РљРѕРЅРµС‡РЅРѕРµ СЃРѕСЃС‚РѕСЏРЅРёРµ Р°РІС‚РѕРјР°С‚Р°.
           */
         private final int END_STATE = 9;
 
         /**
-          * Конструктор.
+          * РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ.
           */
         public Insert() {
             super( 
                 "Insert", 
-                0, // Номер начального состояния 
-                9, // Номер конечного состояния 
+                0, // РќРѕРјРµСЂ РЅР°С‡Р°Р»СЊРЅРѕРіРѕ СЃРѕСЃС‚РѕСЏРЅРёСЏ 
+                9, // РќРѕРјРµСЂ РєРѕРЅРµС‡РЅРѕРіРѕ СЃРѕСЃС‚РѕСЏРЅРёСЏ 
                 new String[]{ 
-                    "Начальное состояние",  
+                    "РќР°С‡Р°Р»СЊРЅРѕРµ СЃРѕСЃС‚РѕСЏРЅРёРµ",  
                     "XZ", 
-                    "Если корень полный", 
-                    "Если корень полный (окончание)", 
+                    "Р•СЃР»Рё РєРѕСЂРµРЅСЊ РїРѕР»РЅС‹Р№", 
+                    "Р•СЃР»Рё РєРѕСЂРµРЅСЊ РїРѕР»РЅС‹Р№ (РѕРєРѕРЅС‡Р°РЅРёРµ)", 
                     "XZ", 
-                    "Разрезает вершину (автомат)", 
+                    "Р Р°Р·СЂРµР·Р°РµС‚ РІРµСЂС€РёРЅСѓ (Р°РІС‚РѕРјР°С‚)", 
                     "XZ", 
-                    " (автомат)", 
-                    " (автомат)", 
-                    "Конечное состояние" 
+                    " (Р°РІС‚РѕРјР°С‚)", 
+                    " (Р°РІС‚РѕРјР°С‚)", 
+                    "РљРѕРЅРµС‡РЅРѕРµ СЃРѕСЃС‚РѕСЏРЅРёРµ" 
                 }, new int[]{ 
-                    Integer.MAX_VALUE, // Начальное состояние,  
+                    Integer.MAX_VALUE, // РќР°С‡Р°Р»СЊРЅРѕРµ СЃРѕСЃС‚РѕСЏРЅРёРµ,  
                     -1, // XZ 
-                    -1, // Если корень полный 
-                    -1, // Если корень полный (окончание) 
+                    -1, // Р•СЃР»Рё РєРѕСЂРµРЅСЊ РїРѕР»РЅС‹Р№ 
+                    -1, // Р•СЃР»Рё РєРѕСЂРµРЅСЊ РїРѕР»РЅС‹Р№ (РѕРєРѕРЅС‡Р°РЅРёРµ) 
                     -1, // XZ 
-                    CALL_AUTO_LEVEL, // Разрезает вершину (автомат) 
+                    CALL_AUTO_LEVEL, // Р Р°Р·СЂРµР·Р°РµС‚ РІРµСЂС€РёРЅСѓ (Р°РІС‚РѕРјР°С‚) 
                     0, // XZ 
-                    CALL_AUTO_LEVEL, //  (автомат) 
-                    CALL_AUTO_LEVEL, //  (автомат) 
-                    Integer.MAX_VALUE, // Конечное состояние 
+                    CALL_AUTO_LEVEL, //  (Р°РІС‚РѕРјР°С‚) 
+                    CALL_AUTO_LEVEL, //  (Р°РІС‚РѕРјР°С‚) 
+                    Integer.MAX_VALUE, // РљРѕРЅРµС‡РЅРѕРµ СЃРѕСЃС‚РѕСЏРЅРёРµ 
                 } 
             ); 
         }
 
         /**
-          * Сделать один шаг автомата в перед.
+          * РЎРґРµР»Р°С‚СЊ РѕРґРёРЅ С€Р°Рі Р°РІС‚РѕРјР°С‚Р° РІ РїРµСЂРµРґ.
           */
         protected void doStepForward(int level) {
-            // Переход в следующее состояние
+            // РџРµСЂРµС…РѕРґ РІ СЃР»РµРґСѓСЋС‰РµРµ СЃРѕСЃС‚РѕСЏРЅРёРµ
             switch (state) {
-                case START_STATE: { // Начальное состояние
+                case START_STATE: { // РќР°С‡Р°Р»СЊРЅРѕРµ СЃРѕСЃС‚РѕСЏРЅРёРµ
                     state = 1; // XZ
                     break;
                 }
                 case 1: { // XZ
-                    state = 2; // Если корень полный
+                    state = 2; // Р•СЃР»Рё РєРѕСЂРµРЅСЊ РїРѕР»РЅС‹Р№
                     break;
                 }
-                case 2: { // Если корень полный
+                case 2: { // Р•СЃР»Рё РєРѕСЂРµРЅСЊ РїРѕР»РЅС‹Р№
                     if (d.n[d.y] == 2 * d.t - 1) {
                         state = 4; // XZ
                     } else {
-                        state = 8; //  (автомат)
+                        state = 8; //  (Р°РІС‚РѕРјР°С‚)
                     }
                     break;
                 }
-                case 3: { // Если корень полный (окончание)
+                case 3: { // Р•СЃР»Рё РєРѕСЂРµРЅСЊ РїРѕР»РЅС‹Р№ (РѕРєРѕРЅС‡Р°РЅРёРµ)
                     state = END_STATE; 
                     break;
                 }
                 case 4: { // XZ
-                    state = 5; // Разрезает вершину (автомат)
+                    state = 5; // Р Р°Р·СЂРµР·Р°РµС‚ РІРµСЂС€РёРЅСѓ (Р°РІС‚РѕРјР°С‚)
                     break;
                 }
-                case 5: { // Разрезает вершину (автомат)
+                case 5: { // Р Р°Р·СЂРµР·Р°РµС‚ РІРµСЂС€РёРЅСѓ (Р°РІС‚РѕРјР°С‚)
                     if (child.isAtEnd()) {
                         child = null; 
                         state = 6; // XZ
@@ -1257,33 +1257,33 @@ public final class BTree extends BaseAutoReverseAutomata {
                     break;
                 }
                 case 6: { // XZ
-                    state = 7; //  (автомат)
+                    state = 7; //  (Р°РІС‚РѕРјР°С‚)
                     break;
                 }
-                case 7: { //  (автомат)
+                case 7: { //  (Р°РІС‚РѕРјР°С‚)
                     if (child.isAtEnd()) {
                         child = null; 
                         stack.pushBoolean(true); 
-                        state = 3; // Если корень полный (окончание)
+                        state = 3; // Р•СЃР»Рё РєРѕСЂРµРЅСЊ РїРѕР»РЅС‹Р№ (РѕРєРѕРЅС‡Р°РЅРёРµ)
                     }
                     break;
                 }
-                case 8: { //  (автомат)
+                case 8: { //  (Р°РІС‚РѕРјР°С‚)
                     if (child.isAtEnd()) {
                         child = null; 
                         stack.pushBoolean(false); 
-                        state = 3; // Если корень полный (окончание)
+                        state = 3; // Р•СЃР»Рё РєРѕСЂРµРЅСЊ РїРѕР»РЅС‹Р№ (РѕРєРѕРЅС‡Р°РЅРёРµ)
                     }
                     break;
                 }
             }
 
-            // Действие в текущем состоянии
+            // Р”РµР№СЃС‚РІРёРµ РІ С‚РµРєСѓС‰РµРј СЃРѕСЃС‚РѕСЏРЅРёРё
             switch (state) {
                 case 1: { // XZ
                     startSection();
                     storeField(d, "sRu");
-                    d.sRu = new String("Готово! Ключ вставлен на нужное место.");
+                    d.sRu = new String("Р“РѕС‚РѕРІРѕ! РљР»СЋС‡ РІСЃС‚Р°РІР»РµРЅ РЅР° РЅСѓР¶РЅРѕРµ РјРµСЃС‚Рѕ.");
                     storeField(d, "sEn");
                     d.sEn = new String("Completed!");
                     
@@ -1293,10 +1293,10 @@ public final class BTree extends BaseAutoReverseAutomata {
                     d.y = d.root;
                     break;
                 }
-                case 2: { // Если корень полный
+                case 2: { // Р•СЃР»Рё РєРѕСЂРµРЅСЊ РїРѕР»РЅС‹Р№
                     break;
                 }
-                case 3: { // Если корень полный (окончание)
+                case 3: { // Р•СЃР»Рё РєРѕСЂРµРЅСЊ РїРѕР»РЅС‹Р№ (РѕРєРѕРЅС‡Р°РЅРёРµ)
                     break;
                 }
                 case 4: { // XZ
@@ -1318,7 +1318,7 @@ public final class BTree extends BaseAutoReverseAutomata {
                     d.m = 1;
                     break;
                 }
-                case 5: { // Разрезает вершину (автомат)
+                case 5: { // Р Р°Р·СЂРµР·Р°РµС‚ РІРµСЂС€РёРЅСѓ (Р°РІС‚РѕРјР°С‚)
                     if (child == null) {
                         child = new SplitChild(); 
                         child.toStart(); 
@@ -1333,7 +1333,7 @@ public final class BTree extends BaseAutoReverseAutomata {
                     d.x = d.root;
                     break;
                 }
-                case 7: { //  (автомат)
+                case 7: { //  (Р°РІС‚РѕРјР°С‚)
                     if (child == null) {
                         child = new InsertNonfull(); 
                         child.toStart(); 
@@ -1342,7 +1342,7 @@ public final class BTree extends BaseAutoReverseAutomata {
                     step--; 
                     break;
                 }
-                case 8: { //  (автомат)
+                case 8: { //  (Р°РІС‚РѕРјР°С‚)
                     if (child == null) {
                         child = new InsertNonfull(); 
                         child.toStart(); 
@@ -1355,26 +1355,26 @@ public final class BTree extends BaseAutoReverseAutomata {
         }
 
         /**
-          * Сделать один шаг автомата назад.
+          * РЎРґРµР»Р°С‚СЊ РѕРґРёРЅ С€Р°Рі Р°РІС‚РѕРјР°С‚Р° РЅР°Р·Р°Рґ.
           */
         protected void doStepBackward(int level) {
-            // Обращение действия в текущем состоянии
+            // РћР±СЂР°С‰РµРЅРёРµ РґРµР№СЃС‚РІРёСЏ РІ С‚РµРєСѓС‰РµРј СЃРѕСЃС‚РѕСЏРЅРёРё
             switch (state) {
                 case 1: { // XZ
                     restoreSection();
                     break;
                 }
-                case 2: { // Если корень полный
+                case 2: { // Р•СЃР»Рё РєРѕСЂРµРЅСЊ РїРѕР»РЅС‹Р№
                     break;
                 }
-                case 3: { // Если корень полный (окончание)
+                case 3: { // Р•СЃР»Рё РєРѕСЂРµРЅСЊ РїРѕР»РЅС‹Р№ (РѕРєРѕРЅС‡Р°РЅРёРµ)
                     break;
                 }
                 case 4: { // XZ
                     restoreSection();
                     break;
                 }
-                case 5: { // Разрезает вершину (автомат)
+                case 5: { // Р Р°Р·СЂРµР·Р°РµС‚ РІРµСЂС€РёРЅСѓ (Р°РІС‚РѕРјР°С‚)
                     if (child == null) {
                         child = new SplitChild(); 
                         child.toEnd(); 
@@ -1387,7 +1387,7 @@ public final class BTree extends BaseAutoReverseAutomata {
                     restoreSection();
                     break;
                 }
-                case 7: { //  (автомат)
+                case 7: { //  (Р°РІС‚РѕРјР°С‚)
                     if (child == null) {
                         child = new InsertNonfull(); 
                         child.toEnd(); 
@@ -1396,7 +1396,7 @@ public final class BTree extends BaseAutoReverseAutomata {
                     step++; 
                     break;
                 }
-                case 8: { //  (автомат)
+                case 8: { //  (Р°РІС‚РѕРјР°С‚)
                     if (child == null) {
                         child = new InsertNonfull(); 
                         child.toEnd(); 
@@ -1407,29 +1407,29 @@ public final class BTree extends BaseAutoReverseAutomata {
                 }
             }
 
-            // Переход в предыдущее состояние
+            // РџРµСЂРµС…РѕРґ РІ РїСЂРµРґС‹РґСѓС‰РµРµ СЃРѕСЃС‚РѕСЏРЅРёРµ
             switch (state) {
                 case 1: { // XZ
                     state = START_STATE; 
                     break;
                 }
-                case 2: { // Если корень полный
+                case 2: { // Р•СЃР»Рё РєРѕСЂРµРЅСЊ РїРѕР»РЅС‹Р№
                     state = 1; // XZ
                     break;
                 }
-                case 3: { // Если корень полный (окончание)
+                case 3: { // Р•СЃР»Рё РєРѕСЂРµРЅСЊ РїРѕР»РЅС‹Р№ (РѕРєРѕРЅС‡Р°РЅРёРµ)
                     if (stack.popBoolean()) {
-                        state = 7; //  (автомат)
+                        state = 7; //  (Р°РІС‚РѕРјР°С‚)
                     } else {
-                        state = 8; //  (автомат)
+                        state = 8; //  (Р°РІС‚РѕРјР°С‚)
                     }
                     break;
                 }
                 case 4: { // XZ
-                    state = 2; // Если корень полный
+                    state = 2; // Р•СЃР»Рё РєРѕСЂРµРЅСЊ РїРѕР»РЅС‹Р№
                     break;
                 }
-                case 5: { // Разрезает вершину (автомат)
+                case 5: { // Р Р°Р·СЂРµР·Р°РµС‚ РІРµСЂС€РёРЅСѓ (Р°РІС‚РѕРјР°С‚)
                     if (child.isAtStart()) {
                         child = null; 
                         state = 4; // XZ
@@ -1437,39 +1437,39 @@ public final class BTree extends BaseAutoReverseAutomata {
                     break;
                 }
                 case 6: { // XZ
-                    state = 5; // Разрезает вершину (автомат)
+                    state = 5; // Р Р°Р·СЂРµР·Р°РµС‚ РІРµСЂС€РёРЅСѓ (Р°РІС‚РѕРјР°С‚)
                     break;
                 }
-                case 7: { //  (автомат)
+                case 7: { //  (Р°РІС‚РѕРјР°С‚)
                     if (child.isAtStart()) {
                         child = null; 
                         state = 6; // XZ
                     }
                     break;
                 }
-                case 8: { //  (автомат)
+                case 8: { //  (Р°РІС‚РѕРјР°С‚)
                     if (child.isAtStart()) {
                         child = null; 
-                        state = 2; // Если корень полный
+                        state = 2; // Р•СЃР»Рё РєРѕСЂРµРЅСЊ РїРѕР»РЅС‹Р№
                     }
                     break;
                 }
-                case END_STATE: { // Начальное состояние
-                    state = 3; // Если корень полный (окончание)
+                case END_STATE: { // РќР°С‡Р°Р»СЊРЅРѕРµ СЃРѕСЃС‚РѕСЏРЅРёРµ
+                    state = 3; // Р•СЃР»Рё РєРѕСЂРµРЅСЊ РїРѕР»РЅС‹Р№ (РѕРєРѕРЅС‡Р°РЅРёРµ)
                     break;
                 }
             }
         }
 
         /**
-          * Комментарий к текущему состоянию
+          * РљРѕРјРјРµРЅС‚Р°СЂРёР№ Рє С‚РµРєСѓС‰РµРјСѓ СЃРѕСЃС‚РѕСЏРЅРёСЋ
           */
         public String getComment() {
             String comment = ""; 
             Object[] args = null; 
-            // Выбор комментария
+            // Р’С‹Р±РѕСЂ РєРѕРјРјРµРЅС‚Р°СЂРёСЏ
             switch (state) {
-                case 5: { // Разрезает вершину (автомат)
+                case 5: { // Р Р°Р·СЂРµР·Р°РµС‚ РІРµСЂС€РёРЅСѓ (Р°РІС‚РѕРјР°С‚)
                     comment = child.getComment(); 
                     args = new Object[0]; 
                     break;
@@ -1478,12 +1478,12 @@ public final class BTree extends BaseAutoReverseAutomata {
                     comment = BTree.this.getComment("Insert.test"); 
                     break;
                 }
-                case 7: { //  (автомат)
+                case 7: { //  (Р°РІС‚РѕРјР°С‚)
                     comment = child.getComment(); 
                     args = new Object[0]; 
                     break;
                 }
-                case 8: { //  (автомат)
+                case 8: { //  (Р°РІС‚РѕРјР°С‚)
                     comment = child.getComment(); 
                     args = new Object[0]; 
                     break;
@@ -1494,7 +1494,7 @@ public final class BTree extends BaseAutoReverseAutomata {
         }
 
         /**
-          * Выполняет действия по отрисовке состояния
+          * Р’С‹РїРѕР»РЅСЏРµС‚ РґРµР№СЃС‚РІРёСЏ РїРѕ РѕС‚СЂРёСЃРѕРІРєРµ СЃРѕСЃС‚РѕСЏРЅРёСЏ
           */
         public void drawState() {
             switch (state) {
@@ -1502,7 +1502,7 @@ public final class BTree extends BaseAutoReverseAutomata {
                     d.visualizer.showTree(-1, 0);
                     break;
                 }
-                case 5: { // Разрезает вершину (автомат)
+                case 5: { // Р Р°Р·СЂРµР·Р°РµС‚ РІРµСЂС€РёРЅСѓ (Р°РІС‚РѕРјР°С‚)
                     child.drawState(); 
                     break;
                 }
@@ -1510,11 +1510,11 @@ public final class BTree extends BaseAutoReverseAutomata {
                     d.visualizer.showTree(-1, 0);
                     break;
                 }
-                case 7: { //  (автомат)
+                case 7: { //  (Р°РІС‚РѕРјР°С‚)
                     child.drawState(); 
                     break;
                 }
-                case 8: { //  (автомат)
+                case 8: { //  (Р°РІС‚РѕРјР°С‚)
                     child.drawState(); 
                     break;
                 }
@@ -1523,58 +1523,58 @@ public final class BTree extends BaseAutoReverseAutomata {
     }
 
     /**
-      * Удаляет ключ из дерева.
+      * РЈРґР°Р»СЏРµС‚ РєР»СЋС‡ РёР· РґРµСЂРµРІР°.
       */
     private final class Delete extends BaseAutomata implements Automata {
         /**
-          * Начальное состояние автомата.
+          * РќР°С‡Р°Р»СЊРЅРѕРµ СЃРѕСЃС‚РѕСЏРЅРёРµ Р°РІС‚РѕРјР°С‚Р°.
           */
         private final int START_STATE = 0;
 
         /**
-          * Конечное состояние автомата.
+          * РљРѕРЅРµС‡РЅРѕРµ СЃРѕСЃС‚РѕСЏРЅРёРµ Р°РІС‚РѕРјР°С‚Р°.
           */
         private final int END_STATE = 2;
 
         /**
-          * Конструктор.
+          * РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ.
           */
         public Delete() {
             super( 
                 "Delete", 
-                0, // Номер начального состояния 
-                2, // Номер конечного состояния 
+                0, // РќРѕРјРµСЂ РЅР°С‡Р°Р»СЊРЅРѕРіРѕ СЃРѕСЃС‚РѕСЏРЅРёСЏ 
+                2, // РќРѕРјРµСЂ РєРѕРЅРµС‡РЅРѕРіРѕ СЃРѕСЃС‚РѕСЏРЅРёСЏ 
                 new String[]{ 
-                    "Начальное состояние",  
-                    "Начало цикла", 
-                    "Конечное состояние" 
+                    "РќР°С‡Р°Р»СЊРЅРѕРµ СЃРѕСЃС‚РѕСЏРЅРёРµ",  
+                    "РќР°С‡Р°Р»Рѕ С†РёРєР»Р°", 
+                    "РљРѕРЅРµС‡РЅРѕРµ СЃРѕСЃС‚РѕСЏРЅРёРµ" 
                 }, new int[]{ 
-                    Integer.MAX_VALUE, // Начальное состояние,  
-                    -1, // Начало цикла 
-                    Integer.MAX_VALUE, // Конечное состояние 
+                    Integer.MAX_VALUE, // РќР°С‡Р°Р»СЊРЅРѕРµ СЃРѕСЃС‚РѕСЏРЅРёРµ,  
+                    -1, // РќР°С‡Р°Р»Рѕ С†РёРєР»Р° 
+                    Integer.MAX_VALUE, // РљРѕРЅРµС‡РЅРѕРµ СЃРѕСЃС‚РѕСЏРЅРёРµ 
                 } 
             ); 
         }
 
         /**
-          * Сделать один шаг автомата в перед.
+          * РЎРґРµР»Р°С‚СЊ РѕРґРёРЅ С€Р°Рі Р°РІС‚РѕРјР°С‚Р° РІ РїРµСЂРµРґ.
           */
         protected void doStepForward(int level) {
-            // Переход в следующее состояние
+            // РџРµСЂРµС…РѕРґ РІ СЃР»РµРґСѓСЋС‰РµРµ СЃРѕСЃС‚РѕСЏРЅРёРµ
             switch (state) {
-                case START_STATE: { // Начальное состояние
-                    state = 1; // Начало цикла
+                case START_STATE: { // РќР°С‡Р°Р»СЊРЅРѕРµ СЃРѕСЃС‚РѕСЏРЅРёРµ
+                    state = 1; // РќР°С‡Р°Р»Рѕ С†РёРєР»Р°
                     break;
                 }
-                case 1: { // Начало цикла
+                case 1: { // РќР°С‡Р°Р»Рѕ С†РёРєР»Р°
                     state = END_STATE; 
                     break;
                 }
             }
 
-            // Действие в текущем состоянии
+            // Р”РµР№СЃС‚РІРёРµ РІ С‚РµРєСѓС‰РµРј СЃРѕСЃС‚РѕСЏРЅРёРё
             switch (state) {
-                case 1: { // Начало цикла
+                case 1: { // РќР°С‡Р°Р»Рѕ С†РёРєР»Р°
                     startSection();
                     break;
                 }
@@ -1582,37 +1582,37 @@ public final class BTree extends BaseAutoReverseAutomata {
         }
 
         /**
-          * Сделать один шаг автомата назад.
+          * РЎРґРµР»Р°С‚СЊ РѕРґРёРЅ С€Р°Рі Р°РІС‚РѕРјР°С‚Р° РЅР°Р·Р°Рґ.
           */
         protected void doStepBackward(int level) {
-            // Обращение действия в текущем состоянии
+            // РћР±СЂР°С‰РµРЅРёРµ РґРµР№СЃС‚РІРёСЏ РІ С‚РµРєСѓС‰РµРј СЃРѕСЃС‚РѕСЏРЅРёРё
             switch (state) {
-                case 1: { // Начало цикла
+                case 1: { // РќР°С‡Р°Р»Рѕ С†РёРєР»Р°
                     restoreSection();
                     break;
                 }
             }
 
-            // Переход в предыдущее состояние
+            // РџРµСЂРµС…РѕРґ РІ РїСЂРµРґС‹РґСѓС‰РµРµ СЃРѕСЃС‚РѕСЏРЅРёРµ
             switch (state) {
-                case 1: { // Начало цикла
+                case 1: { // РќР°С‡Р°Р»Рѕ С†РёРєР»Р°
                     state = START_STATE; 
                     break;
                 }
-                case END_STATE: { // Начальное состояние
-                    state = 1; // Начало цикла
+                case END_STATE: { // РќР°С‡Р°Р»СЊРЅРѕРµ СЃРѕСЃС‚РѕСЏРЅРёРµ
+                    state = 1; // РќР°С‡Р°Р»Рѕ С†РёРєР»Р°
                     break;
                 }
             }
         }
 
         /**
-          * Комментарий к текущему состоянию
+          * РљРѕРјРјРµРЅС‚Р°СЂРёР№ Рє С‚РµРєСѓС‰РµРјСѓ СЃРѕСЃС‚РѕСЏРЅРёСЋ
           */
         public String getComment() {
             String comment = ""; 
             Object[] args = null; 
-            // Выбор комментария
+            // Р’С‹Р±РѕСЂ РєРѕРјРјРµРЅС‚Р°СЂРёСЏ
             switch (state) {
             }
 
@@ -1620,7 +1620,7 @@ public final class BTree extends BaseAutoReverseAutomata {
         }
 
         /**
-          * Выполняет действия по отрисовке состояния
+          * Р’С‹РїРѕР»РЅСЏРµС‚ РґРµР№СЃС‚РІРёСЏ РїРѕ РѕС‚СЂРёСЃРѕРІРєРµ СЃРѕСЃС‚РѕСЏРЅРёСЏ
           */
         public void drawState() {
             switch (state) {
@@ -1629,115 +1629,115 @@ public final class BTree extends BaseAutoReverseAutomata {
     }
 
     /**
-      * Главный автомат.
+      * Р“Р»Р°РІРЅС‹Р№ Р°РІС‚РѕРјР°С‚.
       */
     private final class Main extends BaseAutomata implements Automata {
         /**
-          * Начальное состояние автомата.
+          * РќР°С‡Р°Р»СЊРЅРѕРµ СЃРѕСЃС‚РѕСЏРЅРёРµ Р°РІС‚РѕРјР°С‚Р°.
           */
         private final int START_STATE = 0;
 
         /**
-          * Конечное состояние автомата.
+          * РљРѕРЅРµС‡РЅРѕРµ СЃРѕСЃС‚РѕСЏРЅРёРµ Р°РІС‚РѕРјР°С‚Р°.
           */
         private final int END_STATE = 8;
 
         /**
-          * Конструктор.
+          * РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ.
           */
         public Main() {
             super( 
                 "Main", 
-                0, // Номер начального состояния 
-                8, // Номер конечного состояния 
+                0, // РќРѕРјРµСЂ РЅР°С‡Р°Р»СЊРЅРѕРіРѕ СЃРѕСЃС‚РѕСЏРЅРёСЏ 
+                8, // РќРѕРјРµСЂ РєРѕРЅРµС‡РЅРѕРіРѕ СЃРѕСЃС‚РѕСЏРЅРёСЏ 
                 new String[]{ 
-                    "Начальное состояние",  
-                    "Выбрано добавление", 
-                    "Выбрано добавление (окончание)", 
+                    "РќР°С‡Р°Р»СЊРЅРѕРµ СЃРѕСЃС‚РѕСЏРЅРёРµ",  
+                    "Р’С‹Р±СЂР°РЅРѕ РґРѕР±Р°РІР»РµРЅРёРµ", 
+                    "Р’С‹Р±СЂР°РЅРѕ РґРѕР±Р°РІР»РµРЅРёРµ (РѕРєРѕРЅС‡Р°РЅРёРµ)", 
                     "this is test", 
-                    "Добавляет ключ в дерево (автомат)", 
-                    "Выбрано удаление", 
-                    "Выбрано удаление (окончание)", 
-                    "Удаляет ключ из дерева (автомат)", 
-                    "Конечное состояние" 
+                    "Р”РѕР±Р°РІР»СЏРµС‚ РєР»СЋС‡ РІ РґРµСЂРµРІРѕ (Р°РІС‚РѕРјР°С‚)", 
+                    "Р’С‹Р±СЂР°РЅРѕ СѓРґР°Р»РµРЅРёРµ", 
+                    "Р’С‹Р±СЂР°РЅРѕ СѓРґР°Р»РµРЅРёРµ (РѕРєРѕРЅС‡Р°РЅРёРµ)", 
+                    "РЈРґР°Р»СЏРµС‚ РєР»СЋС‡ РёР· РґРµСЂРµРІР° (Р°РІС‚РѕРјР°С‚)", 
+                    "РљРѕРЅРµС‡РЅРѕРµ СЃРѕСЃС‚РѕСЏРЅРёРµ" 
                 }, new int[]{ 
-                    Integer.MAX_VALUE, // Начальное состояние,  
-                    -1, // Выбрано добавление 
-                    -1, // Выбрано добавление (окончание) 
+                    Integer.MAX_VALUE, // РќР°С‡Р°Р»СЊРЅРѕРµ СЃРѕСЃС‚РѕСЏРЅРёРµ,  
+                    -1, // Р’С‹Р±СЂР°РЅРѕ РґРѕР±Р°РІР»РµРЅРёРµ 
+                    -1, // Р’С‹Р±СЂР°РЅРѕ РґРѕР±Р°РІР»РµРЅРёРµ (РѕРєРѕРЅС‡Р°РЅРёРµ) 
                     0, // this is test 
-                    CALL_AUTO_LEVEL, // Добавляет ключ в дерево (автомат) 
-                    -1, // Выбрано удаление 
-                    -1, // Выбрано удаление (окончание) 
-                    CALL_AUTO_LEVEL, // Удаляет ключ из дерева (автомат) 
-                    Integer.MAX_VALUE, // Конечное состояние 
+                    CALL_AUTO_LEVEL, // Р”РѕР±Р°РІР»СЏРµС‚ РєР»СЋС‡ РІ РґРµСЂРµРІРѕ (Р°РІС‚РѕРјР°С‚) 
+                    -1, // Р’С‹Р±СЂР°РЅРѕ СѓРґР°Р»РµРЅРёРµ 
+                    -1, // Р’С‹Р±СЂР°РЅРѕ СѓРґР°Р»РµРЅРёРµ (РѕРєРѕРЅС‡Р°РЅРёРµ) 
+                    CALL_AUTO_LEVEL, // РЈРґР°Р»СЏРµС‚ РєР»СЋС‡ РёР· РґРµСЂРµРІР° (Р°РІС‚РѕРјР°С‚) 
+                    Integer.MAX_VALUE, // РљРѕРЅРµС‡РЅРѕРµ СЃРѕСЃС‚РѕСЏРЅРёРµ 
                 } 
             ); 
         }
 
         /**
-          * Сделать один шаг автомата в перед.
+          * РЎРґРµР»Р°С‚СЊ РѕРґРёРЅ С€Р°Рі Р°РІС‚РѕРјР°С‚Р° РІ РїРµСЂРµРґ.
           */
         protected void doStepForward(int level) {
-            // Переход в следующее состояние
+            // РџРµСЂРµС…РѕРґ РІ СЃР»РµРґСѓСЋС‰РµРµ СЃРѕСЃС‚РѕСЏРЅРёРµ
             switch (state) {
-                case START_STATE: { // Начальное состояние
-                    state = 1; // Выбрано добавление
+                case START_STATE: { // РќР°С‡Р°Р»СЊРЅРѕРµ СЃРѕСЃС‚РѕСЏРЅРёРµ
+                    state = 1; // Р’С‹Р±СЂР°РЅРѕ РґРѕР±Р°РІР»РµРЅРёРµ
                     break;
                 }
-                case 1: { // Выбрано добавление
+                case 1: { // Р’С‹Р±СЂР°РЅРѕ РґРѕР±Р°РІР»РµРЅРёРµ
                     if (d.visualizer.combobox1.getSelectedIndex() == 0) {
                         state = 3; // this is test
                     } else {
                         stack.pushBoolean(false); 
-                        state = 2; // Выбрано добавление (окончание)
+                        state = 2; // Р’С‹Р±СЂР°РЅРѕ РґРѕР±Р°РІР»РµРЅРёРµ (РѕРєРѕРЅС‡Р°РЅРёРµ)
                     }
                     break;
                 }
-                case 2: { // Выбрано добавление (окончание)
-                    state = 5; // Выбрано удаление
+                case 2: { // Р’С‹Р±СЂР°РЅРѕ РґРѕР±Р°РІР»РµРЅРёРµ (РѕРєРѕРЅС‡Р°РЅРёРµ)
+                    state = 5; // Р’С‹Р±СЂР°РЅРѕ СѓРґР°Р»РµРЅРёРµ
                     break;
                 }
                 case 3: { // this is test
-                    state = 4; // Добавляет ключ в дерево (автомат)
+                    state = 4; // Р”РѕР±Р°РІР»СЏРµС‚ РєР»СЋС‡ РІ РґРµСЂРµРІРѕ (Р°РІС‚РѕРјР°С‚)
                     break;
                 }
-                case 4: { // Добавляет ключ в дерево (автомат)
+                case 4: { // Р”РѕР±Р°РІР»СЏРµС‚ РєР»СЋС‡ РІ РґРµСЂРµРІРѕ (Р°РІС‚РѕРјР°С‚)
                     if (child.isAtEnd()) {
                         child = null; 
                         stack.pushBoolean(true); 
-                        state = 2; // Выбрано добавление (окончание)
+                        state = 2; // Р’С‹Р±СЂР°РЅРѕ РґРѕР±Р°РІР»РµРЅРёРµ (РѕРєРѕРЅС‡Р°РЅРёРµ)
                     }
                     break;
                 }
-                case 5: { // Выбрано удаление
+                case 5: { // Р’С‹Р±СЂР°РЅРѕ СѓРґР°Р»РµРЅРёРµ
                     if (d.visualizer.combobox1.getSelectedIndex() == 1) {
-                        state = 7; // Удаляет ключ из дерева (автомат)
+                        state = 7; // РЈРґР°Р»СЏРµС‚ РєР»СЋС‡ РёР· РґРµСЂРµРІР° (Р°РІС‚РѕРјР°С‚)
                     } else {
                         stack.pushBoolean(false); 
-                        state = 6; // Выбрано удаление (окончание)
+                        state = 6; // Р’С‹Р±СЂР°РЅРѕ СѓРґР°Р»РµРЅРёРµ (РѕРєРѕРЅС‡Р°РЅРёРµ)
                     }
                     break;
                 }
-                case 6: { // Выбрано удаление (окончание)
+                case 6: { // Р’С‹Р±СЂР°РЅРѕ СѓРґР°Р»РµРЅРёРµ (РѕРєРѕРЅС‡Р°РЅРёРµ)
                     state = END_STATE; 
                     break;
                 }
-                case 7: { // Удаляет ключ из дерева (автомат)
+                case 7: { // РЈРґР°Р»СЏРµС‚ РєР»СЋС‡ РёР· РґРµСЂРµРІР° (Р°РІС‚РѕРјР°С‚)
                     if (child.isAtEnd()) {
                         child = null; 
                         stack.pushBoolean(true); 
-                        state = 6; // Выбрано удаление (окончание)
+                        state = 6; // Р’С‹Р±СЂР°РЅРѕ СѓРґР°Р»РµРЅРёРµ (РѕРєРѕРЅС‡Р°РЅРёРµ)
                     }
                     break;
                 }
             }
 
-            // Действие в текущем состоянии
+            // Р”РµР№СЃС‚РІРёРµ РІ С‚РµРєСѓС‰РµРј СЃРѕСЃС‚РѕСЏРЅРёРё
             switch (state) {
-                case 1: { // Выбрано добавление
+                case 1: { // Р’С‹Р±СЂР°РЅРѕ РґРѕР±Р°РІР»РµРЅРёРµ
                     break;
                 }
-                case 2: { // Выбрано добавление (окончание)
+                case 2: { // Р’С‹Р±СЂР°РЅРѕ РґРѕР±Р°РІР»РµРЅРёРµ (РѕРєРѕРЅС‡Р°РЅРёРµ)
                     break;
                 }
                 case 3: { // this is test
@@ -1745,7 +1745,7 @@ public final class BTree extends BaseAutoReverseAutomata {
                     d.k = d.visualizer.get();
                     break;
                 }
-                case 4: { // Добавляет ключ в дерево (автомат)
+                case 4: { // Р”РѕР±Р°РІР»СЏРµС‚ РєР»СЋС‡ РІ РґРµСЂРµРІРѕ (Р°РІС‚РѕРјР°С‚)
                     if (child == null) {
                         child = new Insert(); 
                         child.toStart(); 
@@ -1754,13 +1754,13 @@ public final class BTree extends BaseAutoReverseAutomata {
                     step--; 
                     break;
                 }
-                case 5: { // Выбрано удаление
+                case 5: { // Р’С‹Р±СЂР°РЅРѕ СѓРґР°Р»РµРЅРёРµ
                     break;
                 }
-                case 6: { // Выбрано удаление (окончание)
+                case 6: { // Р’С‹Р±СЂР°РЅРѕ СѓРґР°Р»РµРЅРёРµ (РѕРєРѕРЅС‡Р°РЅРёРµ)
                     break;
                 }
-                case 7: { // Удаляет ключ из дерева (автомат)
+                case 7: { // РЈРґР°Р»СЏРµС‚ РєР»СЋС‡ РёР· РґРµСЂРµРІР° (Р°РІС‚РѕРјР°С‚)
                     if (child == null) {
                         child = new Delete(); 
                         child.toStart(); 
@@ -1773,22 +1773,22 @@ public final class BTree extends BaseAutoReverseAutomata {
         }
 
         /**
-          * Сделать один шаг автомата назад.
+          * РЎРґРµР»Р°С‚СЊ РѕРґРёРЅ С€Р°Рі Р°РІС‚РѕРјР°С‚Р° РЅР°Р·Р°Рґ.
           */
         protected void doStepBackward(int level) {
-            // Обращение действия в текущем состоянии
+            // РћР±СЂР°С‰РµРЅРёРµ РґРµР№СЃС‚РІРёСЏ РІ С‚РµРєСѓС‰РµРј СЃРѕСЃС‚РѕСЏРЅРёРё
             switch (state) {
-                case 1: { // Выбрано добавление
+                case 1: { // Р’С‹Р±СЂР°РЅРѕ РґРѕР±Р°РІР»РµРЅРёРµ
                     break;
                 }
-                case 2: { // Выбрано добавление (окончание)
+                case 2: { // Р’С‹Р±СЂР°РЅРѕ РґРѕР±Р°РІР»РµРЅРёРµ (РѕРєРѕРЅС‡Р°РЅРёРµ)
                     break;
                 }
                 case 3: { // this is test
                     restoreSection();
                     break;
                 }
-                case 4: { // Добавляет ключ в дерево (автомат)
+                case 4: { // Р”РѕР±Р°РІР»СЏРµС‚ РєР»СЋС‡ РІ РґРµСЂРµРІРѕ (Р°РІС‚РѕРјР°С‚)
                     if (child == null) {
                         child = new Insert(); 
                         child.toEnd(); 
@@ -1797,13 +1797,13 @@ public final class BTree extends BaseAutoReverseAutomata {
                     step++; 
                     break;
                 }
-                case 5: { // Выбрано удаление
+                case 5: { // Р’С‹Р±СЂР°РЅРѕ СѓРґР°Р»РµРЅРёРµ
                     break;
                 }
-                case 6: { // Выбрано удаление (окончание)
+                case 6: { // Р’С‹Р±СЂР°РЅРѕ СѓРґР°Р»РµРЅРёРµ (РѕРєРѕРЅС‡Р°РЅРёРµ)
                     break;
                 }
-                case 7: { // Удаляет ключ из дерева (автомат)
+                case 7: { // РЈРґР°Р»СЏРµС‚ РєР»СЋС‡ РёР· РґРµСЂРµРІР° (Р°РІС‚РѕРјР°С‚)
                     if (child == null) {
                         child = new Delete(); 
                         child.toEnd(); 
@@ -1814,66 +1814,66 @@ public final class BTree extends BaseAutoReverseAutomata {
                 }
             }
 
-            // Переход в предыдущее состояние
+            // РџРµСЂРµС…РѕРґ РІ РїСЂРµРґС‹РґСѓС‰РµРµ СЃРѕСЃС‚РѕСЏРЅРёРµ
             switch (state) {
-                case 1: { // Выбрано добавление
+                case 1: { // Р’С‹Р±СЂР°РЅРѕ РґРѕР±Р°РІР»РµРЅРёРµ
                     state = START_STATE; 
                     break;
                 }
-                case 2: { // Выбрано добавление (окончание)
+                case 2: { // Р’С‹Р±СЂР°РЅРѕ РґРѕР±Р°РІР»РµРЅРёРµ (РѕРєРѕРЅС‡Р°РЅРёРµ)
                     if (stack.popBoolean()) {
-                        state = 4; // Добавляет ключ в дерево (автомат)
+                        state = 4; // Р”РѕР±Р°РІР»СЏРµС‚ РєР»СЋС‡ РІ РґРµСЂРµРІРѕ (Р°РІС‚РѕРјР°С‚)
                     } else {
-                        state = 1; // Выбрано добавление
+                        state = 1; // Р’С‹Р±СЂР°РЅРѕ РґРѕР±Р°РІР»РµРЅРёРµ
                     }
                     break;
                 }
                 case 3: { // this is test
-                    state = 1; // Выбрано добавление
+                    state = 1; // Р’С‹Р±СЂР°РЅРѕ РґРѕР±Р°РІР»РµРЅРёРµ
                     break;
                 }
-                case 4: { // Добавляет ключ в дерево (автомат)
+                case 4: { // Р”РѕР±Р°РІР»СЏРµС‚ РєР»СЋС‡ РІ РґРµСЂРµРІРѕ (Р°РІС‚РѕРјР°С‚)
                     if (child.isAtStart()) {
                         child = null; 
                         state = 3; // this is test
                     }
                     break;
                 }
-                case 5: { // Выбрано удаление
-                    state = 2; // Выбрано добавление (окончание)
+                case 5: { // Р’С‹Р±СЂР°РЅРѕ СѓРґР°Р»РµРЅРёРµ
+                    state = 2; // Р’С‹Р±СЂР°РЅРѕ РґРѕР±Р°РІР»РµРЅРёРµ (РѕРєРѕРЅС‡Р°РЅРёРµ)
                     break;
                 }
-                case 6: { // Выбрано удаление (окончание)
+                case 6: { // Р’С‹Р±СЂР°РЅРѕ СѓРґР°Р»РµРЅРёРµ (РѕРєРѕРЅС‡Р°РЅРёРµ)
                     if (stack.popBoolean()) {
-                        state = 7; // Удаляет ключ из дерева (автомат)
+                        state = 7; // РЈРґР°Р»СЏРµС‚ РєР»СЋС‡ РёР· РґРµСЂРµРІР° (Р°РІС‚РѕРјР°С‚)
                     } else {
-                        state = 5; // Выбрано удаление
+                        state = 5; // Р’С‹Р±СЂР°РЅРѕ СѓРґР°Р»РµРЅРёРµ
                     }
                     break;
                 }
-                case 7: { // Удаляет ключ из дерева (автомат)
+                case 7: { // РЈРґР°Р»СЏРµС‚ РєР»СЋС‡ РёР· РґРµСЂРµРІР° (Р°РІС‚РѕРјР°С‚)
                     if (child.isAtStart()) {
                         child = null; 
-                        state = 5; // Выбрано удаление
+                        state = 5; // Р’С‹Р±СЂР°РЅРѕ СѓРґР°Р»РµРЅРёРµ
                     }
                     break;
                 }
-                case END_STATE: { // Начальное состояние
-                    state = 6; // Выбрано удаление (окончание)
+                case END_STATE: { // РќР°С‡Р°Р»СЊРЅРѕРµ СЃРѕСЃС‚РѕСЏРЅРёРµ
+                    state = 6; // Р’С‹Р±СЂР°РЅРѕ СѓРґР°Р»РµРЅРёРµ (РѕРєРѕРЅС‡Р°РЅРёРµ)
                     break;
                 }
             }
         }
 
         /**
-          * Комментарий к текущему состоянию
+          * РљРѕРјРјРµРЅС‚Р°СЂРёР№ Рє С‚РµРєСѓС‰РµРјСѓ СЃРѕСЃС‚РѕСЏРЅРёСЋ
           */
         public String getComment() {
             String comment = ""; 
             Object[] args = null; 
-            // Выбор комментария
+            // Р’С‹Р±РѕСЂ РєРѕРјРјРµРЅС‚Р°СЂРёСЏ
             switch (state) {
-                case START_STATE: { // Начальное состояние
+                case START_STATE: { // РќР°С‡Р°Р»СЊРЅРѕРµ СЃРѕСЃС‚РѕСЏРЅРёРµ
                     comment = BTree.this.getComment("Main.START_STATE"); 
                     break;
                 }
@@ -1881,17 +1881,17 @@ public final class BTree extends BaseAutoReverseAutomata {
                     comment = BTree.this.getComment("Main.test"); 
                     break;
                 }
-                case 4: { // Добавляет ключ в дерево (автомат)
+                case 4: { // Р”РѕР±Р°РІР»СЏРµС‚ РєР»СЋС‡ РІ РґРµСЂРµРІРѕ (Р°РІС‚РѕРјР°С‚)
                     comment = child.getComment(); 
                     args = new Object[0]; 
                     break;
                 }
-                case 7: { // Удаляет ключ из дерева (автомат)
+                case 7: { // РЈРґР°Р»СЏРµС‚ РєР»СЋС‡ РёР· РґРµСЂРµРІР° (Р°РІС‚РѕРјР°С‚)
                     comment = child.getComment(); 
                     args = new Object[0]; 
                     break;
                 }
-                case END_STATE: { // Конечное состояние
+                case END_STATE: { // РљРѕРЅРµС‡РЅРѕРµ СЃРѕСЃС‚РѕСЏРЅРёРµ
                     comment = BTree.this.getComment("Main.END_STATE"); 
                     args = new Object[]{new String(d.sRu), new String(d.sEn)}; 
                     break;
@@ -1902,11 +1902,11 @@ public final class BTree extends BaseAutoReverseAutomata {
         }
 
         /**
-          * Выполняет действия по отрисовке состояния
+          * Р’С‹РїРѕР»РЅСЏРµС‚ РґРµР№СЃС‚РІРёСЏ РїРѕ РѕС‚СЂРёСЃРѕРІРєРµ СЃРѕСЃС‚РѕСЏРЅРёСЏ
           */
         public void drawState() {
             switch (state) {
-                case START_STATE: { // Начальное состояние
+                case START_STATE: { // РќР°С‡Р°Р»СЊРЅРѕРµ СЃРѕСЃС‚РѕСЏРЅРёРµ
                     d.visualizer.showTree(-1, 0);
                     break;
                 }
@@ -1914,15 +1914,15 @@ public final class BTree extends BaseAutoReverseAutomata {
                     d.visualizer.showTree(-1, 0);
                     break;
                 }
-                case 4: { // Добавляет ключ в дерево (автомат)
+                case 4: { // Р”РѕР±Р°РІР»СЏРµС‚ РєР»СЋС‡ РІ РґРµСЂРµРІРѕ (Р°РІС‚РѕРјР°С‚)
                     child.drawState(); 
                     break;
                 }
-                case 7: { // Удаляет ключ из дерева (автомат)
+                case 7: { // РЈРґР°Р»СЏРµС‚ РєР»СЋС‡ РёР· РґРµСЂРµРІР° (Р°РІС‚РѕРјР°С‚)
                     child.drawState(); 
                     break;
                 }
-                case END_STATE: { // Конечное состояние
+                case END_STATE: { // РљРѕРЅРµС‡РЅРѕРµ СЃРѕСЃС‚РѕСЏРЅРёРµ
                     d.visualizer.showTree(-1, 0);
                     break;
                 }

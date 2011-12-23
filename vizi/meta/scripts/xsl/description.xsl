@@ -1,4 +1,4 @@
-<?xml version = "1.0" encoding="WINDOWS-1251"?>
+<?xml version = "1.0" encoding="UTF-8"?>
 <!--
 <!DOCTYPE xsl:stylesheet [
     <!ENTITY nbsp "<xsl:text>&#xA0;</xsl:text>">
@@ -12,7 +12,7 @@
     <xsl:output
         method      = "html"
         indent      = "yes"
-        encoding    = "WINDOWS-1251"
+        encoding    = "UTF-8"
     />
 
     <xsl:variable name="indent">

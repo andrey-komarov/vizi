@@ -233,7 +233,7 @@
             src="${build.properties}"
             dest="${build.jars}"
             includes="**/*.properties"
-            encoding="Cp1251"
+            encoding="UTF-8"
         />
     </target>
 </project>

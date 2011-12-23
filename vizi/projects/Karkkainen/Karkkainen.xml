@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="WINDOWS-1251"?>
+<?xml version="1.0" encoding="UTF-8"?>
 
 <!--
     "Karkkainen" visualizer description (example)
@@ -21,18 +21,18 @@
     preferred-width="520"
     preferred-height="700"
 
-    name-ru="Построение суффиксного массива строки за линейное время"
+    name-ru="РџРѕСЃС‚СЂРѕРµРЅРёРµ СЃСѓС„С„РёРєСЃРЅРѕРіРѕ РјР°СЃСЃРёРІР° СЃС‚СЂРѕРєРё Р·Р° Р»РёРЅРµР№РЅРѕРµ РІСЂРµРјСЏ"
     name-en="Construction of a suffix array of a string within linear time"
 
-    author-ru="Антон Феськов"
+    author-ru="РђРЅС‚РѕРЅ Р¤РµСЃСЊРєРѕРІ"
     author-en="Anton Feskov"
     author-email="feskov@rain.ifmo.ru"
 
-    supervisor-ru="Георгий Корнеев"
+    supervisor-ru="Р“РµРѕСЂРіРёР№ РљРѕСЂРЅРµРµРІ"
     supervisor-en="Georgiy Korneev"
     supervisor-email="kgeorgiy@rain.ifmo.ru"
 
-    copyright-ru="Copyright \u00A9 Кафедра КТ, СПб ГИТМО (ТУ), 2008"
+    copyright-ru="Copyright \u00A9 РљР°С„РµРґСЂР° РљРў, РЎРџР± Р“РРўРњРћ (РўРЈ), 2008"
     copyright-en="Copyright \u00A9 Computer Technologies Department, SPb IFMO, 2008"
 >
     &algorithm;

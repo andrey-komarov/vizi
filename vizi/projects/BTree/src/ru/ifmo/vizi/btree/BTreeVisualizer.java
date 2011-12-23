@@ -306,7 +306,7 @@ auto.stepBackward(0);*/
 }
 
 /**
- * Мой Choice
+ * РњРѕР№ Choice
  */
 class myChoice extends Choice implements ItemListener{
     protected myChoice() {

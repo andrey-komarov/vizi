@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="WINDOWS-1251"?>
+<?xml version="1.0" encoding="UTF-8"?>
 
 <!ENTITY % algorithm SYSTEM "algorithm.dtd">
 <!ENTITY % configuration SYSTEM "configuration.dtd">
