@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    "FindMinimum" visualizer description (example)
+    Version: $Id: FindMinimum.xml,v 1.1 2003/12/24 10:50:42 geo Exp $
+-->
+
+<!DOCTYPE visualizer PUBLIC
+    "-//IFMO Vizi//Visualizer description"
+    "http://ips.ifmo.ru/vizi/dtd/visualizer.dtd"
+[
+    <!ENTITY algorithm SYSTEM "FarachColtonBender-Algorithm.xml">
+    <!ENTITY configuration SYSTEM "FarachColtonBender-Configuration.xml">
+]>
+
+<visualizer
+    id="FarachColtonBender"
+    package="ru.ifmo.vizi.FarachColtonBender"
+    main-class="FarachColtonBenderVisualizer"
+
+    preferred-width="500"
+    preferred-height="400"
+
+    name-ru="Алгоритм Фараха-Колтона, Бендера"
+    name-en="Farach-Colton, Bender algorithm"
+
+    author-ru="Андрей Комаров"
+    author-en="Andrey Komarov"
+    author-email="taukus@gmail.com"
+
+    supervisor-ru="Сергей Поромов"
+    supervisor-en="Sergey Poromov"
+    supervisor-email="poromov@gmail.com"
+
+    copyright-ru="Copyright \u00A9 Андрей Комаров (а зачем он?)"
+    copyright-en="Copyright \u00A9 Andrey Komarov"
+>
+    &algorithm;
+    &configuration;
+</visualizer>
+
+
+
+
+
+
+
+
+
