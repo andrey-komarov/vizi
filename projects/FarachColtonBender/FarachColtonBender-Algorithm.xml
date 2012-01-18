@@ -2,8 +2,6 @@
 
 <algorithm>
 
-
-
     <variable 
     	description="Экземпляр апплета"
     	name="visualizer"
@@ -108,19 +106,18 @@
         </toString>
     </data>
 
-    <auto id="Main" description="Ищет минимум в массиве, используя структуру данных - дерево отрезков">
+    <auto id="Main" description="Ищет минимум в массиве, используя Алгоритм Фараха-Колтона, Бендера">
         <start
             comment-en="There is an array on the display"
             comment-ru="На экране изображен массив, в котором будет осуществляться поиск минимума среди элементов {0} - {1}"
-            comment-args="new Integer(@left - @h.length / 2 + 1), new Integer(@right - @h.length / 2 + 1)"
+            comment-args="new Integer(0), new Integer(-1)"
         >
-            <draw>
+            <!--draw>
                 @visualizer.drawBrackets(0, 0, false, false);
                 @visualizer.drawCells(@h.length / 2, 0, 0, 0, 0, @h.length, false);
                 @visualizer.drawMin(false);
-            </draw>
+            </draw -->
         </start>
-
         <step
         	id="initial"
 			description="Инициализация"        	
@@ -130,7 +127,7 @@
                 @lowCellsBound @= @h.length / 2;
         	</action>
         </step>
-
+<!--
         <step
         	id="treeBuilding1"
         	description="Приступаем к построение дерева отрезков"
@@ -458,7 +455,7 @@
             </if>
 
         </while>
-
+-->
         <finish
             comment-ru="Минимум найден: {0}"
             comment-en="Minimum found: {0}"
@@ -470,6 +467,7 @@
                	@visualizer.drawMin(true);
         	</draw>
         </finish>
+
     </auto>
 
 </algorithm>
