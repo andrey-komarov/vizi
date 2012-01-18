@@ -186,13 +186,12 @@ public class FarachColtonBenderVisualizer extends Base implements AdjustmentList
     private final String maxValueString;
 
 
-
     /**
      * Returns state of the checkbox
      */
-    public boolean showBuilding() {
+/*    public boolean showBuilding() {
     	return checkboxBuilding.getState();
-    }
+    }*/
 
 
     /**
@@ -211,6 +210,11 @@ public class FarachColtonBenderVisualizer extends Base implements AdjustmentList
      * @param highlight determines brackets which must be highlight
      * @param show determines if we need to show brackets
      */
+    
+    public void drawInitialArray() {
+    	
+    }
+    
     public void drawBrackets(int leftBorder, int rightBorder, boolean highlight, boolean show) {
     	// Левая граница, которой мы проходим по уровням до тукущего состояния, отрисовывая скобки
     	int l = data.left, r = data.right;
@@ -622,7 +626,7 @@ public class FarachColtonBenderVisualizer extends Base implements AdjustmentList
 
 
         // Изменение количества элементов массива и границ поиска.
-        panelBottom.add(checkboxBuilding);
+//        panelBottom.add(checkboxBuilding);
 
         panelBottom.add(buttonEdit);
         panelBottom.add(buttonShow);
@@ -1072,7 +1076,7 @@ public class FarachColtonBenderVisualizer extends Base implements AdjustmentList
         rectMin.adjustSize();
         rectMin.setLocation(10, 10);
 
-        checkboxBuilding = new Checkbox(checkboxMessage, true);
+        //checkboxBuilding = new Checkbox(checkboxMessage, true);
 
         leftBorder = new AdjustablePanel(config, "left-border");
         leftBorder.addAdjustmentListener(this);

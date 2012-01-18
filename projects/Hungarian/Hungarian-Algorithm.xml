@@ -1,0 +1,665 @@
+<?xml version="1.0" encoding="WINDOWS-1251"?>
+
+<!--
+    "FindMaximum" algoritm description (example)
+    Version: $Id: FindMaximum-Algorithm.xml,v 1.4 2005/02/28 11:47:43 geo Exp $
+-->
+
+<algorithm>
+    <variable 
+        description = "Экземпляр апплета"
+        name        = "visualizer"
+        type        = "HungarianVisualizer"
+        value       = "null"
+    />
+    <variable
+		description = "Основная матрица"
+		name = "matrix"
+		type = "int[][]"
+		value = "new int[][]{{1, 2, 3}, {2, 3, 1}, {3, 2, 1}}"
+    />
+	<variable
+		description = "Changes for rows"
+		name = "rowChange"
+		type = "int[]"
+		value = "new int[]{0, 0, 0}"
+	/>
+
+	<variable
+		description = "Partners for rows"
+		name = "partner"
+		type = "int[]"
+		value = "new int[]{-1, -1, -1}"
+	/>
+
+    <variable
+		description = "Partners for columns"
+		name = "cPartner"
+		type = "int[]"
+		value = "new int[]{-1, -1, -1}"
+	/>
+
+	<variable
+		description = "Changes for columns"
+		name = "columnChange"
+		type = "int[]"
+		value = "new int[]{0, 0, 0}"
+	/>
+
+    <variable
+		description = "Local minimums"
+		name = "localMinimum"
+		type = "int[]"
+		value = "new int[]{1000, 1000, 1000}"
+	/>
+
+	<variable
+		description = "Checked rows"
+		name = "checkedRows"
+		type = "boolean[]"
+		value = "null"
+	/>
+
+    <variable
+		description = "Checked columns"
+		name = "checkedColumns"
+		type = "boolean[]"
+		value = "null"
+	/>
+
+	<variable
+		description = "Used columns"
+		name = "used"
+		type = "boolean[]"
+		value = "new boolean[3]"
+	/>
+
+	<variable
+		description = "Cycle counter"
+		name = "i"
+		type = "int"
+		value = "0"
+	/>
+
+	<variable
+		description = "Cycle counter"
+		name = "j"
+		type = "int"
+		value = "0"
+	/>
+
+	<variable
+		description = "Cycle counter"
+		name = "dj"
+		type = "int"
+		value = "0"
+	/>
+    
+	<variable
+		description = "swap"
+		name = "swp"
+		type = "int"
+		value = "0"
+	/>
+
+	<variable
+		description = "Cycle counter"
+		name = "di"
+		type = "int"
+		value = "0"
+	/>
+
+	<variable
+		description = "Difference"
+		name = "diff"
+		type = "int"
+		value = "0"
+	/>
+
+    <variable
+		description = "Current row"
+		name = "currentRow"
+		type = "int"
+		value = "-1"
+	/>
+    
+	<variable
+		description = "Current minimum"
+		name = "currentMinimum"
+		type = "int"
+		value = "-1"
+	/>
+
+	<variable
+		description = "Last row"
+		name = "lastRow"
+		type = "int"
+		value = "-1"
+	/>
+
+	<variable
+		description = "Global minimum J"
+		name = "globalMinimumJ"
+		type = "int"
+		value = "-1"
+	/>
+
+	<variable
+		description = "Global minimum I"
+		name = "globalMinimumI"
+		type = "int"
+		value = "-1"
+	/>
+
+    <variable
+		description = "break"
+		name = "br"
+		type = "boolean"
+		value = "true"
+	/>
+
+    <toString>
+		return "";
+    </toString>
+
+    <auto id="Main" description="Ищет максимум в массиве">
+        <start
+            comment-ru="Инициализируем матрицу и массивы"
+            comment-en="There is a matrix on display"
+        >
+            <draw>
+                @visualizer.drawMatrix();
+				@visualizer.drawArrays();
+            </draw>
+        </start>
+		
+        <step
+            id="LoopInit"
+            description="Start of cycle"
+            level="-1"
+        >
+            <action>
+                @i @= -1;
+            </action>
+        </step>
+		
+		<while
+			id = "Loop"
+			description = "Cycle"
+			test = "@i &lt; @matrix.length - 1"
+			level = "-1"
+		>
+		    <step 
+				id = "InitLocalMin"
+				description = "Initialization of local minimum"
+				level = "-1"
+			>
+				<action>
+					@localMinimum @= new int[@matrix.length];
+					@j @= 0;
+				</action>
+			</step>
+			
+            <while
+				id = "Loop"
+				description = "Cycle"
+				test = "@j &lt; @matrix.length"
+				level = "-1"
+			>
+				<step
+					id = "InitOfOneEl"
+					description = "Initialization of one element"
+					level = "-1"
+				>
+					<action>
+						@localMinimum[@j] @= @i + 1;
+						@j @= @j + 1;
+					</action>
+				</step>
+			</while>
+			
+			<step
+				id="GoOn"
+            	description="Moving to next row"
+            	comment-ru="Помечаем новую строку, начинаем новую итерацию"
+            	comment-en="Moving to the next row"
+        	>
+	        	<draw>
+	           		@visualizer.drawMatrix();
+					@visualizer.drawArrays();
+            	</draw>
+            	<action>
+            		@i @= @i + 1;
+					@currentRow @= @i;
+					@currentMinimum @= 0;
+					@j @= 0;
+					@checkedRows @= new boolean[@matrix.length];
+					@checkedColumns @= new boolean[@matrix.length];
+					@checkedRows[@i] @= true;
+					@lastRow @= @i;
+					@br @= true;
+            	</action>
+			</step>
+
+		<while
+			id = "LongLoop"
+			description = "Searching for new row partner"
+			test = "@br"
+			level = "-1"
+		>
+			<step
+				id = "InitLoopVar"
+				description = "Initialization of loop variable"
+				level = "-1"
+			>
+				<action>
+					@j @= 0;
+					@globalMinimumI @= -1;
+					@globalMinimumJ @= -1;
+				</action>
+			</step>
+
+			<while
+				id = "SearchingForMinLoop"
+				description = "Searching for minimum"
+				test = "@j &lt; @matrix.length"
+				level = "-1"
+			>
+				<if
+					id = "TestForMin"
+					description = "Testing next element for minimum"
+					test = "(!@checkedColumns[@j]) &amp;&amp; (@matrix[@lastRow][@j] &lt; @matrix[@localMinimum[@j]][@j])"
+					true-comment-ru = "Обновляем минимум номер {0}"
+					true-comment-en = "Updating minimum number {0}"
+					false-comment-ru = "Не обновляем минимум номер {0}"
+					false-comment-en = "Don't updating minimum number {0}"
+					comment-args = "new Integer(@j + 1)"
+
+				>
+					<draw>
+						@visualizer.drawMatrix();
+						@visualizer.drawArrays();
+					</draw>
+					<then>
+						<step
+							id = "UpdateMin"
+							description = "Updating minimum"
+							level = "-1"
+						>
+							<action>
+								@localMinimum[@j] @= @lastRow; 
+							</action>
+						</step>
+					</then>
+					<else>
+					</else>	
+				</if>            
+				
+				<if
+					id = "TestColForFree"
+					description = "Testing current element for freedom"
+					test = "(!@checkedColumns[@j])"
+					true-comment-ru = "Проверяем текущий элемент на минимальность"
+					true-comment-en = "Checking current element for minimum"
+					false-comment-ru = "Не проверяем текущий элемент на минимальность"
+					false-comment-en = "Don't Checking current element for minimum"
+				>
+					<draw>
+						@visualizer.drawArrays();
+					</draw>
+					<then>
+						<if
+							id = "TestForMin"
+							description = "Testing for minimum"
+							test = "(@globalMinimumJ == -1) || (@matrix[@localMinimum[@j]][@j] &lt; @matrix[@globalMinimumI][@globalMinimumJ])"
+							level = "-1"
+						>
+						<then>
+							<step
+								id = "Assign"
+								description = "Assignment"
+								comment-ru = "Обновляем минимум"
+								comment-en = "Updating minimum"
+							>
+								<draw>
+									@visualizer.drawMatrix();
+									@visualizer.drawArrays();
+								</draw>
+								<action>
+									@globalMinimumJ @= @j;
+									@globalMinimumI @= @localMinimum[@j];
+								</action>
+							</step>
+						</then>
+						</if>	
+					</then>	
+				</if>            
+				
+				<step
+					id = "IncreaseJ"
+					description = "Increasing counter"
+					level = "-1"
+				>
+					<action>
+						@j @= @j + 1;
+					</action>
+				</step>
+			</while>	
+			
+            		<step
+						id = "InitLoopVars"
+						description = "Initializing variables for new loops"
+						level = "-1"
+					>
+						<action>
+							@di @= 0;
+							@dj @= 0;
+							@diff @= @matrix[@globalMinimumI][@globalMinimumJ];
+							
+						</action>
+					</step>
+					<while
+						id = "LoopForI"
+						description = "Loor for i"
+						test = "@di &lt; @matrix.length"
+						level = "-1"
+					>
+					<while
+						id = "LoopForJ"
+						description = "Loor for j"
+						test = "@dj &lt; @matrix.length"
+						level = "-1"
+					>   
+						<if
+							id = "checkForChecking"
+							description = "Checking cell for beeing checked"
+							test = "(@checkedColumns[@dj])"
+							level = "-1"
+
+						>
+					    <then>
+							<step
+								id = "Decrease"
+								description = "Decreasing element"
+								level = "-1"
+							>
+								<action>
+									@matrix[@di][@dj] @= @matrix[@di][@dj] + @diff;
+								</action>
+							</step>
+						</then>
+						</if>
+						<if
+							id = "checkForChecking"
+							description = "Checking cell for beeing checked"
+							test = "(@checkedRows[@di])"
+							level = "-1"
+
+						>
+					    <then>
+							<step
+								id = "Decrease"
+								description = "Decreasing element"
+								level = "-1"
+							>
+								<action>
+									@matrix[@di][@dj] @= @matrix[@di][@dj] - @diff;
+								</action>
+							</step>
+						</then>
+						</if>
+						<step
+								id = "incDj"
+								description = "Increasing dj"
+								level = "-1"
+							>
+								<action>
+									@dj @= @dj + 1;
+								</action>
+						</step>
+						
+					</while>
+					<if
+								id = "ChangeDRows"
+								description = "Changing deltaRows"
+								test = "(@checkedRows[@di])"
+								level = "-1"
+							>
+								<then>
+								<step
+									id = "chengeDRow"
+									description = "Change one element"
+									level = "-1"
+								>
+									<action>
+										@rowChange[@di] @= @rowChange[@di] + @diff;
+									</action>
+								</step>
+								</then>
+							</if>
+						
+                    <if
+								id = "ChangeDColumns"
+								description = "Changing deltaColumns"
+								test = "(@checkedColumns[@di])"
+								level = "-1"
+							>
+								<then>
+								<step
+									id = "chengeDColumn"
+									description = "Change one element"
+									level = "-1"
+								>
+									<action>
+										@columnChange[@di] @= @columnChange[@di] - @diff;
+									</action>
+								</step>
+								</then>
+							</if>
+					<step
+						id = "incDi"
+						description = "Increasing di"
+						level = "-1"
+					>
+						<action>
+							@di @= @di + 1;
+							@dj @= 0;		
+						</action>
+					</step>
+						
+
+
+
+					
+					</while>
+			    <step
+						id = "checkSomething"
+						description = "Initializing variables for new loops"
+						level = "-1"
+					>
+						<action>
+							@checkedColumns[@globalMinimumJ] @= true;
+							
+						</action>
+					</step>
+					
+				<if
+								id = "if"
+								description = "if"
+								test = "@used[@globalMinimumJ]"
+								level = "-1"
+							>
+							<then>
+								<step
+									id = "step"
+									description = "step"
+									level = "-1"
+								>
+									<action>
+										@checkedRows[@cPartner[@globalMinimumJ]] @= true;
+									</action>
+								</step>
+				            </then>
+				            </if>
+			<if
+				id = "OutIf"
+				description = "Checking is it possible to come out of loop"
+				test = "!@used[@globalMinimumJ]"
+				level = "-1"
+			>
+				<then>
+					<step
+						id = "GoingOut"
+						description = "Going out of loop"
+						comment-ru = "Свободный столбец найден, выходим из цикла"
+						comment-en = "Free column were found, going out of loop"
+					>
+						<draw>
+							@visualizer.drawMatrix();
+							@visualizer.drawArrays();
+						</draw>
+						<action>
+							@br @= false;
+						</action>
+					</step>
+				</then>
+				<else>
+					<step
+						id = "NotGoingOut"
+						description = "Not going out of loop"
+						comment-ru = "Свободный столбец не найден, не выходим из цикла"
+						comment-en = "Free column were not found, not going out of loop"
+					>
+						<draw>
+							 @visualizer.drawMatrix();
+							@visualizer.drawArrays();
+							
+						</draw>
+						<action>
+							@lastRow @= @cPartner[@globalMinimumJ];
+						</action>
+					</step>
+		  		</else>
+			</if>		
+			<step
+				id = "DrawAll"
+				description = "Drawing all objects"
+				comment-ru = "Обновляем значения, вычитаем минимальный элемент"
+				comment-en = "Updating matrix and arrays, decreasing all on minimal element"
+			>
+				<draw>
+					@visualizer.drawMatrix();
+					@visualizer.drawArrays();
+				</draw>
+				<action>
+					@i @= @i;
+				</action>
+			</step>
+			
+			
+		</while>
+		<while
+			id = "recaclulatingPartners"
+			description = "Recalculating partners for some rows"
+			test = "@globalMinimumI != @i"
+			level = "-1"
+		>
+			<step
+				id = "recalcPartnerForLastRow"
+				description = "Recalculate partner for last row"
+				comment-ru = "Пересчитываем партнера строки номер {0}"
+				comment-en = "Recalculate partner for row number {0}"
+				comment-args = "new Integer(@globalMinimumI + 1)"
+			>
+				<draw>
+					@visualizer.drawMatrix();
+					@visualizer.drawArrays();
+				</draw>
+				<action>
+					@swp @= @partner[@globalMinimumI];
+					@partner[@globalMinimumI] @= @globalMinimumJ;
+					@cPartner[@globalMinimumJ] @= @globalMinimumI;
+					@checkedRows[@globalMinimumI] @=false;
+					@checkedColumns[@globalMinimumJ] @= false;
+					@used[@globalMinimumJ] @= true;
+					@globalMinimumJ @= @swp;
+				</action>
+			</step>
+			
+			<step
+				id = "initDi"
+				description = "Initialize di"
+				level = "-1"
+			>
+				<action>
+					@di @= 0;
+				</action>
+			</step>
+
+			<while 
+				id = "SearchMin"
+				description = "Searching for partner for globalMinimumJ"
+				test = "@di &lt; @matrix.length"
+				level = "-1"
+			>
+				<if
+					id = "Check"
+					description = "Check"
+					test = "(@checkedRows[@di]) &amp;&amp;((!@checkedColumns[@globalMinimumJ] == false) || (@matrix[@di][@globalMinimumJ] &lt; @matrix[@globalMinimumI][@globalMinimumJ]))"
+  					level = "-1"
+				>
+					<then>
+					<step
+						id = "reCalc"
+						description = "reCalc"
+						level = "-1"
+					>
+						<action>
+							@globalMinimumI @= @di;
+						</action>
+					</step>
+					</then>
+				</if>                       
+				<step
+					id = "aaaaa"
+					description = "aaaaaaa"
+					level = "-1"
+				>
+					<action>
+						@di @= @di + 1;
+					</action>
+				</step>
+			</while>
+		</while>
+		<step
+			id = "lastRecalc"
+			description = "Last recalculation"
+			comment-ru = "Пересчитываем партнера строки номер {0}"
+			comment-en = "Recalculate partner for row number {0}"
+			comment-args = "new Integer(@globalMinimumI + 1)"
+		>
+			<draw>
+				@visualizer.drawMatrix();
+			</draw>
+			<action>
+				@partner[@globalMinimumI] @= @globalMinimumJ;
+				@cPartner[@globalMinimumJ] @= @globalMinimumI;
+				@used[@globalMinimumJ] @= true;	
+				@checkedColumns @= new boolean[@matrix.length];
+				@checkedRows @= new boolean[@matrix.length];
+			</action>
+		</step>
+	</while>		
+        <finish
+            comment-ru="Задача о назначениях решена"
+            comment-en="Problem solved"
+            
+        >
+            <draw>
+                @visualizer.drawMatrix();
+            </draw>
+        </finish>
+    </auto>
+</algorithm>
+
+

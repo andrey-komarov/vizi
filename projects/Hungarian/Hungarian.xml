@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="WINDOWS-1251"?>
+
+<!--
+    "Hungarian" visualizer description (example)
+    Version: $Id: Hungarian.xml,v 1.1 2011/12/21 10:50:42 pashkal Exp $
+-->
+
+<!DOCTYPE visualizer PUBLIC
+    "-//IFMO Vizi//Visualizer description"
+    "http://ips.ifmo.ru/vizi/dtd/visualizer.dtd"
+[
+    <!ENTITY algorithm SYSTEM "Hungarian-Algorithm.xml">
+    <!ENTITY configuration SYSTEM "Hungarian-Configuration.xml">
+]>
+
+<visualizer
+    id="Hungarian"
+    package="ru.ifmo.vizi.hungarian"
+    main-class="HungarianVisualizer"    
+
+    preferred-width="600"
+    preferred-height="400"
+
+    name-ru="Решение задачи о назначениях за O(n^3)"
+    name-en="Soluion of assignment problem for O(n^3)"
+
+    author-ru="Павел Кротков"
+    author-en="Pavel Krotkov"
+    author-email="krotkov.pavel@gmail.com"
+
+    supervisor-ru="Павел Кротков"
+    supervisor-en="Pavel Krotkov"
+    supervisor-email="krotkov.pavel@gmail.com"
+
+    copyright-ru="Copyright \u00A9 Кафедра КТ, СПб ГИТМО (ТУ), 2011"
+    copyright-en="Copyright \u00A9 Computer Technologies Department, SPb IFMO, 2011"
+>
+    &algorithm;
+    &configuration;
+</visualizer>
+
