@@ -46,6 +46,7 @@ public final class HungarianVisualizer extends Base implements
 	 */
 	public HungarianVisualizer(VisualizerParameters parameters) {
 		super(parameters);
+		System.err.println("!@#$%!!!!");
 		auto = new Hungarian(locale);
 		data = auto.d;
 		data.visualizer = this;

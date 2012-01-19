@@ -1,473 +1,621 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<algorithm>
-
-    <variable 
-    	description="Экземпляр апплета"
-    	name="visualizer"
-    	type="FarachColtonBenderVisualizer"
-    	value="null"
-    />
-
-    <variable 
-    	description="Левая граница поиска"
-    	name="left"
-    	type="int"
-    	value="0"
-    />
-
-    <variable
-    	description="Правая граница поиска"
-    	name="right"
-    	type="int"
-    	value="0"
-    />
-
-    <variable 
-    	description="Массив дла поиска"
-    	name="h"
-    	type="int[]"
-    	value="null"
-    />
-
-    <variable 
-    	description="Текущая левая граница поиска"
-    	name="l"
-    	type="int"
-    	value="0"
-    />
-
-    <variable
-    	description="Текущая правая граница поиска"
-    	name="r"
-    	type="int"
-    	value="0"
-    />
-
-    <variable 
-    	description="Текущий минимум"
-    	name="a"
-    	type="int"
-    	value="0"
-    />
-        
-    <variable
-    	description="Нижняя граница для элементов дерева"
-    	name="lowCellsBound"
-    	type="int"
-    	value="0"
-    />
-
-    <variable 
-    	description="Нижняя граница минимумов" 
-    	name="lowMinBound"
-    	type="int"
-    	value="0"
-    />
-
-    <variable
-    	description="Высота дерева"
-    	name="height"
-    	type="int"
-    	value="0"
-    />
-
-    <variable
-    	description="Символ, обозначающий текущий минимум"
-        name="minim"
-        type="String"
-        value="\u0022\u221E\u0022"
-    />
-
-    <variable
-    	description="Значок бесконечности"
-        name="infinity"
-        type="String"
-        value="\u0022\u221E\u0022"
-    />
-
-    <variable
-    	description="Левый элемент массива"
-        name="tl"
-        type="String"
-        value="\u0022\u221E\u0022"
-    />
-
-    <variable
-    	description="Правый элемент массива"
-        name="tr"
-        type="String"
-        value="\u0022\u221E\u0022"
-    />
-
-    <data>
-        <toString>
-            return "" + @a;
-        </toString>
-    </data>
-
-    <auto id="Main" description="Ищет минимум в массиве, используя Алгоритм Фараха-Колтона, Бендера">
-        <start
-            comment-en="There is an array on the display"
-            comment-ru="На экране изображен массив, в котором будет осуществляться поиск минимума среди элементов {0} - {1}"
-            comment-args="new Integer(0), new Integer(-1)"
-        >
-            <!--draw>
-                @visualizer.drawBrackets(0, 0, false, false);
-                @visualizer.drawCells(@h.length / 2, 0, 0, 0, 0, @h.length, false);
-                @visualizer.drawMin(false);
-            </draw -->
-        </start>
-        <step
-        	id="initial"
-			description="Инициализация"        	
-			level="-1"
-        >
-        	<action>
-                @lowCellsBound @= @h.length / 2;
-        	</action>
-        </step>
 <!--
-        <step
-        	id="treeBuilding1"
-        	description="Приступаем к построение дерева отрезков"
-        	comment-ru="Строим дерево отрезков"
-        	comment-en="Built the tree"
-        >
-        	<draw>
-            	@visualizer.drawBrackets(0, 0, false, false);                
-            	@visualizer.drawCells(@h.length / 2, 0, 0, 0, 0, @h.length, false);
-            	@visualizer.drawMin(false);
-        	</draw>
-
-        	<action>
-        	</action>
-        </step>
-
-        <step
-        	id="move"
-        	description="Сдвигаем массив"
-        	comment-ru="Сдвигаем массив на {0} элементов вправо ({0} - минимальная степень двойки без 1, которая не меньше длины исходного массива) и вводим новую индексацию элементов по правилу: i-ый элемент становится (i + {0})-ым. Нижний ряд индексов показывает старую индексацию."
-        	comment-en="Move the array"        	
-        	comment-args="new Integer(@h.length / 2 - 1)"
-        >
-        	<draw>
-            	@visualizer.drawBrackets(0, 0, false, false);                
-            	@visualizer.drawCells(@h.length / 2, 0, 0, 0, 0, @h.length, true);
-            	@visualizer.drawMin(false);
-        	</draw>
-
-        	<action>
-        	</action>
-        </step>
-
-        <if
-		id="ololo1"
-		description="Надо ли визуализировать построение дерева"
-        	test="@visualizer.showBuilding()"
-        	level="-1"
-        >
-        	<then>
-                <while
-                	id="tree"
-                	description="Построение дерева"
-                	test="@lowCellsBound &gt;= 2"
-                    level="-1"
-                >
-                	<step
-                    	id="buildStep"
-                        description="Строим новый элемент"
-                        level="-1"
-                    >
-                    	<action>
-                        	@lowCellsBound @= @lowCellsBound - 1;
-                        </action>
-                    </step>
-                	<if
-                    	id="infinityTest1"
-                    	description="Заменяем бесконечность"
-						test="@h[2 * @lowCellsBound] == Integer.MAX_VALUE"
-                        level="-1"
-                    >
-                    	<then>
-                        	<step
-                            	id="then1"
-                                description="В комментарии кладем значок бесконечности"
-                            	level="-1"
-                            >
-                            	<action>
-                                	@tl @= @infinity;
-                                </action>
-                            </step>
-                        </then>
-                        <else>
-                        	<step
-                            	id="else1"
-                                description="В комментарии кладем значение элемента"
-                            	level="-1"
-                            >
-                            	<action>
-                                	@tl @= Integer.toString(@h[2 * @lowCellsBound]);
-                                </action>
-                            </step>
-                        </else>
-                    </if>
-
-                	<if
-                    	id="infinityTest2"
-                    	description="Заменяем бесконечность"
-						test="@h[2 * @lowCellsBound + 1] == Integer.MAX_VALUE"
-                        level="-1"
-                    >
-                    	<then>
-                        	<step
-                            	id="then2"
-                                description="В комментарии кладем значок бесконечности"
-                            	level="-1"
-                            >
-                            	<action>
-                                	@tr @= @infinity;
-                                </action>
-                            </step>
-                        </then>
-                        <else>
-                        	<step
-                            	id="else2"
-                                description="В комментарии кладем значение элемента"
-                            	level="-1"
-                            >
-                            	<action>
-                                	@tr @= Integer.toString(@h[2 * @lowCellsBound + 1]);
-                                </action>
-                            </step>
-                        </else>
-                    </if>
-
-                	<step
-                		id="tree"
-                		description="Визуализация построения дерева"
-                		comment-ru="Находим минимум между {0} элементом ({1}) и {2} элементом ({3})"
-                		comment-en="Find minimum between {0} element ({1}) and {2} element ({3})"
-                        comment-args="new Integer(2 * @lowCellsBound), @tl, new Integer(2 * @lowCellsBound + 1), @tr"
-                	>
-                		<draw>
-                        	@visualizer.drawCells(@lowCellsBound, 0, 0, 0, 0, @h.length, true);
-                        	@visualizer.drawBrackets(0, 0, false, false);
-                        	@visualizer.drawMin(false);
-                		</draw>
-
-                		<action>
-
-                		</action>
-                	</step>
-                </while>
-        	</then>
-        </if>
-
-        <step
-        	id="treeBuilded"
-            description="Дерево уже построено"
-            comment-ru="Дерево отрезков построено"
-            comment-en="Tree have been built"
-        >
-            <draw>
-                @visualizer.drawCells(0, 0, 0, 0, 0, @h.length, true);
-                @visualizer.drawBrackets(0, 0, false, false);
-                @visualizer.drawMin(false);
-            </draw>
-
-            <action>
-            </action>
-        </step>
-
-        <step
-            id="initialization"
-            description="Инициализация минимума"
-            comment-en="Initialize minimum by \u221E"
-            comment-ru="Инициализируем минимум \u221E"
-            level="1"
-        >
-            <draw>
-            	@visualizer.drawBrackets(0, 0, false, false);                
-            	@visualizer.drawCells(0, 0, 0, 0, 0, @h.length, true);
-            	@visualizer.drawMin(true);
-            </draw>
-
-            <action>
-                @a @= Integer.MAX_VALUE;
-                @minim @= "\u221E";
-            </action>
-        </step>
-
-        <step
-            id="firstRise"
-            description="Сжатие границ поиска"
-            comment-en="Install search's bounds"
-            comment-ru="Ставим границы поиска. Левую границу поиска ставим в {1}, а правую в {2} потому что массив сдвинут на {0} элементов"
-            comment-args="new Integer(@h.length / 2 - 1), new Integer(@left), new Integer(@right)"
-            level="1"
-        >
-            <draw>
-               	@visualizer.drawCells(0, @l, @r, 0, 0, @h.length, true);
-               	@visualizer.drawBrackets(@l, @r, true, true);
-               	@visualizer.drawMin(true);
-                @visualizer.setSecondBigStep();
-            </draw>
-
-            <action>
-                @l @= @left;
-                @r @= @right;
-            </action>
-        </step>
-
-        <while
-            id="loop"
-            test="@l &lt;= @r"
-            description="Проход по дереву вверх с релаксацией минимума на границах"
-            level="-1"
-        >
-            <if
-                id="Cond1"
-                description="Проверка левой границы на минимальность"
-                test="@a &gt; @h[@l]"
-                true-comment-ru="{0} меньше текущего минимума ({1})"
-                true-comment-en="{0} less than current minimum ({1})"
-                false-comment-ru="{0} не меньше текущего минимума ({1})"
-                false-comment-en="{0} not less than current minimum ({1})"
-                comment-args="new Integer(@h[@l]), @minim"
-            >
-                <draw>
-                 	@visualizer.drawCells(0, @l, @r, @l, 0, @r, true);
-                 	@visualizer.drawBrackets(@l, @r, true, true);
-                 	@visualizer.drawMin(true);
-                </draw>
-                <then>
-                    <step
-                        id="newMin1"
-                        description="Обновление минимума"
-                        comment-ru="Обновляем текущий минимум, кладем его значение равным: {0}"
-                        comment-en="Renew current minimum, his value is equal {0} now"
-                        comment-args="new Integer(@a)"
-                    >
-                        <draw>
-                        	@visualizer.drawCells(0, @l, @r, @l, @l, @r, true);
-                        	@visualizer.drawBrackets(@l, @r, true, true);
-                        	@visualizer.drawMin(true);
-                        </draw>
-
-                        <action>
-                            @a @= @h[@l];
-                            @minim @= Integer.toString(@a);
-                        </action>
-                    </step>
-                </then>
-            </if>
-
-
-            <if
-                id="Cond2"
-                description="Приверка на минимальность"
-                test="@a &gt; @h[@r]"
-                true-comment-ru="{0} меньше текущего минимума ({1})"
-                true-comment-en="{0} less than current minimum ({1})"
-                false-comment-ru="{0} не меньше текущего минимума ({1})"
-                false-comment-en="{0} not less than current minimum ({1})"
-                comment-args="new Integer(@h[@r]), @minim"
-            >
-                <draw>
-                 	@visualizer.drawCells(0, @l, @r, @r, 0, @r, true);
-                 	@visualizer.drawBrackets(@l, @r, true, true);
-                 	@visualizer.drawMin(true);
-                </draw>
-                <then>
-                    <step
-                        id="newMin2"
-                        description="Обновление минимума"
-                        comment-ru="Обновляем текущий минимум, кладем его значение равным: {0}"
-                        comment-en="Renew current minimum, his value is equal {0} now"
-                        comment-args="new Integer(@a)"
-                    >
-                        <draw>
-                        	@visualizer.drawCells(0, @l, @r, @r, @r, @r, true);
-                        	@visualizer.drawBrackets(@l, @r, true, true);
-                        	@visualizer.drawMin(true);
-                        </draw>
-
-                        <action>
-                            @a @= @h[@r];
-                            @minim @= Integer.toString(@a);
-                        </action>
-                    </step>
-                </then>
-            </if>
-
-            <if 
-		id="ololo1"		
-		description="проверка"
-            	test="((@l + 1)) / 2 &lt;= ((@r - 1) / 2)"
-            	level="-1"
-            >
-            	<then>
-                    <step
-                        id="rise2"
-                        description="Сжатие границ поиска"
-        	            comment-en="Lift up search's bounds. Left border is calculated by formula: l = (l + 1) / 2, and right border is calculated by formula: r = (r - 1) / 2"
-            	        comment-ru="Поднимаем границы поиска. Левая граница вычисляется по формуле: l = (l + 1) / 2, а правая по формуле: r = (r - 1) / 2"
-                    >
-                        <draw>
-                          	@visualizer.drawCells(0, @l, @r, 0, 0, @r, true);
-                          	@visualizer.drawBrackets(@l, @r, true, true);
-                          	@visualizer.drawMin(true);
-                        </draw>
-
-                        <action>
-                            int next = (@l + 1) / 2;
-                            @l @= next;
-
-                            next = (@r - 1) / 2;
-                            @r @= next;
-                        </action>
-                    </step>
-            	</then>
-            	<else>
-                    <step
-                        id="rise3"
-                        description="Границы поиска зашли друг за друга"
-        	            comment-en="Search's bounds are crossed"
-            	        comment-ru="Границы поиска зашли друг за друга. (левая граница равна: {0}, правая граница равна: {1})"
-            	        comment-args="new Integer((@l + 1) / 2), new Integer((@r - 1) / 2)"
-                    >
-                        <draw>
-                          	@visualizer.drawCells(0, @l, @r, 0, 0, @r, true);
-                          	@visualizer.drawBrackets(@l, @r, true, true);
-                          	@visualizer.drawMin(true);
-                        </draw>
-
-                        <action>
-                            int next = (@l + 1) / 2;
-                            @l @= next;
-
-                            next = (@r - 1) / 2;
-                            @r @= next;
-                        </action>
-                    </step>
-            	</else>
-            </if>
-
-        </while>
+    "FindMaximum" algoritm description (example)
+    Version: $Id: FindMaximum-Algorithm.xml,v 1.4 2005/02/28 11:47:43 geo Exp $
 -->
-        <finish
-            comment-ru="Минимум найден: {0}"
-            comment-en="Minimum found: {0}"
-            comment-args="new Integer(@a)"
+
+<algorithm>
+	<variable 
+		description	= "Экземпляр апплета"
+		name		= "visualizer"
+		type		= "FarachColtonBenderVisualizer"
+		value		= "null"
+	/>
+
+	<variable
+		description	= "Основной массив"
+		name		= "array"
+		type		= "int[]"
+		value		= "new int[]{3, 8, 10, 4, 23}"
+	/>
+
+	<variable
+		description	= "Количество обработанных вершин в построении декартова дерева"
+		name		= "verticesPassed"
+		type		= "int"
+		value		= "0"
+	/>	
+
+	<variable
+		description	= "Стек"
+		name		= "stack"
+		type		= "int[]"
+		value		= "null"
+	/>
+
+	<variable
+		description	= "Размер стека. Внезапно"
+		name		= "stackSize"
+		type		= "int"
+		value		= "0"
+	/>
+
+	<variable
+		description	= "Счётчик цикла"
+		name		= "i"
+		type		= "int"
+		value		= "0"
+	/>
+
+    <toString>
+		return "";
+    </toString>
+
+    <auto id="Main" description="Ищет максимум на отрезке в массиве">
+        <start
+            comment-ru	= "Инициализируем массив"
+            comment-en	= "There is a array on display"
         >
-        	<draw>
-               	@visualizer.drawCells(0, 0, 0, 0, 0, 0, true);
-               	@visualizer.drawBrackets(@l, @r, false, true);
-               	@visualizer.drawMin(true);
-        	</draw>
+	<draw>
+		@visualizer.clear();
+		@visualizer.drawMainArray();
+	</draw>
+        </start>
+		
+        <step
+		id		= "Begin"
+		description	= "Start of cycle"
+		comment-ru	= "Построим декартово дерево из пар {0}. Воспользуемся алгоритмом построения декартова дерева с отсоритированными по x ключами за линейное время. Для этого будем хранить стек лежащих на правом пути вершин. При добавлении очередного элемента выкидываем из стека элементы с бóльшими ключами y, меньшие , после чего к вершине стека справа подвесим добавляемый элемент."
+		comment-args	= "FarachColtonBenderVisualizer.treeAsString(@array)"
+	>
+	<action>
+		@i @= 0;
+		@stack @= new int[@array.length];
+		@stackSize @= 0;
+	</action>
+	</step>
+
+
+
+	<while
+		id		= "CartesianTreeLoop"
+		description	= "Cycle over elements to build cartesian tree"
+		test		= "@i &lt; @array.length"
+		true-comment-ru	= "Добавим в дерево справа элемент {0}. Выкинем все меньшие {0} элементы."
+		false-comment-ru	= "Дерево построено!"
+		comment-args	= "new Integer((@i &lt; @array.length) ? (@array[@i]) : 0)"
+	>
+
+		<while
+			id	= "dropSmallElements"
+			description	= "Drop all elements above a[i]"
+			test	= "@stackSize &gt; 0 &amp;&amp; @array[@i] > @stack[@stackSize - 1]"
+			true-comment-ru	= "{0} &lt; {1}. Выкидываем {0}."
+			false-comment-ru	= "Останавливаемся."
+			comment-args	= "new Integer(@stackSize == 0 ? 0: (@stack[@stackSize - 1])), new Integer(@array[@i])"
+		>
+			<step
+				id	= "decrementStackSize"
+				description	= "decrementStackSize"
+				level	= "-1"
+			>
+			<action>
+				@stackSize @= @stackSize - 1;
+			</action>
+			<draw>
+				@visualizer.drawCartesianTree(@i + 1, @stackSize);
+			</draw>
+			</step>
+		</while>
+
+		<step
+			id	= "pushElementToStack"
+			description	= "push element to stack"
+			comment-ru	= "Добавим элемент {0} в стек"
+			comment-args	= "new Integer(@array[@i])"
+		>
+		<action>
+			@stack[@stackSize] @= @array[@i];
+			@stackSize @= @stackSize + 1;
+		</action>
+		<draw>
+			@visualizer.drawCartesianTree(@i + 1, @stackSize);
+		</draw>
+		</step>
+
+		<step
+			id		= "CycleStep"
+			description	= "Cycle step"
+			level		= "-1"
+		>
+		<action>
+			@i @= @i + 1;
+		</action>
+		</step>
+
+	</while>
+
+<!--		
+		<while
+			id = "Loop"
+			description = "Cycle"
+			test = "@i &lt; @matrix.length - 1"
+			level = "-1"
+		>
+		    <step 
+				id = "InitLocalMin"
+				description = "Initialization of local minimum"
+				level = "-1"
+			>
+				<action>
+					@localMinimum @= new int[@matrix.length];
+					@j @= 0;
+				</action>
+			</step>
+			
+            <while
+				id = "Loop"
+				description = "Cycle"
+				test = "@j &lt; @matrix.length"
+				level = "-1"
+			>
+				<step
+					id = "InitOfOneEl"
+					description = "Initialization of one element"
+					level = "-1"
+				>
+					<action>
+						@localMinimum[@j] @= @i + 1;
+						@j @= @j + 1;
+					</action>
+				</step>
+			</while>
+			
+			<step
+				id="GoOn"
+            	description="Moving to next row"
+            	comment-ru="Помечаем новую строку, начинаем новую итерацию"
+            	comment-en="Moving to the next row"
+        	>
+	        	<draw>
+	           		@visualizer.drawMatrix();
+					@visualizer.drawArrays();
+            	</draw>
+            	<action>
+            		@i @= @i + 1;
+					@currentRow @= @i;
+					@currentMinimum @= 0;
+					@j @= 0;
+					@checkedRows @= new boolean[@matrix.length];
+					@checkedColumns @= new boolean[@matrix.length];
+					@checkedRows[@i] @= true;
+					@lastRow @= @i;
+					@br @= true;
+            	</action>
+			</step>
+
+		<while
+			id = "LongLoop"
+			description = "Searching for new row partner"
+			test = "@br"
+			level = "-1"
+		>
+			<step
+				id = "InitLoopVar"
+				description = "Initialization of loop variable"
+				level = "-1"
+			>
+				<action>
+					@j @= 0;
+					@globalMinimumI @= -1;
+					@globalMinimumJ @= -1;
+				</action>
+			</step>
+
+			<while
+				id = "SearchingForMinLoop"
+				description = "Searching for minimum"
+				test = "@j &lt; @matrix.length"
+				level = "-1"
+			>
+				<if
+					id = "TestForMin"
+					description = "Testing next element for minimum"
+					test = "(!@checkedColumns[@j]) &amp;&amp; (@matrix[@lastRow][@j] &lt; @matrix[@localMinimum[@j]][@j])"
+					true-comment-ru = "Обновляем минимум номер {0}"
+					true-comment-en = "Updating minimum number {0}"
+					false-comment-ru = "Не обновляем минимум номер {0}"
+					false-comment-en = "Don't updating minimum number {0}"
+					comment-args = "new Integer(@j + 1)"
+
+				>
+					<draw>
+						@visualizer.drawMatrix();
+						@visualizer.drawArrays();
+					</draw>
+					<then>
+						<step
+							id = "UpdateMin"
+							description = "Updating minimum"
+							level = "-1"
+						>
+							<action>
+								@localMinimum[@j] @= @lastRow; 
+							</action>
+						</step>
+					</then>
+					<else>
+					</else>	
+				</if>            
+				
+				<if
+					id = "TestColForFree"
+					description = "Testing current element for freedom"
+					test = "(!@checkedColumns[@j])"
+					true-comment-ru = "Проверяем текущий элемент на минимальность"
+					true-comment-en = "Checking current element for minimum"
+					false-comment-ru = "Не проверяем текущий элемент на минимальность"
+					false-comment-en = "Don't Checking current element for minimum"
+				>
+					<draw>
+						@visualizer.drawArrays();
+					</draw>
+					<then>
+						<if
+							id = "TestForMin"
+							description = "Testing for minimum"
+							test = "(@globalMinimumJ == -1) || (@matrix[@localMinimum[@j]][@j] &lt; @matrix[@globalMinimumI][@globalMinimumJ])"
+							level = "-1"
+						>
+						<then>
+							<step
+								id = "Assign"
+								description = "Assignment"
+								comment-ru = "Обновляем минимум"
+								comment-en = "Updating minimum"
+							>
+								<draw>
+									@visualizer.drawMatrix();
+									@visualizer.drawArrays();
+								</draw>
+								<action>
+									@globalMinimumJ @= @j;
+									@globalMinimumI @= @localMinimum[@j];
+								</action>
+							</step>
+						</then>
+						</if>	
+					</then>	
+				</if>            
+				
+				<step
+					id = "IncreaseJ"
+					description = "Increasing counter"
+					level = "-1"
+				>
+					<action>
+						@j @= @j + 1;
+					</action>
+				</step>
+			</while>	
+			
+            		<step
+						id = "InitLoopVars"
+						description = "Initializing variables for new loops"
+						level = "-1"
+					>
+						<action>
+							@di @= 0;
+							@dj @= 0;
+							@diff @= @matrix[@globalMinimumI][@globalMinimumJ];
+							
+						</action>
+					</step>
+					<while
+						id = "LoopForI"
+						description = "Loor for i"
+						test = "@di &lt; @matrix.length"
+						level = "-1"
+					>
+					<while
+						id = "LoopForJ"
+						description = "Loor for j"
+						test = "@dj &lt; @matrix.length"
+						level = "-1"
+					>   
+						<if
+							id = "checkForChecking"
+							description = "Checking cell for beeing checked"
+							test = "(@checkedColumns[@dj])"
+							level = "-1"
+
+						>
+					    <then>
+							<step
+								id = "Decrease"
+								description = "Decreasing element"
+								level = "-1"
+							>
+								<action>
+									@matrix[@di][@dj] @= @matrix[@di][@dj] + @diff;
+								</action>
+							</step>
+						</then>
+						</if>
+						<if
+							id = "checkForChecking"
+							description = "Checking cell for beeing checked"
+							test = "(@checkedRows[@di])"
+							level = "-1"
+
+						>
+					    <then>
+							<step
+								id = "Decrease"
+								description = "Decreasing element"
+								level = "-1"
+							>
+								<action>
+									@matrix[@di][@dj] @= @matrix[@di][@dj] - @diff;
+								</action>
+							</step>
+						</then>
+						</if>
+						<step
+								id = "incDj"
+								description = "Increasing dj"
+								level = "-1"
+							>
+								<action>
+									@dj @= @dj + 1;
+								</action>
+						</step>
+						
+					</while>
+					<if
+								id = "ChangeDRows"
+								description = "Changing deltaRows"
+								test = "(@checkedRows[@di])"
+								level = "-1"
+							>
+								<then>
+								<step
+									id = "chengeDRow"
+									description = "Change one element"
+									level = "-1"
+								>
+									<action>
+										@rowChange[@di] @= @rowChange[@di] + @diff;
+									</action>
+								</step>
+								</then>
+							</if>
+						
+                    <if
+								id = "ChangeDColumns"
+								description = "Changing deltaColumns"
+								test = "(@checkedColumns[@di])"
+								level = "-1"
+							>
+								<then>
+								<step
+									id = "chengeDColumn"
+									description = "Change one element"
+									level = "-1"
+								>
+									<action>
+										@columnChange[@di] @= @columnChange[@di] - @diff;
+									</action>
+								</step>
+								</then>
+							</if>
+					<step
+						id = "incDi"
+						description = "Increasing di"
+						level = "-1"
+					>
+						<action>
+							@di @= @di + 1;
+							@dj @= 0;		
+						</action>
+					</step>
+						
+
+
+
+					
+					</while>
+			    <step
+						id = "checkSomething"
+						description = "Initializing variables for new loops"
+						level = "-1"
+					>
+						<action>
+							@checkedColumns[@globalMinimumJ] @= true;
+							
+						</action>
+					</step>
+					
+				<if
+								id = "if"
+								description = "if"
+								test = "@used[@globalMinimumJ]"
+								level = "-1"
+							>
+							<then>
+								<step
+									id = "step"
+									description = "step"
+									level = "-1"
+								>
+									<action>
+										@checkedRows[@cPartner[@globalMinimumJ]] @= true;
+									</action>
+								</step>
+				            </then>
+				            </if>
+			<if
+				id = "OutIf"
+				description = "Checking is it possible to come out of loop"
+				test = "!@used[@globalMinimumJ]"
+				level = "-1"
+			>
+				<then>
+					<step
+						id = "GoingOut"
+						description = "Going out of loop"
+						comment-ru = "Свободный столбец найден, выходим из цикла"
+						comment-en = "Free column were found, going out of loop"
+					>
+						<draw>
+							@visualizer.drawMatrix();
+							@visualizer.drawArrays();
+						</draw>
+						<action>
+							@br @= false;
+						</action>
+					</step>
+				</then>
+				<else>
+					<step
+						id = "NotGoingOut"
+						description = "Not going out of loop"
+						comment-ru = "Свободный столбец не найден, не выходим из цикла"
+						comment-en = "Free column were not found, not going out of loop"
+					>
+						<draw>
+							 @visualizer.drawMatrix();
+							@visualizer.drawArrays();
+							
+						</draw>
+						<action>
+							@lastRow @= @cPartner[@globalMinimumJ];
+						</action>
+					</step>
+		  		</else>
+			</if>		
+			<step
+				id = "DrawAll"
+				description = "Drawing all objects"
+				comment-ru = "Обновляем значения, вычитаем минимальный элемент"
+				comment-en = "Updating matrix and arrays, decreasing all on minimal element"
+			>
+				<draw>
+					@visualizer.drawMatrix();
+					@visualizer.drawArrays();
+				</draw>
+				<action>
+					@i @= @i;
+				</action>
+			</step>
+			
+			
+		</while>
+		<while
+			id = "recaclulatingPartners"
+			description = "Recalculating partners for some rows"
+			test = "@globalMinimumI != @i"
+			level = "-1"
+		>
+			<step
+				id = "recalcPartnerForLastRow"
+				description = "Recalculate partner for last row"
+				comment-ru = "Пересчитываем партнера строки номер {0}"
+				comment-en = "Recalculate partner for row number {0}"
+				comment-args = "new Integer(@globalMinimumI + 1)"
+			>
+				<draw>
+					@visualizer.drawMatrix();
+					@visualizer.drawArrays();
+				</draw>
+				<action>
+					@swp @= @partner[@globalMinimumI];
+					@partner[@globalMinimumI] @= @globalMinimumJ;
+					@cPartner[@globalMinimumJ] @= @globalMinimumI;
+					@checkedRows[@globalMinimumI] @=false;
+					@checkedColumns[@globalMinimumJ] @= false;
+					@used[@globalMinimumJ] @= true;
+					@globalMinimumJ @= @swp;
+				</action>
+			</step>
+			
+			<step
+				id = "initDi"
+				description = "Initialize di"
+				level = "-1"
+			>
+				<action>
+					@di @= 0;
+				</action>
+			</step>
+
+			<while 
+				id = "SearchMin"
+				description = "Searching for partner for globalMinimumJ"
+				test = "@di &lt; @matrix.length"
+				level = "-1"
+			>
+				<if
+					id = "Check"
+					description = "Check"
+					test = "(@checkedRows[@di]) &amp;&amp;((!@checkedColumns[@globalMinimumJ] == false) || (@matrix[@di][@globalMinimumJ] &lt; @matrix[@globalMinimumI][@globalMinimumJ]))"
+  					level = "-1"
+				>
+					<then>
+					<step
+						id = "reCalc"
+						description = "reCalc"
+						level = "-1"
+					>
+						<action>
+							@globalMinimumI @= @di;
+						</action>
+					</step>
+					</then>
+				</if>                       
+				<step
+					id = "aaaaa"
+					description = "aaaaaaa"
+					level = "-1"
+				>
+					<action>
+						@di @= @di + 1;
+					</action>
+				</step>
+			</while>
+		</while>
+		<step
+			id = "lastRecalc"
+			description = "Last recalculation"
+			comment-ru = "Пересчитываем партнера строки номер {0}"
+			comment-en = "Recalculate partner for row number {0}"
+			comment-args = "new Integer(@globalMinimumI + 1)"
+		>
+			<draw>
+				@visualizer.drawMatrix();
+			</draw>
+			<action>
+				@partner[@globalMinimumI] @= @globalMinimumJ;
+				@cPartner[@globalMinimumJ] @= @globalMinimumI;
+				@used[@globalMinimumJ] @= true;	
+				@checkedColumns @= new boolean[@matrix.length];
+				@checkedRows @= new boolean[@matrix.length];
+			</action>
+		</step>
+	</while>	
+
+-->	
+        <finish
+            comment-ru="Задача о назначениях решена {0}"
+            comment-en="Problem solved"
+		comment-args = "new Integer(@i)" 
+        >
+            <draw>
+                <!-- @visualizer.drawMatrix(); -->
+            </draw>
         </finish>
-
     </auto>
-
 </algorithm>
+
+

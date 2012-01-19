@@ -18,8 +18,8 @@
     package="ru.ifmo.vizi.FarachColtonBender"
     main-class="FarachColtonBenderVisualizer"
 
-    preferred-width="500"
-    preferred-height="400"
+    preferred-width="640"
+    preferred-height="480"
 
     name-ru="Алгоритм Фараха-Колтона, Бендера"
     name-en="Farach-Colton, Bender algorithm"

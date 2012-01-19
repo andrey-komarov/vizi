@@ -27,77 +27,37 @@ public final class FarachColtonBender extends BaseAutoReverseAutomata {
         public FarachColtonBenderVisualizer visualizer = null;
 
         /**
-          * Левая граница поиска.
+          * Основной массив.
           */
-        public int left = 0;
+        public int[] array = new int[]{3, 8, 10, 4, 23};
 
         /**
-          * Правая граница поиска.
+          * Количество обработанных вершин в построении декартова дерева.
           */
-        public int right = 0;
+        public int verticesPassed = 0;
 
         /**
-          * Массив дла поиска.
+          * Стек.
           */
-        public int[] h = null;
+        public int[] stack = null;
 
         /**
-          * Текущая левая граница поиска.
+          * Размер стека. Внезапно.
           */
-        public int l = 0;
+        public int stackSize = 0;
 
         /**
-          * Текущая правая граница поиска.
+          * Счётчик цикла.
           */
-        public int r = 0;
-
-        /**
-          * Текущий минимум.
-          */
-        public int a = 0;
-
-        /**
-          * Нижняя граница для элементов дерева.
-          */
-        public int lowCellsBound = 0;
-
-        /**
-          * Нижняя граница минимумов.
-          */
-        public int lowMinBound = 0;
-
-        /**
-          * Высота дерева.
-          */
-        public int height = 0;
-
-        /**
-          * Символ, обозначающий текущий минимум.
-          */
-        public String minim = \u0022\u221E\u0022;
-
-        /**
-          * Значок бесконечности.
-          */
-        public String infinity = \u0022\u221E\u0022;
-
-        /**
-          * Левый элемент массива.
-          */
-        public String tl = \u0022\u221E\u0022;
-
-        /**
-          * Правый элемент массива.
-          */
-        public String tr = \u0022\u221E\u0022;
+        public int i = 0;
 
         public String toString() {
-            return "" + d.a;
+            		return "";
         }
     }
 
     /**
-      * Ищет минимум в массиве, используя Алгоритм Фараха-Колтона, Бендера.
+      * Ищет максимум на отрезке в массиве.
       */
     private final class Main extends BaseAutomata implements Automata {
         /**
@@ -108,7 +68,7 @@ public final class FarachColtonBender extends BaseAutoReverseAutomata {
         /**
           * Конечное состояние автомата.
           */
-        private final int END_STATE = 2;
+        private final int END_STATE = 7;
 
         /**
           * Конструктор.
@@ -117,14 +77,24 @@ public final class FarachColtonBender extends BaseAutoReverseAutomata {
             super( 
                 "Main", 
                 0, // Номер начального состояния 
-                2, // Номер конечного состояния 
+                7, // Номер конечного состояния 
                 new String[]{ 
                     "Начальное состояние",  
-                    "Инициализация", 
+                    "Start of cycle", 
+                    "Cycle over elements to build cartesian tree", 
+                    "Drop all elements above a[i]", 
+                    "decrementStackSize", 
+                    "push element to stack", 
+                    "Cycle step", 
                     "Конечное состояние" 
                 }, new int[]{ 
                     Integer.MAX_VALUE, // Начальное состояние,  
-                    -1, // Инициализация 
+                    0, // Start of cycle 
+                    0, // Cycle over elements to build cartesian tree 
+                    0, // Drop all elements above a[i] 
+                    -1, // decrementStackSize 
+                    0, // push element to stack 
+                    -1, // Cycle step 
                     Integer.MAX_VALUE, // Конечное состояние 
                 } 
             ); 
@@ -137,21 +107,83 @@ public final class FarachColtonBender extends BaseAutoReverseAutomata {
             // Переход в следующее состояние
             switch (state) {
                 case START_STATE: { // Начальное состояние
-                    state = 1; // Инициализация
+                    state = 1; // Start of cycle
                     break;
                 }
-                case 1: { // Инициализация
-                    state = END_STATE; 
+                case 1: { // Start of cycle
+                    stack.pushBoolean(false); 
+                    state = 2; // Cycle over elements to build cartesian tree
+                    break;
+                }
+                case 2: { // Cycle over elements to build cartesian tree
+                    if (d.i < d.array.length) {
+                        stack.pushBoolean(false); 
+                        state = 3; // Drop all elements above a[i]
+                    } else {
+                        state = END_STATE; 
+                    }
+                    break;
+                }
+                case 3: { // Drop all elements above a[i]
+                    if (d.stackSize > 0 && d.array[d.i] > d.stack[d.stackSize - 1]) {
+                        state = 4; // decrementStackSize
+                    } else {
+                        state = 5; // push element to stack
+                    }
+                    break;
+                }
+                case 4: { // decrementStackSize
+                    stack.pushBoolean(true); 
+                    state = 3; // Drop all elements above a[i]
+                    break;
+                }
+                case 5: { // push element to stack
+                    state = 6; // Cycle step
+                    break;
+                }
+                case 6: { // Cycle step
+                    stack.pushBoolean(true); 
+                    state = 2; // Cycle over elements to build cartesian tree
                     break;
                 }
             }
 
             // Действие в текущем состоянии
             switch (state) {
-                case 1: { // Инициализация
+                case 1: { // Start of cycle
                     startSection();
-                    storeField(d, "lowCellsBound");
-                    d.lowCellsBound = d.h.length / 2;
+                    storeField(d, "i");
+                    		d.i = 0;
+                    storeField(d, "stack");
+                    		d.stack = new int[d.array.length];
+                    storeField(d, "stackSize");
+                    		d.stackSize = 0;
+                    break;
+                }
+                case 2: { // Cycle over elements to build cartesian tree
+                    break;
+                }
+                case 3: { // Drop all elements above a[i]
+                    break;
+                }
+                case 4: { // decrementStackSize
+                    startSection();
+                    storeField(d, "stackSize");
+                    				d.stackSize = d.stackSize - 1;
+                    break;
+                }
+                case 5: { // push element to stack
+                    startSection();
+                    storeArray(d.stack, d.stackSize);
+                    			d.stack[d.stackSize] = d.array[d.i];
+                    storeField(d, "stackSize");
+                    			d.stackSize = d.stackSize + 1;
+                    break;
+                }
+                case 6: { // Cycle step
+                    startSection();
+                    storeField(d, "i");
+                    			d.i = d.i + 1;
                     break;
                 }
             }
@@ -163,7 +195,25 @@ public final class FarachColtonBender extends BaseAutoReverseAutomata {
         protected void doStepBackward(int level) {
             // Обращение действия в текущем состоянии
             switch (state) {
-                case 1: { // Инициализация
+                case 1: { // Start of cycle
+                    restoreSection();
+                    break;
+                }
+                case 2: { // Cycle over elements to build cartesian tree
+                    break;
+                }
+                case 3: { // Drop all elements above a[i]
+                    break;
+                }
+                case 4: { // decrementStackSize
+                    restoreSection();
+                    break;
+                }
+                case 5: { // push element to stack
+                    restoreSection();
+                    break;
+                }
+                case 6: { // Cycle step
                     restoreSection();
                     break;
                 }
@@ -171,12 +221,40 @@ public final class FarachColtonBender extends BaseAutoReverseAutomata {
 
             // Переход в предыдущее состояние
             switch (state) {
-                case 1: { // Инициализация
+                case 1: { // Start of cycle
                     state = START_STATE; 
                     break;
                 }
+                case 2: { // Cycle over elements to build cartesian tree
+                    if (stack.popBoolean()) {
+                        state = 6; // Cycle step
+                    } else {
+                        state = 1; // Start of cycle
+                    }
+                    break;
+                }
+                case 3: { // Drop all elements above a[i]
+                    if (stack.popBoolean()) {
+                        state = 4; // decrementStackSize
+                    } else {
+                        state = 2; // Cycle over elements to build cartesian tree
+                    }
+                    break;
+                }
+                case 4: { // decrementStackSize
+                    state = 3; // Drop all elements above a[i]
+                    break;
+                }
+                case 5: { // push element to stack
+                    state = 3; // Drop all elements above a[i]
+                    break;
+                }
+                case 6: { // Cycle step
+                    state = 5; // push element to stack
+                    break;
+                }
                 case END_STATE: { // Начальное состояние
-                    state = 1; // Инициализация
+                    state = 2; // Cycle over elements to build cartesian tree
                     break;
                 }
             }
@@ -192,12 +270,39 @@ public final class FarachColtonBender extends BaseAutoReverseAutomata {
             switch (state) {
                 case START_STATE: { // Начальное состояние
                     comment = FarachColtonBender.this.getComment("Main.START_STATE"); 
-                    args = new Object[]{new Integer(0), new Integer(-1)}; 
+                    break;
+                }
+                case 1: { // Start of cycle
+                    comment = FarachColtonBender.this.getComment("Main.Begin"); 
+                    args = new Object[]{FarachColtonBenderVisualizer.treeAsString(d.array)}; 
+                    break;
+                }
+                case 2: { // Cycle over elements to build cartesian tree
+                    if (d.i < d.array.length) {
+                        comment = FarachColtonBender.this.getComment("Main.CartesianTreeLoop.true"); 
+                    } else {
+                        comment = FarachColtonBender.this.getComment("Main.CartesianTreeLoop.false"); 
+                    }
+                    args = new Object[]{new Integer((d.i < d.array.length) ? (d.array[d.i]) : 0)}; 
+                    break;
+                }
+                case 3: { // Drop all elements above a[i]
+                    if (d.stackSize > 0 && d.array[d.i] > d.stack[d.stackSize - 1]) {
+                        comment = FarachColtonBender.this.getComment("Main.dropSmallElements.true"); 
+                    } else {
+                        comment = FarachColtonBender.this.getComment("Main.dropSmallElements.false"); 
+                    }
+                    args = new Object[]{new Integer(d.stackSize == 0 ? 0: (d.stack[d.stackSize - 1])), new Integer(d.array[d.i])}; 
+                    break;
+                }
+                case 5: { // push element to stack
+                    comment = FarachColtonBender.this.getComment("Main.pushElementToStack"); 
+                    args = new Object[]{new Integer(d.array[d.i])}; 
                     break;
                 }
                 case END_STATE: { // Конечное состояние
                     comment = FarachColtonBender.this.getComment("Main.END_STATE"); 
-                    args = new Object[]{new Integer(d.a)}; 
+                    args = new Object[]{new Integer(d.i)}; 
                     break;
                 }
             }
@@ -210,10 +315,20 @@ public final class FarachColtonBender extends BaseAutoReverseAutomata {
           */
         public void drawState() {
             switch (state) {
+                case START_STATE: { // Начальное состояние
+                    		d.visualizer.clear();
+                    		d.visualizer.drawMainArray();
+                    break;
+                }
+                case 4: { // decrementStackSize
+                    				d.visualizer.drawCartesianTree(d.i + 1, d.stackSize);
+                    break;
+                }
+                case 5: { // push element to stack
+                    			d.visualizer.drawCartesianTree(d.i + 1, d.stackSize);
+                    break;
+                }
                 case END_STATE: { // Конечное состояние
-                    	d.visualizer.drawCells(0, 0, 0, 0, 0, 0, true);
-                    	d.visualizer.drawBrackets(d.l, d.r, false, true);
-                    	d.visualizer.drawMin(true);
                     break;
                 }
             }
