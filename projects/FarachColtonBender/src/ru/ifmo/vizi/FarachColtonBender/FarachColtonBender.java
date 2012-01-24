@@ -111,6 +111,26 @@ public final class FarachColtonBender extends BaseAutoReverseAutomata {
           */
         public boolean stage1 = false;
 
+        /**
+          * Размер куска.
+          */
+        public int pieceSize = 3;
+
+        /**
+          * Максиммумы на кусочках.
+          */
+        public int[] maximums = null;
+
+        /**
+          * Переменная цикла — 2.
+          */
+        public int j = -1;
+
+        /**
+          * Собственно, таблица.
+          */
+        public int[][] table = null;
+
         public String toString() {
             		return "";
         }
@@ -128,7 +148,7 @@ public final class FarachColtonBender extends BaseAutoReverseAutomata {
         /**
           * Конечное состояние автомата.
           */
-        private final int END_STATE = 39;
+        private final int END_STATE = 61;
 
         /**
           * Конструктор.
@@ -137,7 +157,7 @@ public final class FarachColtonBender extends BaseAutoReverseAutomata {
             super( 
                 "Main", 
                 0, // Номер начального состояния 
-                39, // Номер конечного состояния 
+                61, // Номер конечного состояния 
                 new String[]{ 
                     "Начальное состояние",  
                     "Start of cycle", 
@@ -178,6 +198,28 @@ public final class FarachColtonBender extends BaseAutoReverseAutomata {
                     "First occurence of index[i] found", 
                     "index[i] already was used", 
                     "increment loop variable", 
+                    "splitting depth into pieces", 
+                    "ololo4", 
+                    "build array for sparce table", 
+                    "initialization of j", 
+                    "find maximum in piece", 
+                    "ололошеньки", 
+                    "ололошеньки (окончание)", 
+                    "new maximum found", 
+                    "increment j", 
+                    "", 
+                    "maximums found", 
+                    "row in sparse table", 
+                    "init loop variable", 
+                    "column in sparse table", 
+                    "compute next variable in sparse table", 
+                    "ololo5", 
+                    "ololo5 (окончание)", 
+                    "ololo6", 
+                    "ololo7", 
+                    "ololo8", 
+                    "ololo9", 
+                    "ololo10", 
                     "Конечное состояние" 
                 }, new int[]{ 
                     Integer.MAX_VALUE, // Начальное состояние,  
@@ -213,12 +255,34 @@ public final class FarachColtonBender extends BaseAutoReverseAutomata {
                     -1, // the end of DFS 
                     0, // cleanup after traversal 
                     -1, // ololo3 
-                    0, // search for first occurence of number in index 
+                    -1, // search for first occurence of number in index 
                     -1, //  
                     -1, //  (окончание) 
                     0, // First occurence of index[i] found 
                     -1, // index[i] already was used 
                     -1, // increment loop variable 
+                    0, // splitting depth into pieces 
+                    0, // ololo4 
+                    0, // build array for sparce table 
+                    -1, // initialization of j 
+                    -1, // find maximum in piece 
+                    -1, // ололошеньки 
+                    -1, // ололошеньки (окончание) 
+                    0, // new maximum found 
+                    0, // increment j 
+                    -1, //  
+                    0, // maximums found 
+                    -1, // row in sparse table 
+                    -1, // init loop variable 
+                    -1, // column in sparse table 
+                    0, // compute next variable in sparse table 
+                    -1, // ololo5 
+                    -1, // ololo5 (окончание) 
+                    0, // ololo6 
+                    0, // ololo7 
+                    -1, // ololo8 
+                    -1, // ololo9 
+                    0, // ololo10 
                     Integer.MAX_VALUE, // Конечное состояние 
                 } 
             ); 
@@ -421,7 +485,7 @@ public final class FarachColtonBender extends BaseAutoReverseAutomata {
                     if (d.i < 2 * d.array.length - 1) {
                         state = 34; 
                     } else {
-                        state = END_STATE; 
+                        state = 39; // splitting depth into pieces
                     }
                     break;
                 }
@@ -450,6 +514,130 @@ public final class FarachColtonBender extends BaseAutoReverseAutomata {
                 case 38: { // increment loop variable
                     stack.pushBoolean(true); 
                     state = 33; // search for first occurence of number in index
+                    break;
+                }
+                case 39: { // splitting depth into pieces
+                    state = 40; // ololo4
+                    break;
+                }
+                case 40: { // ololo4
+                    stack.pushBoolean(false); 
+                    state = 41; // build array for sparce table
+                    break;
+                }
+                case 41: { // build array for sparce table
+                    if (d.i < d.maximums.length) {
+                        state = 42; // initialization of j
+                    } else {
+                        state = 49; // maximums found
+                    }
+                    break;
+                }
+                case 42: { // initialization of j
+                    stack.pushBoolean(false); 
+                    state = 43; // find maximum in piece
+                    break;
+                }
+                case 43: { // find maximum in piece
+                    if (d.j < d.pieceSize && d.i * d.pieceSize + d.j < d.depth.length) {
+                        state = 44; // ололошеньки
+                    } else {
+                        state = 48; 
+                    }
+                    break;
+                }
+                case 44: { // ололошеньки
+                    if (d.maximums[d.i] < d.depth[d.i * d.pieceSize + d.j]) {
+                        state = 46; // new maximum found
+                    } else {
+                        stack.pushBoolean(false); 
+                        state = 45; // ололошеньки (окончание)
+                    }
+                    break;
+                }
+                case 45: { // ололошеньки (окончание)
+                    state = 47; // increment j
+                    break;
+                }
+                case 46: { // new maximum found
+                    stack.pushBoolean(true); 
+                    state = 45; // ололошеньки (окончание)
+                    break;
+                }
+                case 47: { // increment j
+                    stack.pushBoolean(true); 
+                    state = 43; // find maximum in piece
+                    break;
+                }
+                case 48: { 
+                    stack.pushBoolean(true); 
+                    state = 41; // build array for sparce table
+                    break;
+                }
+                case 49: { // maximums found
+                    stack.pushBoolean(false); 
+                    state = 50; // row in sparse table
+                    break;
+                }
+                case 50: { // row in sparse table
+                    if ((1 << d.i) <= d.maximums.length) {
+                        state = 51; // init loop variable
+                    } else {
+                        state = 60; // ololo10
+                    }
+                    break;
+                }
+                case 51: { // init loop variable
+                    stack.pushBoolean(false); 
+                    state = 52; // column in sparse table
+                    break;
+                }
+                case 52: { // column in sparse table
+                    if ((d.j + (1 << d.i)) <= d.maximums.length) {
+                        state = 53; // compute next variable in sparse table
+                    } else {
+                        state = 59; // ololo9
+                    }
+                    break;
+                }
+                case 53: { // compute next variable in sparse table
+                    state = 54; // ololo5
+                    break;
+                }
+                case 54: { // ololo5
+                    if (d.table[d.i - 1][d.j] < d.table[d.i - 1][d.j + (1 << (d.i - 1))]) {
+                        state = 56; // ololo6
+                    } else {
+                        state = 57; // ololo7
+                    }
+                    break;
+                }
+                case 55: { // ololo5 (окончание)
+                    state = 58; // ololo8
+                    break;
+                }
+                case 56: { // ololo6
+                    stack.pushBoolean(true); 
+                    state = 55; // ololo5 (окончание)
+                    break;
+                }
+                case 57: { // ololo7
+                    stack.pushBoolean(false); 
+                    state = 55; // ololo5 (окончание)
+                    break;
+                }
+                case 58: { // ololo8
+                    stack.pushBoolean(true); 
+                    state = 52; // column in sparse table
+                    break;
+                }
+                case 59: { // ololo9
+                    stack.pushBoolean(true); 
+                    state = 50; // row in sparse table
+                    break;
+                }
+                case 60: { // ololo10
+                    state = END_STATE; 
                     break;
                 }
             }
@@ -667,6 +855,108 @@ public final class FarachColtonBender extends BaseAutoReverseAutomata {
                     				d.i = d.i + 1;
                     break;
                 }
+                case 39: { // splitting depth into pieces
+                    startSection();
+                    storeField(d, "i");
+                    			d.i = 0;
+                    break;
+                }
+                case 40: { // ololo4
+                    startSection();
+                    break;
+                }
+                case 41: { // build array for sparce table
+                    break;
+                }
+                case 42: { // initialization of j
+                    startSection();
+                    storeField(d, "j");
+                    				d.j = 0;
+                    break;
+                }
+                case 43: { // find maximum in piece
+                    break;
+                }
+                case 44: { // ололошеньки
+                    break;
+                }
+                case 45: { // ололошеньки (окончание)
+                    break;
+                }
+                case 46: { // new maximum found
+                    startSection();
+                    storeArray(d.maximums, d.i);
+                    							d.maximums[d.i] = d.depth[d.i * d.pieceSize + d.j];
+                    break;
+                }
+                case 47: { // increment j
+                    startSection();
+                    storeField(d, "j");
+                    					d.j = d.j + 1;
+                    break;
+                }
+                case 48: { 
+                    startSection();
+                    storeField(d, "i");
+                    				d.i = d.i + 1;
+                    break;
+                }
+                case 49: { // maximums found
+                    startSection();
+                    storeField(d, "i");
+                    			d.i = 1;
+                    break;
+                }
+                case 50: { // row in sparse table
+                    break;
+                }
+                case 51: { // init loop variable
+                    startSection();
+                    storeField(d, "j");
+                    				d.j = 0;
+                    break;
+                }
+                case 52: { // column in sparse table
+                    break;
+                }
+                case 53: { // compute next variable in sparse table
+                    startSection();
+                    break;
+                }
+                case 54: { // ololo5
+                    break;
+                }
+                case 55: { // ololo5 (окончание)
+                    break;
+                }
+                case 56: { // ololo6
+                    startSection();
+                    storeArray(d.table[d.i], d.j);
+                    							d.table[d.i][d.j] = d.table[d.i - 1][d.j + (1 << (d.i - 1))];
+                    break;
+                }
+                case 57: { // ololo7
+                    startSection();
+                    storeArray(d.table[d.i], d.j);
+                    							d.table[d.i][d.j] = d.table[d.i - 1][d.j];
+                    break;
+                }
+                case 58: { // ololo8
+                    startSection();
+                    storeField(d, "j");
+                    					d.j = d.j + 1;
+                    break;
+                }
+                case 59: { // ololo9
+                    startSection();
+                    storeField(d, "i");
+                    				d.i = d.i + 1;
+                    break;
+                }
+                case 60: { // ololo10
+                    startSection();
+                    break;
+                }
             }
         }
 
@@ -806,6 +1096,86 @@ public final class FarachColtonBender extends BaseAutoReverseAutomata {
                     break;
                 }
                 case 38: { // increment loop variable
+                    restoreSection();
+                    break;
+                }
+                case 39: { // splitting depth into pieces
+                    restoreSection();
+                    break;
+                }
+                case 40: { // ololo4
+                    restoreSection();
+                    break;
+                }
+                case 41: { // build array for sparce table
+                    break;
+                }
+                case 42: { // initialization of j
+                    restoreSection();
+                    break;
+                }
+                case 43: { // find maximum in piece
+                    break;
+                }
+                case 44: { // ололошеньки
+                    break;
+                }
+                case 45: { // ололошеньки (окончание)
+                    break;
+                }
+                case 46: { // new maximum found
+                    restoreSection();
+                    break;
+                }
+                case 47: { // increment j
+                    restoreSection();
+                    break;
+                }
+                case 48: { 
+                    restoreSection();
+                    break;
+                }
+                case 49: { // maximums found
+                    restoreSection();
+                    break;
+                }
+                case 50: { // row in sparse table
+                    break;
+                }
+                case 51: { // init loop variable
+                    restoreSection();
+                    break;
+                }
+                case 52: { // column in sparse table
+                    break;
+                }
+                case 53: { // compute next variable in sparse table
+                    restoreSection();
+                    break;
+                }
+                case 54: { // ololo5
+                    break;
+                }
+                case 55: { // ololo5 (окончание)
+                    break;
+                }
+                case 56: { // ololo6
+                    restoreSection();
+                    break;
+                }
+                case 57: { // ololo7
+                    restoreSection();
+                    break;
+                }
+                case 58: { // ololo8
+                    restoreSection();
+                    break;
+                }
+                case 59: { // ololo9
+                    restoreSection();
+                    break;
+                }
+                case 60: { // ololo10
                     restoreSection();
                     break;
                 }
@@ -1009,8 +1379,120 @@ public final class FarachColtonBender extends BaseAutoReverseAutomata {
                     state = 35; //  (окончание)
                     break;
                 }
-                case END_STATE: { // Начальное состояние
+                case 39: { // splitting depth into pieces
                     state = 33; // search for first occurence of number in index
+                    break;
+                }
+                case 40: { // ololo4
+                    state = 39; // splitting depth into pieces
+                    break;
+                }
+                case 41: { // build array for sparce table
+                    if (stack.popBoolean()) {
+                        state = 48; 
+                    } else {
+                        state = 40; // ololo4
+                    }
+                    break;
+                }
+                case 42: { // initialization of j
+                    state = 41; // build array for sparce table
+                    break;
+                }
+                case 43: { // find maximum in piece
+                    if (stack.popBoolean()) {
+                        state = 47; // increment j
+                    } else {
+                        state = 42; // initialization of j
+                    }
+                    break;
+                }
+                case 44: { // ололошеньки
+                    state = 43; // find maximum in piece
+                    break;
+                }
+                case 45: { // ололошеньки (окончание)
+                    if (stack.popBoolean()) {
+                        state = 46; // new maximum found
+                    } else {
+                        state = 44; // ололошеньки
+                    }
+                    break;
+                }
+                case 46: { // new maximum found
+                    state = 44; // ололошеньки
+                    break;
+                }
+                case 47: { // increment j
+                    state = 45; // ололошеньки (окончание)
+                    break;
+                }
+                case 48: { 
+                    state = 43; // find maximum in piece
+                    break;
+                }
+                case 49: { // maximums found
+                    state = 41; // build array for sparce table
+                    break;
+                }
+                case 50: { // row in sparse table
+                    if (stack.popBoolean()) {
+                        state = 59; // ololo9
+                    } else {
+                        state = 49; // maximums found
+                    }
+                    break;
+                }
+                case 51: { // init loop variable
+                    state = 50; // row in sparse table
+                    break;
+                }
+                case 52: { // column in sparse table
+                    if (stack.popBoolean()) {
+                        state = 58; // ololo8
+                    } else {
+                        state = 51; // init loop variable
+                    }
+                    break;
+                }
+                case 53: { // compute next variable in sparse table
+                    state = 52; // column in sparse table
+                    break;
+                }
+                case 54: { // ololo5
+                    state = 53; // compute next variable in sparse table
+                    break;
+                }
+                case 55: { // ololo5 (окончание)
+                    if (stack.popBoolean()) {
+                        state = 56; // ololo6
+                    } else {
+                        state = 57; // ololo7
+                    }
+                    break;
+                }
+                case 56: { // ololo6
+                    state = 54; // ololo5
+                    break;
+                }
+                case 57: { // ololo7
+                    state = 54; // ololo5
+                    break;
+                }
+                case 58: { // ololo8
+                    state = 55; // ololo5 (окончание)
+                    break;
+                }
+                case 59: { // ololo9
+                    state = 52; // column in sparse table
+                    break;
+                }
+                case 60: { // ololo10
+                    state = 50; // row in sparse table
+                    break;
+                }
+                case END_STATE: { // Начальное состояние
+                    state = 60; // ololo10
                     break;
                 }
             }
@@ -1132,6 +1614,61 @@ public final class FarachColtonBender extends BaseAutoReverseAutomata {
                     args = new Object[]{new Integer(d.index[d.i] + 1)}; 
                     break;
                 }
+                case 39: { // splitting depth into pieces
+                    comment = FarachColtonBender.this.getComment("Main.splittingIntoPieces1"); 
+                    break;
+                }
+                case 40: { // ololo4
+                    comment = FarachColtonBender.this.getComment("Main.ololo4"); 
+                    break;
+                }
+                case 41: { // build array for sparce table
+                    if (d.i < d.maximums.length) {
+                        comment = FarachColtonBender.this.getComment("Main.buildArrayForSparseTable.true"); 
+                    } else {
+                        comment = FarachColtonBender.this.getComment("Main.buildArrayForSparseTable.false"); 
+                    }
+                    args = new Object[]{new Integer(d.i + 1)}; 
+                    break;
+                }
+                case 46: { // new maximum found
+                    comment = FarachColtonBender.this.getComment("Main.improveMaximum"); 
+                    args = new Object[]{new Integer(d.depth[d.i * d.pieceSize + d.j]), new Integer(d.maximums[d.i])}; 
+                    break;
+                }
+                case 47: { // increment j
+                    comment = FarachColtonBender.this.getComment("Main.advanceIterator"); 
+                    break;
+                }
+                case 49: { // maximums found
+                    comment = FarachColtonBender.this.getComment("Main.maximumsFound"); 
+                    break;
+                }
+                case 53: { // compute next variable in sparse table
+                    comment = FarachColtonBender.this.getComment("Main.newVarInSparseTable"); 
+                    args = new Object[]{new Integer(d.i), new Integer(d.j + 1), new Integer(d.i - 1), new Integer(d.table[d.i - 1][d.j]), new Integer(d.j + (1 << (d.i - 1))), new Integer(d.table[d.i - 1][d.j + (1 << (d.i - 1))])}; 
+                    break;
+                }
+                case 54: { // ololo5
+                    if (d.table[d.i - 1][d.j] < d.table[d.i - 1][d.j + (1 << (d.i - 1))]) {
+                        comment = FarachColtonBender.this.getComment("Main.ololo5.true"); 
+                    } else {
+                        comment = FarachColtonBender.this.getComment("Main.ololo5.false"); 
+                    }
+                    break;
+                }
+                case 56: { // ololo6
+                    comment = FarachColtonBender.this.getComment("Main.ololo6"); 
+                    break;
+                }
+                case 57: { // ololo7
+                    comment = FarachColtonBender.this.getComment("Main.ololo7"); 
+                    break;
+                }
+                case 60: { // ololo10
+                    comment = FarachColtonBender.this.getComment("Main.ololo10"); 
+                    break;
+                }
                 case END_STATE: { // Конечное состояние
                     comment = FarachColtonBender.this.getComment("Main.END_STATE"); 
                     args = new Object[]{new Integer(d.i)}; 
@@ -1191,6 +1728,7 @@ public final class FarachColtonBender extends BaseAutoReverseAutomata {
                 case 31: { // cleanup after traversal
                     			d.visualizer.drawCellsForDFS(d.pos, -1);
                     			d.visualizer.drawCartesianTree(0, 0);
+                    			d.visualizer.redrawIndex();
                     break;
                 }
                 case 36: { // First occurence of index[i] found
@@ -1201,6 +1739,39 @@ public final class FarachColtonBender extends BaseAutoReverseAutomata {
                     break;
                 }
                 case 38: { // increment loop variable
+                    break;
+                }
+                case 39: { // splitting depth into pieces
+                    			d.visualizer.drawMaximums(0);
+                    			d.visualizer.drawDepth(-1);
+                    break;
+                }
+                case 40: { // ololo4
+                    			d.visualizer.drawDepth(0);			
+                    break;
+                }
+                case 46: { // new maximum found
+                    							d.visualizer.drawMaximums(d.i + 1);
+                    break;
+                }
+                case 47: { // increment j
+                    					d.visualizer.drawDepth(d.i * d.pieceSize + d.j);
+                    break;
+                }
+                case 49: { // maximums found
+                    			d.visualizer.drawDepth(-1);
+                    break;
+                }
+                case 56: { // ololo6
+                    							d.visualizer.drawTable(d.i + 1, d.j + 1, d.i - 1, d.j + (1 << (d.i - 1)));
+                    break;
+                }
+                case 57: { // ololo7
+                    							d.visualizer.drawTable(d.i + 1, d.j + 1, d.i - 1, d.j);
+                    break;
+                }
+                case 60: { // ololo10
+                    			d.visualizer.drawTable(d.maximums.length, d.maximums.length, -1, -1);
                     break;
                 }
                 case END_STATE: { // Конечное состояние
