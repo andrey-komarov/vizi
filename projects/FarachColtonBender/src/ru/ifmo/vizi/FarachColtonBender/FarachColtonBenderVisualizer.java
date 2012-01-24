@@ -184,6 +184,9 @@ public final class FarachColtonBenderVisualizer extends Base implements
 		data.passed = new int[2 * n + 1];
 		data.depth = new int[2 * n + 1];
 		data.index = new int[2 * n + 1];
+		data.first = new int[n];
+		Arrays.fill(data.first, -1);
+		data.stage1 = false;
 		for (int i = 0; i < n; i++) {
 			array[i] = new Rect(linearStyleSet);
 			tree[i] = new Rect(linearStyleSet);
@@ -384,6 +387,16 @@ public final class FarachColtonBenderVisualizer extends Base implements
 			DFSCells.add(depth[i]);
 			clientPane.add(index[i]);
 			clientPane.add(depth[i]);
+		}
+	}
+	
+	void redrawIndex() {
+		for (int i = 0; i < data.index.length; i++) {
+			index[i].setStyle(1);
+		}
+		for (int i = 0; i < data.first.length; i++) {
+			if (data.first[i] != -1)
+				index[data.first[i]].setStyle(3);
 		}
 	}
 	

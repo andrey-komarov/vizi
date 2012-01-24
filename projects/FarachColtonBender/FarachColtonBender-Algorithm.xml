@@ -118,6 +118,20 @@
 		value	= "null"
 	/>
 
+	<variable
+		description	= "Первое вхождение"
+		name	= "first"
+		type	= "int[]"
+		value	= "null"
+	/>
+
+	<variable
+		description	= "Построено дерево, сделан обход"
+		name	= "stage1"
+		type	= "boolean"
+		value	= "false"
+	/>
+
 	<toString>
 		return "";
 	</toString>
@@ -431,25 +445,98 @@
 									</action>
 								</step>
 							</else>
-						</if>						
+						</if>
 					</else>
 				</if>
 			</else>
 		</if>
 	</while>
 
+	<!-- **************************************************************** -->
+	<!-- ******************** Подготовка к запросам ********************* -->
+	<!-- **************************************************************** -->
+
 	<step
 		id	= "traversalFinished"
 		description	= "cleanup after traversal"
 		comment-ru	= "Отныне дерево нам больше не понадобится"
 	>
-		<action>			
+		<action>
+			@stage1 @= true;
 		</action>
 		<draw>
 			@visualizer.drawCellsForDFS(@pos, -1);
 			@visualizer.drawCartesianTree(0, 0);
 		</draw>
 	</step>
+
+	<step
+		id	= "ololo3"
+		description	= "ololo3"
+		level	 = "-1"
+	>
+		<action>
+			@i @= 0;
+		</action>
+	</step>
+
+	<while
+		id	= "searchFirstOccurence"
+		description	= "search for first occurence of number in index"
+		test	= "@i &lt; 2 * @array.length - 1"
+		true-comment-ru	= "Смотрим элемент {0}"
+		false-comment-ru	= "Первое вхождение найдено"
+		comment-args	= "new Integer((@i == 2 * @array.length - 1 ? 0 : @index[@i]) + 1)"
+	>
+		<if
+			id	= "checkIfNotUsed"
+			descrption	= "check if this cell is used first time"
+			test	= "@first[@index[@i]] == -1"
+			level	= "-1"
+		>
+			<then>
+				<step
+					id	= "newElementFound"
+					description	= "First occurence of index[i] found"
+					comment-ru	= "Первое вхождение элемента {0}"
+					comment-args	= "new Integer(@index[@i] + 1)"
+				>
+					<action>
+						@first[@index[@i]] @= @i;
+					</action>
+					<draw>
+						@visualizer.redrawIndex();
+					</draw>
+				</step>
+			</then>
+			<else>
+				<step
+					id	= "notNewElementFound"
+					description	= "index[i] already was used"
+					comment-ru	= "Уже не первое вхождение {0}"
+					comment-args	= "new Integer(@index[@i] + 1)"
+					level	= "-1"
+				>
+					<action>
+					</action>
+					<draw>						
+					</draw>
+				</step>
+			</else>
+		</if>
+		
+		<step
+			id	= "incrementLoopVariable2"
+			description	= "increment loop variable"
+			level	= "-1"
+		>
+			<action>
+				@i @= @i + 1;
+			</action>
+			<draw>
+			</draw>
+		</step>
+	</while>
 
 <!--		
 		<while
@@ -924,7 +1011,7 @@
         <finish
             comment-ru="Задача о назначениях решена {0}"
             comment-en="Problem solved"
-		comment-args = "new Integer(@i)" 
+			comment-args = "new Integer(@i)" 
         >
             <draw>
                 <!-- @visualizer.drawMatrix(); -->

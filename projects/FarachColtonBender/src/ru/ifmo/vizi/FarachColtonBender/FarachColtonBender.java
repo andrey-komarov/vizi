@@ -101,6 +101,16 @@ public final class FarachColtonBender extends BaseAutoReverseAutomata {
           */
         public int[] passed = null;
 
+        /**
+          * Первое вхождение.
+          */
+        public int[] first = null;
+
+        /**
+          * Построено дерево, сделан обход.
+          */
+        public boolean stage1 = false;
+
         public String toString() {
             		return "";
         }
@@ -118,7 +128,7 @@ public final class FarachColtonBender extends BaseAutoReverseAutomata {
         /**
           * Конечное состояние автомата.
           */
-        private final int END_STATE = 32;
+        private final int END_STATE = 39;
 
         /**
           * Конструктор.
@@ -127,7 +137,7 @@ public final class FarachColtonBender extends BaseAutoReverseAutomata {
             super( 
                 "Main", 
                 0, // Номер начального состояния 
-                32, // Номер конечного состояния 
+                39, // Номер конечного состояния 
                 new String[]{ 
                     "Начальное состояние",  
                     "Start of cycle", 
@@ -161,6 +171,13 @@ public final class FarachColtonBender extends BaseAutoReverseAutomata {
                     "processing of vertex finished", 
                     "the end of DFS", 
                     "cleanup after traversal", 
+                    "ololo3", 
+                    "search for first occurence of number in index", 
+                    "", 
+                    " (окончание)", 
+                    "First occurence of index[i] found", 
+                    "index[i] already was used", 
+                    "increment loop variable", 
                     "Конечное состояние" 
                 }, new int[]{ 
                     Integer.MAX_VALUE, // Начальное состояние,  
@@ -195,6 +212,13 @@ public final class FarachColtonBender extends BaseAutoReverseAutomata {
                     0, // processing of vertex finished 
                     -1, // the end of DFS 
                     0, // cleanup after traversal 
+                    -1, // ololo3 
+                    0, // search for first occurence of number in index 
+                    -1, //  
+                    -1, //  (окончание) 
+                    0, // First occurence of index[i] found 
+                    -1, // index[i] already was used 
+                    -1, // increment loop variable 
                     Integer.MAX_VALUE, // Конечное состояние 
                 } 
             ); 
@@ -385,7 +409,47 @@ public final class FarachColtonBender extends BaseAutoReverseAutomata {
                     break;
                 }
                 case 31: { // cleanup after traversal
-                    state = END_STATE; 
+                    state = 32; // ololo3
+                    break;
+                }
+                case 32: { // ololo3
+                    stack.pushBoolean(false); 
+                    state = 33; // search for first occurence of number in index
+                    break;
+                }
+                case 33: { // search for first occurence of number in index
+                    if (d.i < 2 * d.array.length - 1) {
+                        state = 34; 
+                    } else {
+                        state = END_STATE; 
+                    }
+                    break;
+                }
+                case 34: { 
+                    if (d.first[d.index[d.i]] == -1) {
+                        state = 36; // First occurence of index[i] found
+                    } else {
+                        state = 37; // index[i] already was used
+                    }
+                    break;
+                }
+                case 35: { //  (окончание)
+                    state = 38; // increment loop variable
+                    break;
+                }
+                case 36: { // First occurence of index[i] found
+                    stack.pushBoolean(true); 
+                    state = 35; //  (окончание)
+                    break;
+                }
+                case 37: { // index[i] already was used
+                    stack.pushBoolean(false); 
+                    state = 35; //  (окончание)
+                    break;
+                }
+                case 38: { // increment loop variable
+                    stack.pushBoolean(true); 
+                    state = 33; // search for first occurence of number in index
                     break;
                 }
             }
@@ -568,6 +632,39 @@ public final class FarachColtonBender extends BaseAutoReverseAutomata {
                 }
                 case 31: { // cleanup after traversal
                     startSection();
+                    storeField(d, "stage1");
+                    			d.stage1 = true;
+                    break;
+                }
+                case 32: { // ololo3
+                    startSection();
+                    storeField(d, "i");
+                    			d.i = 0;
+                    break;
+                }
+                case 33: { // search for first occurence of number in index
+                    break;
+                }
+                case 34: { 
+                    break;
+                }
+                case 35: { //  (окончание)
+                    break;
+                }
+                case 36: { // First occurence of index[i] found
+                    startSection();
+                    storeArray(d.first, d.index[d.i]);
+                    						d.first[d.index[d.i]] = d.i;
+                    break;
+                }
+                case 37: { // index[i] already was used
+                    startSection();
+                    break;
+                }
+                case 38: { // increment loop variable
+                    startSection();
+                    storeField(d, "i");
+                    				d.i = d.i + 1;
                     break;
                 }
             }
@@ -684,6 +781,31 @@ public final class FarachColtonBender extends BaseAutoReverseAutomata {
                     break;
                 }
                 case 31: { // cleanup after traversal
+                    restoreSection();
+                    break;
+                }
+                case 32: { // ololo3
+                    restoreSection();
+                    break;
+                }
+                case 33: { // search for first occurence of number in index
+                    break;
+                }
+                case 34: { 
+                    break;
+                }
+                case 35: { //  (окончание)
+                    break;
+                }
+                case 36: { // First occurence of index[i] found
+                    restoreSection();
+                    break;
+                }
+                case 37: { // index[i] already was used
+                    restoreSection();
+                    break;
+                }
+                case 38: { // increment loop variable
                     restoreSection();
                     break;
                 }
@@ -851,8 +973,44 @@ public final class FarachColtonBender extends BaseAutoReverseAutomata {
                     state = 17; // Traversal over tree
                     break;
                 }
-                case END_STATE: { // Начальное состояние
+                case 32: { // ololo3
                     state = 31; // cleanup after traversal
+                    break;
+                }
+                case 33: { // search for first occurence of number in index
+                    if (stack.popBoolean()) {
+                        state = 38; // increment loop variable
+                    } else {
+                        state = 32; // ololo3
+                    }
+                    break;
+                }
+                case 34: { 
+                    state = 33; // search for first occurence of number in index
+                    break;
+                }
+                case 35: { //  (окончание)
+                    if (stack.popBoolean()) {
+                        state = 36; // First occurence of index[i] found
+                    } else {
+                        state = 37; // index[i] already was used
+                    }
+                    break;
+                }
+                case 36: { // First occurence of index[i] found
+                    state = 34; 
+                    break;
+                }
+                case 37: { // index[i] already was used
+                    state = 34; 
+                    break;
+                }
+                case 38: { // increment loop variable
+                    state = 35; //  (окончание)
+                    break;
+                }
+                case END_STATE: { // Начальное состояние
+                    state = 33; // search for first occurence of number in index
                     break;
                 }
             }
@@ -955,6 +1113,25 @@ public final class FarachColtonBender extends BaseAutoReverseAutomata {
                     comment = FarachColtonBender.this.getComment("Main.traversalFinished"); 
                     break;
                 }
+                case 33: { // search for first occurence of number in index
+                    if (d.i < 2 * d.array.length - 1) {
+                        comment = FarachColtonBender.this.getComment("Main.searchFirstOccurence.true"); 
+                    } else {
+                        comment = FarachColtonBender.this.getComment("Main.searchFirstOccurence.false"); 
+                    }
+                    args = new Object[]{new Integer((d.i == 2 * d.array.length - 1 ? 0 : d.index[d.i]) + 1)}; 
+                    break;
+                }
+                case 36: { // First occurence of index[i] found
+                    comment = FarachColtonBender.this.getComment("Main.newElementFound"); 
+                    args = new Object[]{new Integer(d.index[d.i] + 1)}; 
+                    break;
+                }
+                case 37: { // index[i] already was used
+                    comment = FarachColtonBender.this.getComment("Main.notNewElementFound"); 
+                    args = new Object[]{new Integer(d.index[d.i] + 1)}; 
+                    break;
+                }
                 case END_STATE: { // Конечное состояние
                     comment = FarachColtonBender.this.getComment("Main.END_STATE"); 
                     args = new Object[]{new Integer(d.i)}; 
@@ -1014,6 +1191,16 @@ public final class FarachColtonBender extends BaseAutoReverseAutomata {
                 case 31: { // cleanup after traversal
                     			d.visualizer.drawCellsForDFS(d.pos, -1);
                     			d.visualizer.drawCartesianTree(0, 0);
+                    break;
+                }
+                case 36: { // First occurence of index[i] found
+                    						d.visualizer.redrawIndex();
+                    break;
+                }
+                case 37: { // index[i] already was used
+                    break;
+                }
+                case 38: { // increment loop variable
                     break;
                 }
                 case END_STATE: { // Конечное состояние
