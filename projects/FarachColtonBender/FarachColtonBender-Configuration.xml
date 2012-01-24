@@ -148,10 +148,16 @@
         </style>
 
         <style
-            description     = "Right path cell"
-            fill-color      = "ff7777"
+			description     = "Right path cell"
+			fill-color      = "ff7777"
         >
         </style>
+
+		<style
+			description	= "Now in DFS Cell"
+			fill-color	= "77ff77"
+		>
+	</style>
 
     </styleset>
 

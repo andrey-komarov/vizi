@@ -31,7 +31,14 @@
 		description	= "Стек"
 		name		= "stack"
 		type		= "int[]"
-		value		= "null"
+		value		= "new int[5]"
+	/>
+
+	<variable
+		description	= "Ещё стек"
+		name		= "stack2"
+		type		= "int[]"
+		value		= "new int[5]"
 	/>
 
 	<variable
@@ -48,11 +55,74 @@
 		value		= "0"
 	/>
 
-    <toString>
-		return "";
-    </toString>
+	<variable
+		description	= "Левый сын в декартовом дереве"
+		name		= "leftSon"
+		type		= "int[]"
+		value		= "new int[5]"
+	/>
 
-    <auto id="Main" description="Ищет максимум на отрезке в массиве">
+	<variable
+		description	= "Правый сын в декартовом дереве"
+		name		= "rightSon"
+		type		= "int[]"
+		value		= "new int[5]"
+	/>
+
+	<variable
+		description	= "oldStackSize"
+		name		= "oldStackSize"
+		type		= "int"
+		value		= "-1"
+	/>
+
+	<variable
+		desctription	= "Врéменная переменная"
+		name		= "tmp"
+		type		= "int"
+		value		= "0"
+	/>
+
+	<variable
+		description	= "Номер вершины в DFS"
+		name		= "index"
+		type		= "int[]"
+		value		= "new int[11]"
+	/>
+	
+	<variable
+		description	= "Глубина в DFS"
+		name		= "depth"
+		type		= "int[]"
+		value		= "new int[11]"
+	/>
+
+	<variable
+		description	= "Корень дерева"
+		name		= "root"
+		type		= "int"
+		value		= "-1"
+	/>
+
+	<variable
+		description	= "Позиция в массиве обхода DFS"
+		name		= "pos"
+		type		= "int"
+		value		= "-1"
+	/>
+
+	<variable
+		description	= "Сыновей пройдено"
+		name	= "passed"
+		type	= "int[]"
+		value	= "null"
+	/>
+
+	<toString>
+		return "";
+	</toString>
+
+	<auto id="Main" description="Ищет максимум на отрезке в массиве">
         <start
             comment-ru	= "Инициализируем массив"
             comment-en	= "There is a array on display"
@@ -60,6 +130,7 @@
 	<draw>
 		@visualizer.clear();
 		@visualizer.drawMainArray();
+		@visualizer.initArrays();
 	</draw>
         </start>
 		
@@ -76,7 +147,9 @@
 	</action>
 	</step>
 
-
+<!-- ***************************************************************** -->
+<!-- ********************** Построение дерева ************************ -->
+<!-- ***************************************************************** -->
 
 	<while
 		id		= "CartesianTreeLoop"
@@ -87,36 +160,91 @@
 		comment-args	= "new Integer((@i &lt; @array.length) ? (@array[@i]) : 0)"
 	>
 
+		<step
+			id	= "BackupStackSize"
+			description	= "Backup stack size"
+			level	= "-1"			
+		>
+		<action>
+			@oldStackSize @= @stackSize;
+		</action>
+		</step>
+
 		<while
 			id	= "dropSmallElements"
 			description	= "Drop all elements above a[i]"
-			test	= "@stackSize &gt; 0 &amp;&amp; @array[@i] > @stack[@stackSize - 1]"
+			test	= "@stackSize &gt; 0 &amp;&amp; @array[@i] > @array[@stack[@stackSize - 1]]"
 			true-comment-ru	= "{0} &lt; {1}. Выкидываем {0}."
 			false-comment-ru	= "Останавливаемся."
-			comment-args	= "new Integer(@stackSize == 0 ? 0: (@stack[@stackSize - 1])), new Integer(@array[@i])"
+			comment-args	= "new Integer(@stackSize == 0 ? 0: (@array[@stack[@stackSize - 1]])), new Integer(@array[@i])"
 		>
 			<step
 				id	= "decrementStackSize"
 				description	= "decrementStackSize"
-				level	= "-1"
 			>
 			<action>
 				@stackSize @= @stackSize - 1;
 			</action>
 			<draw>
-				@visualizer.drawCartesianTree(@i + 1, @stackSize);
+				@visualizer.drawCartesianTree(@i, @stackSize);
 			</draw>
 			</step>
 		</while>
 
+		<if
+			id		= "checkHasRightSon"
+			description	= "check for new right son"
+			test		= "@stackSize != 0"
+			true-comment-ru	= "Чпок!"
+			false-comment-ru	= "Пыщь!"
+			level		= "0"
+		>
+		<then>
+			<step
+				id	= "rightSonAssignment"
+				description	= "right son assignment"
+				level = "-1"
+			>
+			<action>
+				@rightSon[@stack[@stackSize - 1]] @= @i;
+			</action>
+			</step>
+		</then>
+		<else>
+		</else>
+		</if>
+
+		<if
+			id		= "checkHasLeftSon"
+			description	= "check for new left son"
+			test		= "@oldStackSize != @stackSize"
+			true-comment-ru	= "Ололо!"
+			false-comment-ru	= "Атата!"
+			level		= "0"
+		>
+		<then>
+			<step
+				id	= "leftSonAssignment"
+				description	= "left son assignment"
+				level	= "-1"
+			>
+			<action>
+				@leftSon[@i] @= @stack[@stackSize];
+			</action>
+			</step>
+		</then>
+		<else>
+		</else>
+		</if>
+
 		<step
-			id	= "pushElementToStack"
+			id		= "pushElementToStack"
 			description	= "push element to stack"
 			comment-ru	= "Добавим элемент {0} в стек"
 			comment-args	= "new Integer(@array[@i])"
 		>
 		<action>
-			@stack[@stackSize] @= @array[@i];
+			@stack[@stackSize] @= @i;
 			@stackSize @= @stackSize + 1;
 		</action>
 		<draw>
@@ -135,6 +263,193 @@
 		</step>
 
 	</while>
+
+	<step
+		id	= "TreeBuilt"
+		desription	= "Now we have the tree"
+		comment-ru	= "Теперь у нас есть построеное дерево"
+	>
+	<draw>
+		@visualizer.drawCartesianTree(@array.length, 0);
+	</draw>
+	</step>
+
+<!-- ******************************************************************** -->
+<!-- *************************** Обход дерева *************************** -->
+<!-- ******************************************************************** -->
+	
+	<step
+		id	= "DFSComment"
+		description	= "DFSCommnet"
+		comment-ru	= "Теперь обойдём дерево обходом в глубину. На каждом шаге будем запоминать своё местоположение и глубину"
+	>
+	<action>
+		@stackSize @= 1;
+		@root @= @stack[0];
+		@stack @= new int[2 * @array.length + 1];
+		@stack[0] @= @root;
+		@index[0] @= @root;
+		@depth[0] @= 1;
+		@pos @= 1;
+	</action>
+	<draw>
+		@visualizer.debug("root", @root);
+		@visualizer.debug("left", @leftSon);
+		@visualizer.debug("right", @rightSon);
+		@visualizer.drawCellsForDFS(0, -1);
+	</draw>
+	</step>
+
+	<step
+		id	= "ololo2"
+		description	= "ololo2"
+	>
+		<action>
+		</action>
+		<draw>
+			@visualizer.drawCellsForDFS(1, @root);
+		</draw>
+	</step>
+
+	<while
+		id	= "DFS"
+		description	= "Traversal over tree"
+		test		= "@stackSize &gt; 0"
+		true-comment-ru	= "Обрабатывыем вершину {0}({1})"
+		false-comment-ru	= "Обход закончен"
+		comment-args	= "new Integer(1 + (@stackSize == 0 ? 0 : @stack[@stackSize - 1])), new Integer(@array[@stackSize == 0 ? 0 : @stack[@stackSize - 1]])"
+	>
+	
+		<if
+			id	= "GoLeft"
+			description	= "Try to go left"
+			test	= "@passed[@stack[@stackSize - 1]] == 0 &amp;&amp; @leftSon[@stack[@stackSize - 1]] != -1"
+			true-comment-ru	= "Идём влево"
+			false-comment-ru	= "Не идём влево"
+			level	= "-1"
+		>
+			<then>
+				<step
+					id	= "GoGoLeft"
+					description	= "go left"
+					comment-ru	= "Идём влево"
+					level = "0"
+				>
+					<action>
+						@stack[@stackSize] @= @leftSon[@stack[@stackSize - 1]];
+						@passed[@stack[@stackSize - 1]] @= @passed[@stack[@stackSize - 1]] + 1;
+						@depth[@pos] @= @depth[@pos - 1] + 1;
+						@index[@pos] @= @leftSon[@stack[@stackSize - 1]];
+						@pos @= @pos + 1;
+						@stackSize @= @stackSize + 1;
+					</action>
+					<draw>
+						@visualizer.drawCellsForDFS(@pos, @stack[@stackSize - 1]);
+					</draw>
+				</step>
+			</then>
+			<else>
+				<if
+					id	= "advancePointer"
+					description	= "advancePointer"
+					level	= "-1"
+					test	= "@leftSon[@stack[@stackSize - 1]] == -1"					
+				> 
+					<then>
+						<step
+							id	= "advancePointer1"
+							description	= "advancePointer1"
+							level	= "-1"							
+						>
+							<action>
+								@passed[@stack[@stackSize - 1]] @= @passed[@stack[@stackSize - 1]] + 1;
+							</action>
+						</step>
+					</then>
+					<else>
+					</else>				
+				</if>
+				
+				<if
+					id	= "GoRight"
+					description	= "Try to go right"
+					test	= "@passed[@stack[@stackSize - 1]] == 1 &amp;&amp; @rightSon[@stack[@stackSize - 1]] != -1"
+					level	= "-1"
+				>
+					<then>
+						<step
+							id	= "GoGoRight"
+							description	= "GoGoRight"
+							comment-ru	= "Идём вправо"
+						>
+							<action>
+								@stack[@stackSize] @= @rightSon[@stack[@stackSize - 1]];
+								@passed[@stack[@stackSize - 1]] @= @passed[@stack[@stackSize - 1]] + 1;
+								@depth[@pos] @= @depth[@pos - 1] + 1;
+								@index[@pos] @= @rightSon[@stack[@stackSize - 1]];
+								@pos @= @pos + 1;
+								@stackSize @= @stackSize + 1;
+							</action>
+							<draw>
+								@visualizer.drawCellsForDFS(@pos, @stack[@stackSize - 1]);
+							</draw>
+						</step>
+					</then>
+					<else>
+						<if
+							id	= "goUp"
+							description	= "check if we are not root"
+							test	= "@stackSize &gt; 1"
+							level	= "-1"
+						>
+							<then>
+								<step
+									id	= "goUp"
+									description	= "processing of vertex finished"
+									comment-ru	= "Поднимаемся наверх"
+									level	= "0"
+								>
+									<action>
+										@index[@pos] @= @stack[@stackSize - 2];
+										@depth[@pos] @= @depth[@pos - 1] - 1;
+										@pos @= @pos + 1;
+										@stackSize @= @stackSize - 1;
+									</action>
+									<draw>
+										@visualizer.drawCellsForDFS(@pos, @stack[@stackSize - 1]);
+									</draw>
+								</step>
+							</then>
+							<else>
+								<step
+									id	= "endOfDFS"
+									description	= "the end of DFS"
+									level	= "-1"
+								>
+									<action>
+										@stackSize @= @stackSize - 1;
+									</action>
+								</step>
+							</else>
+						</if>						
+					</else>
+				</if>
+			</else>
+		</if>
+	</while>
+
+	<step
+		id	= "traversalFinished"
+		description	= "cleanup after traversal"
+		comment-ru	= "Отныне дерево нам больше не понадобится"
+	>
+		<action>			
+		</action>
+		<draw>
+			@visualizer.drawCellsForDFS(@pos, -1);
+			@visualizer.drawCartesianTree(0, 0);
+		</draw>
+	</step>
 
 <!--		
 		<while
