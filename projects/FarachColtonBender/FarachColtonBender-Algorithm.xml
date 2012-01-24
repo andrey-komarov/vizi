@@ -154,6 +154,13 @@
 		type	= "int[][]"
 		value	= "null"
 	/>
+	
+	<variable
+		description	= "±1-таблица"
+		name	= "table2"
+		type	= "int[][]"
+		value	= "null"
+	/>
 
 	<toString>
 		return "";
@@ -234,7 +241,7 @@
 			test		= "@stackSize != 0"
 			true-comment-ru	= "Чпок!"
 			false-comment-ru	= "Пыщь!"
-			level		= "0"
+			level		= "-1"
 		>
 		<then>
 			<step
@@ -257,7 +264,7 @@
 			test		= "@oldStackSize != @stackSize"
 			true-comment-ru	= "Ололо!"
 			false-comment-ru	= "Атата!"
-			level		= "0"
+			level		= "-1"
 		>
 		<then>
 			<step
@@ -681,6 +688,7 @@
 		</action>
 		<draw>
 			@visualizer.drawDepth(-1);
+			@visualizer.drawTable(0, 0, -1, -1, -1, -1);
 		</draw>
 	</step>
 
@@ -735,7 +743,7 @@
 							@table[@i][@j] @= @table[@i - 1][@j + (1 &lt;&lt; (@i - 1))];
 						</action>
 						<draw>
-							@visualizer.drawTable(@i + 1, @j + 1, @i - 1, @j + (1 &lt;&lt; (@i - 1)));
+							@visualizer.drawTable(@i + 1, @j + 1, @i - 1, @j + (1 &lt;&lt; (@i - 1)), @i - 1, @j);
 						</draw>
 					</step>
 				</then>
@@ -749,7 +757,7 @@
 							@table[@i][@j] @= @table[@i - 1][@j];
 						</action>
 						<draw>
-							@visualizer.drawTable(@i + 1, @j + 1, @i - 1, @j);
+							@visualizer.drawTable(@i + 1, @j + 1, @i - 1, @j, @i - 1, @j + (1 &lt;&lt; (@i - 1)));
 						</draw>
 					</step>
 				</else>
@@ -788,12 +796,76 @@
 		comment-ru	= "Sparse table построена!"
 	>
 		<action>
+			@i @= 0;
 		</action>
 		<draw>
-			@visualizer.drawTable(@maximums.length, @maximums.length, -1, -1);
+			@visualizer.drawTable(@maximums.length, @maximums.length, -1, -1, -1, -1);
+			@visualizer.drawTable2(0, 0);
 		</draw>
 	</step>
+	
+	<while
+		id	= "buildAdditionalArrays"
+		description	= "ololo11"
+		test	= "@i &lt; @maximums.length"
+		level	= "-1"
+	>
+		<step
+			id	= "ololo12"
+			description	= "ololo12"
+			level	= "-1"			
+		>
+			<action>
+				@j @= 0;
+				@table2[@i][0] @= @depth[@i * @pieceSize + @j];
+			</action>
+		</step>
 		
+		<while
+			id	= "ololo13"
+			description	= "ololo13"
+			test	= "@j &lt; @pieceSize - 1 &amp;&amp; @i * @pieceSize + @j &lt; @depth.length"
+			level	= "-1"
+		>
+			<step
+				id	= "ololo14"
+				description	= "ololo14"
+				comment-ru	= "Заполним очередную ячейку"		
+			>
+				<action>
+					@table2[@i][@j + 1] @= @depth[@i * @pieceSize + @j + 1] - @depth[@i * @pieceSize + @j];
+					@j @= @j + 1;
+				</action>
+				<draw>
+					@visualizer.drawTable2(@i + 1, @j + 1);
+				</draw>
+			</step>
+		</while>
+		
+		<step
+			id	= "ololo15"
+			description	= "ololo15"
+			level	= "-1"
+		>
+			<action>
+				@i @= @i + 1;
+			</action>
+		</step>
+	</while>
+	
+	<step
+		id	= "ololo15"
+		description	= "ololo15"
+		comment-ru	= "Ура! Мы строили, строили и наконец построли! Всё необходимое для нахождения ответа есть!"
+	>
+		<action>
+		</action>
+		<draw>
+			@visualizer.drawTable2(@maximums.length, @depth.length % @pieceSize);
+		</draw>
+	</step>
+	
+	
         <finish
             comment-ru="Задача о назначениях решена {0}"
             comment-en="Problem solved"
@@ -804,5 +876,4 @@
         </finish>
     </auto>
 </algorithm>
-
 

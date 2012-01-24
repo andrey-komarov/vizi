@@ -131,6 +131,11 @@ public final class FarachColtonBender extends BaseAutoReverseAutomata {
           */
         public int[][] table = null;
 
+        /**
+          * ±1-таблица.
+          */
+        public int[][] table2 = null;
+
         public String toString() {
             		return "";
         }
@@ -148,7 +153,7 @@ public final class FarachColtonBender extends BaseAutoReverseAutomata {
         /**
           * Конечное состояние автомата.
           */
-        private final int END_STATE = 61;
+        private final int END_STATE = 67;
 
         /**
           * Конструктор.
@@ -157,7 +162,7 @@ public final class FarachColtonBender extends BaseAutoReverseAutomata {
             super( 
                 "Main", 
                 0, // Номер начального состояния 
-                61, // Номер конечного состояния 
+                67, // Номер конечного состояния 
                 new String[]{ 
                     "Начальное состояние",  
                     "Start of cycle", 
@@ -220,6 +225,12 @@ public final class FarachColtonBender extends BaseAutoReverseAutomata {
                     "ololo8", 
                     "ololo9", 
                     "ololo10", 
+                    "ololo11", 
+                    "ololo12", 
+                    "ololo13", 
+                    "ololo14", 
+                    "ololo15", 
+                    "ololo15", 
                     "Конечное состояние" 
                 }, new int[]{ 
                     Integer.MAX_VALUE, // Начальное состояние,  
@@ -228,10 +239,10 @@ public final class FarachColtonBender extends BaseAutoReverseAutomata {
                     -1, // Backup stack size 
                     0, // Drop all elements above a[i] 
                     0, // decrementStackSize 
-                    0, // check for new right son 
+                    -1, // check for new right son 
                     -1, // check for new right son (окончание) 
                     -1, // right son assignment 
-                    0, // check for new left son 
+                    -1, // check for new left son 
                     -1, // check for new left son (окончание) 
                     -1, // left son assignment 
                     0, // push element to stack 
@@ -283,6 +294,12 @@ public final class FarachColtonBender extends BaseAutoReverseAutomata {
                     -1, // ololo8 
                     -1, // ololo9 
                     0, // ololo10 
+                    -1, // ololo11 
+                    -1, // ololo12 
+                    -1, // ololo13 
+                    0, // ololo14 
+                    -1, // ololo15 
+                    0, // ololo15 
                     Integer.MAX_VALUE, // Конечное состояние 
                 } 
             ); 
@@ -637,6 +654,42 @@ public final class FarachColtonBender extends BaseAutoReverseAutomata {
                     break;
                 }
                 case 60: { // ololo10
+                    stack.pushBoolean(false); 
+                    state = 61; // ololo11
+                    break;
+                }
+                case 61: { // ololo11
+                    if (d.i < d.maximums.length) {
+                        state = 62; // ololo12
+                    } else {
+                        state = 66; // ololo15
+                    }
+                    break;
+                }
+                case 62: { // ololo12
+                    stack.pushBoolean(false); 
+                    state = 63; // ololo13
+                    break;
+                }
+                case 63: { // ololo13
+                    if (d.j < d.pieceSize - 1 && d.i * d.pieceSize + d.j < d.depth.length) {
+                        state = 64; // ololo14
+                    } else {
+                        state = 65; // ololo15
+                    }
+                    break;
+                }
+                case 64: { // ololo14
+                    stack.pushBoolean(true); 
+                    state = 63; // ololo13
+                    break;
+                }
+                case 65: { // ololo15
+                    stack.pushBoolean(true); 
+                    state = 61; // ololo11
+                    break;
+                }
+                case 66: { // ololo15
                     state = END_STATE; 
                     break;
                 }
@@ -955,6 +1008,40 @@ public final class FarachColtonBender extends BaseAutoReverseAutomata {
                 }
                 case 60: { // ololo10
                     startSection();
+                    storeField(d, "i");
+                    			d.i = 0;
+                    break;
+                }
+                case 61: { // ololo11
+                    break;
+                }
+                case 62: { // ololo12
+                    startSection();
+                    storeField(d, "j");
+                    				d.j = 0;
+                    storeArray(d.table2[d.i], 0);
+                    				d.table2[d.i][0] = d.depth[d.i * d.pieceSize + d.j];
+                    break;
+                }
+                case 63: { // ololo13
+                    break;
+                }
+                case 64: { // ololo14
+                    startSection();
+                    storeArray(d.table2[d.i], d.j + 1);
+                    					d.table2[d.i][d.j + 1] = d.depth[d.i * d.pieceSize + d.j + 1] - d.depth[d.i * d.pieceSize + d.j];
+                    storeField(d, "j");
+                    					d.j = d.j + 1;
+                    break;
+                }
+                case 65: { // ololo15
+                    startSection();
+                    storeField(d, "i");
+                    				d.i = d.i + 1;
+                    break;
+                }
+                case 66: { // ololo15
+                    startSection();
                     break;
                 }
             }
@@ -1176,6 +1263,28 @@ public final class FarachColtonBender extends BaseAutoReverseAutomata {
                     break;
                 }
                 case 60: { // ololo10
+                    restoreSection();
+                    break;
+                }
+                case 61: { // ololo11
+                    break;
+                }
+                case 62: { // ololo12
+                    restoreSection();
+                    break;
+                }
+                case 63: { // ololo13
+                    break;
+                }
+                case 64: { // ololo14
+                    restoreSection();
+                    break;
+                }
+                case 65: { // ololo15
+                    restoreSection();
+                    break;
+                }
+                case 66: { // ololo15
                     restoreSection();
                     break;
                 }
@@ -1491,8 +1600,40 @@ public final class FarachColtonBender extends BaseAutoReverseAutomata {
                     state = 50; // row in sparse table
                     break;
                 }
+                case 61: { // ololo11
+                    if (stack.popBoolean()) {
+                        state = 65; // ololo15
+                    } else {
+                        state = 60; // ololo10
+                    }
+                    break;
+                }
+                case 62: { // ololo12
+                    state = 61; // ololo11
+                    break;
+                }
+                case 63: { // ololo13
+                    if (stack.popBoolean()) {
+                        state = 64; // ololo14
+                    } else {
+                        state = 62; // ololo12
+                    }
+                    break;
+                }
+                case 64: { // ololo14
+                    state = 63; // ololo13
+                    break;
+                }
+                case 65: { // ololo15
+                    state = 63; // ololo13
+                    break;
+                }
+                case 66: { // ololo15
+                    state = 61; // ololo11
+                    break;
+                }
                 case END_STATE: { // Начальное состояние
-                    state = 60; // ololo10
+                    state = 66; // ololo15
                     break;
                 }
             }
@@ -1669,6 +1810,14 @@ public final class FarachColtonBender extends BaseAutoReverseAutomata {
                     comment = FarachColtonBender.this.getComment("Main.ololo10"); 
                     break;
                 }
+                case 64: { // ololo14
+                    comment = FarachColtonBender.this.getComment("Main.ololo14"); 
+                    break;
+                }
+                case 66: { // ololo15
+                    comment = FarachColtonBender.this.getComment("Main.ololo15"); 
+                    break;
+                }
                 case END_STATE: { // Конечное состояние
                     comment = FarachColtonBender.this.getComment("Main.END_STATE"); 
                     args = new Object[]{new Integer(d.i)}; 
@@ -1760,18 +1909,28 @@ public final class FarachColtonBender extends BaseAutoReverseAutomata {
                 }
                 case 49: { // maximums found
                     			d.visualizer.drawDepth(-1);
+                    			d.visualizer.drawTable(0, 0, -1, -1, -1, -1);
                     break;
                 }
                 case 56: { // ololo6
-                    							d.visualizer.drawTable(d.i + 1, d.j + 1, d.i - 1, d.j + (1 << (d.i - 1)));
+                    							d.visualizer.drawTable(d.i + 1, d.j + 1, d.i - 1, d.j + (1 << (d.i - 1)), d.i - 1, d.j);
                     break;
                 }
                 case 57: { // ololo7
-                    							d.visualizer.drawTable(d.i + 1, d.j + 1, d.i - 1, d.j);
+                    							d.visualizer.drawTable(d.i + 1, d.j + 1, d.i - 1, d.j, d.i - 1, d.j + (1 << (d.i - 1)));
                     break;
                 }
                 case 60: { // ololo10
-                    			d.visualizer.drawTable(d.maximums.length, d.maximums.length, -1, -1);
+                    			d.visualizer.drawTable(d.maximums.length, d.maximums.length, -1, -1, -1, -1);
+                    			d.visualizer.drawTable2(0, 0);
+                    break;
+                }
+                case 64: { // ololo14
+                    					d.visualizer.drawTable2(d.i + 1, d.j + 1);
+                    break;
+                }
+                case 66: { // ololo15
+                    			d.visualizer.drawTable2(d.maximums.length, d.depth.length % d.pieceSize);
                     break;
                 }
                 case END_STATE: { // Конечное состояние

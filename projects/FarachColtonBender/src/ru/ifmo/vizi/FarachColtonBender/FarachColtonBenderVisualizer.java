@@ -51,11 +51,11 @@ public final class FarachColtonBenderVisualizer extends Base implements
 
 	private Collection<Rect> lines;
 
-	private Collection<Rect> treeShown, DFSCells, maximumsShown, tableShown;
+	private Collection<Rect> treeShown, DFSCells, maximumsShown, tableShown, table2Shown;
 	
 	private Rect[] depth, index, maximums;
 
-	private Rect[][] table;
+	private Rect[][] table, table2;
 	
 	private int lastCompleted, lastStackSize;
 
@@ -100,6 +100,7 @@ public final class FarachColtonBenderVisualizer extends Base implements
 		DFSCells = new ArrayList<Rect>();
 		maximumsShown = new ArrayList<Rect>();
 		tableShown = new ArrayList<Rect>();
+		table2Shown = new ArrayList<Rect>();
 		
 		randomize();
 
@@ -191,6 +192,8 @@ public final class FarachColtonBenderVisualizer extends Base implements
 		data.depth = new int[2 * n + 1];
 		data.index = new int[2 * n + 1];
 		data.first = new int[n];
+		data.table2 = new int[maximums.length][data.pieceSize];
+		table2 = new Rect[maximums.length][data.pieceSize];
 		Arrays.fill(data.maximums, -1);
 		Arrays.fill(data.first, -1);
 		data.stage1 = false;
@@ -216,6 +219,12 @@ public final class FarachColtonBenderVisualizer extends Base implements
 		for (int i = 1; i < table.length; i++) {
 			for (int j = 0; j < table[i].length; j++) {
 				table[i][j] = new Rect(linearStyleSet);
+			}
+		}
+		
+		for (int i = 0; i < table2.length; i++) {
+			for (int j = 0; j < table2[i].length; j++) {
+				table2[i][j] = new Rect(linearStyleSet);
 			}
 		}
 		
@@ -260,6 +269,7 @@ public final class FarachColtonBenderVisualizer extends Base implements
 		layoutCellsForDFS();
 		layoutMaximums();
 		layoutTable();
+		layoutTable2();
 	}
 
 	protected Component createControlsPane() {
@@ -400,7 +410,35 @@ public final class FarachColtonBenderVisualizer extends Base implements
 		}
 	}
 	
-	void drawTable(int rows, int column, int fromX, int fromY) {
+	void layoutTable2() {
+		for (int i = 0; i < table2.length; i++) {
+			for (int j = 0; j < table2[i].length; j++) {
+				table2[i][j].setBounds(windowWidth - (table2[i].length - j) * mainWidth, (3 + i) * mainWidth, mainWidth, mainWidth);
+				table2[i][j].adjustFontSize();
+			}
+		}
+	}
+	
+	void drawTable2(int x, int y) {
+		for (Rect r : table2Shown) {
+			clientPane.remove(r);
+		}
+		table2Shown.clear();
+		
+		System.err.println("2: " + x + ", " + y);
+		
+		for (int i = 0; i < x; i++) {
+			table2[i][0].setStyle(4);
+			for (int j = 0; (i != x - 1 && j < table2[i].length) || (i == x - 1 && j < y); j++) {
+				table2[i][j].setMessage("" + data.table2[i][j]);
+				table2[i][j].adjustFontSize();
+				clientPane.add(table2[i][j]);
+				table2Shown.add(table2[i][j]);
+			}
+		}
+	}
+	
+	void drawTable(int rows, int column, int fromX, int fromY, int fromX2, int fromY2) {
 		for (Rect r : tableShown) {
 			clientPane.remove(r);
 		}
@@ -427,6 +465,7 @@ public final class FarachColtonBenderVisualizer extends Base implements
 		
 		if (fromX != -1) {
 			table[fromX][fromY].setStyle(3);
+			table[fromX2][fromY2].setStyle(2);
 			table[rows - 1][column - 1].setStyle(3);
 		}
 		
@@ -440,6 +479,7 @@ public final class FarachColtonBenderVisualizer extends Base implements
 		for (int i = 0; i < cnt; i++) {
 			maximums[i].setMessage("" + data.maximums[i]);
 			maximums[i].adjustFontSize();
+			maximums[i].setStyle(1);
 			clientPane.add(maximums[i]);
 			maximumsShown.add(maximums[i]);
 		}
