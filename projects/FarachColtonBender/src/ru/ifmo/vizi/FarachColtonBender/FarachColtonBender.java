@@ -1930,7 +1930,7 @@ public final class FarachColtonBender extends BaseAutoReverseAutomata {
                     break;
                 }
                 case 66: { // ololo15
-                    			d.visualizer.drawTable2(d.maximums.length, d.depth.length % d.pieceSize);
+                    			d.visualizer.drawTable2(d.maximums.length, d.depth.length % d.pieceSize + 1);
                     break;
                 }
                 case END_STATE: { // Конечное состояние

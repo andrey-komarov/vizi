@@ -793,7 +793,7 @@
 	<step
 		id	 = "ololo10"
 		description	= "ololo10"
-		comment-ru	= "Sparse table построена!"
+		comment-ru	= "Sparse table построена! Теперь для каждого кусочка заметим, что соседние элементы в нём отличаются на 1. Значит, ему соответствует двоичный вектор. Для всех таких двоичных векторово псчитаем максимумы на всех подстроках. Также, для каждого блока нужно хранить первый его элемент"
 	>
 		<action>
 			@i @= 0;
@@ -861,7 +861,7 @@
 		<action>
 		</action>
 		<draw>
-			@visualizer.drawTable2(@maximums.length, @depth.length % @pieceSize);
+			@visualizer.drawTable2(@maximums.length, @depth.length % @pieceSize + 1);
 		</draw>
 	</step>
 	

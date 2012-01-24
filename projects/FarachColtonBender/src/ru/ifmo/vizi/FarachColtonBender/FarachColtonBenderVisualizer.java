@@ -69,7 +69,7 @@ public final class FarachColtonBenderVisualizer extends Base implements
 
 	private final AdjustablePanel rightBorder;
 
-	private int mainWidth, windowWidth, windowHeight, DFSWidth;
+	private int mainWidth, windowWidth, windowHeight, DFSWidth, table2Width;
 
 	/**
 	 * Creates a new Find Maximum visualizer.
@@ -411,9 +411,13 @@ public final class FarachColtonBenderVisualizer extends Base implements
 	}
 	
 	void layoutTable2() {
+		
+		table2Width = mainWidth;
+		table2Width = Math.min(table2Width, ((windowHeight - 2 * mainWidth)/ maximums.length));
+		
 		for (int i = 0; i < table2.length; i++) {
 			for (int j = 0; j < table2[i].length; j++) {
-				table2[i][j].setBounds(windowWidth - (table2[i].length - j) * mainWidth, (3 + i) * mainWidth, mainWidth, mainWidth);
+				table2[i][j].setBounds(windowWidth - (table2[i].length - j) * table2Width, 2 * mainWidth + i * table2Width, table2Width, table2Width);
 				table2[i][j].adjustFontSize();
 			}
 		}
