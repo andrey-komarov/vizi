@@ -136,26 +136,32 @@
         </style>
 
         <style
-            description     = "Ordinal tree cell"
+            description     = "Ordinal tree cell 1"
             fill-color      = "7777ff"
         >
         </style>
 
         <style
-		description     = "Red cell cell"
+		description     = "Red cell cell 2"
 		fill-color      = "ff7777"
         >
         </style>
 
 	<style
-		description	= "Green cell"
+		description	= "Green cell 3"
 		fill-color	= "77ff77"
 	>
 	</style>
 
 	<style
-		description	= "Brown cell"
+		description	= "Brown cell 4"
 		fill-color	= "a08050"
+	>
+	</style>
+	
+	<style
+		description	= "Blue cell 5"
+		fill-color	= "00bfff"
 	>
 	</style>
 

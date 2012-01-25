@@ -162,6 +162,41 @@
 		value	= "null"
 	/>
 
+	<variable
+		description	= "Няшки построены"
+		name	= "ready"
+		type	= "boolean"
+		value	= "false"
+	/>
+	
+	<variable
+		description	= "Левая граница поиска"
+		name	= "left"
+		type	= "int"
+		value	= "-1"
+	/>
+	
+	<variable
+		description	= "Правая граница поиска"
+		name	= "right"
+		type	= "int"
+		value	= "-1"
+	/>
+	
+	<variable
+		description	= "Левый кусок"
+		name	= "leftPiece"
+		type	= "int"
+		value	= "-1"
+	/>
+	
+	<variable
+		description	= "Правый кусок"
+		name	= "rightPiece"
+		type	= "int"
+		value	= "-1"
+	/>
+	
 	<toString>
 		return "";
 	</toString>
@@ -171,701 +206,730 @@
             comment-ru	= "Инициализируем массив"
             comment-en	= "There is a array on display"
         >
-	<draw>
-		@visualizer.clear();
-		@visualizer.drawMainArray();
-		@visualizer.initArrays();
-	</draw>
-        </start>
-		
-        <step
-		id		= "Begin"
-		description	= "Start of cycle"
-		comment-ru	= "Построим декартово дерево из пар {0}. Воспользуемся алгоритмом построения декартова дерева с отсоритированными по x ключами за линейное время. Для этого будем хранить стек лежащих на правом пути вершин. При добавлении очередного элемента выкидываем из стека элементы с бóльшими ключами y, меньшие , после чего к вершине стека справа подвесим добавляемый элемент."
-		comment-args	= "FarachColtonBenderVisualizer.treeAsString(@array)"
-	>
-	<action>
-		@i @= 0;
-		@stack @= new int[@array.length];
-		@stackSize @= 0;
-	</action>
-	</step>
-
-<!-- ***************************************************************** -->
-<!-- ********************** Построение дерева ************************ -->
-<!-- ***************************************************************** -->
-
-	<while
-		id		= "CartesianTreeLoop"
-		description	= "Cycle over elements to build cartesian tree"
-		test		= "@i &lt; @array.length"
-		true-comment-ru	= "Добавим в дерево справа элемент {0}. Выкинем все меньшие {0} элементы."
-		false-comment-ru	= "Дерево построено!"
-		comment-args	= "new Integer((@i &lt; @array.length) ? (@array[@i]) : 0)"
-	>
-
-		<step
-			id	= "BackupStackSize"
-			description	= "Backup stack size"
-			level	= "-1"			
-		>
-		<action>
-			@oldStackSize @= @stackSize;
-		</action>
-		</step>
-
-		<while
-			id	= "dropSmallElements"
-			description	= "Drop all elements above a[i]"
-			test	= "@stackSize &gt; 0 &amp;&amp; @array[@i] > @array[@stack[@stackSize - 1]]"
-			true-comment-ru	= "{0} &lt; {1}. Выкидываем {0}."
-			false-comment-ru	= "Останавливаемся."
-			comment-args	= "new Integer(@stackSize == 0 ? 0: (@array[@stack[@stackSize - 1]])), new Integer(@array[@i])"
-		>
-			<step
-				id	= "decrementStackSize"
-				description	= "decrementStackSize"
-			>
-			<action>
-				@stackSize @= @stackSize - 1;
-			</action>
 			<draw>
-				@visualizer.drawCartesianTree(@i, @stackSize);
+				@visualizer.clear();
+				@visualizer.drawMainArray();
 			</draw>
-			</step>
-		</while>
-
+        </start>
 		<if
-			id		= "checkHasRightSon"
-			description	= "check for new right son"
-			test		= "@stackSize != 0"
-			true-comment-ru	= "Чпок!"
-			false-comment-ru	= "Пыщь!"
-			level		= "-1"
-		>
-		<then>
-			<step
-				id	= "rightSonAssignment"
-				description	= "right son assignment"
-				level = "-1"
-			>
-			<action>
-				@rightSon[@stack[@stackSize - 1]] @= @i;
-			</action>
-			</step>
-		</then>
-		<else>
-		</else>
-		</if>
-
-		<if
-			id		= "checkHasLeftSon"
-			description	= "check for new left son"
-			test		= "@oldStackSize != @stackSize"
-			true-comment-ru	= "Ололо!"
-			false-comment-ru	= "Атата!"
-			level		= "-1"
-		>
-		<then>
-			<step
-				id	= "leftSonAssignment"
-				description	= "left son assignment"
-				level	= "-1"
-			>
-			<action>
-				@leftSon[@i] @= @stack[@stackSize];
-			</action>
-			</step>
-		</then>
-		<else>
-		</else>
-		</if>
-
-		<step
-			id		= "pushElementToStack"
-			description	= "push element to stack"
-			comment-ru	= "Добавим элемент {0} в стек"
-			comment-args	= "new Integer(@array[@i])"
-		>
-		<action>
-			@stack[@stackSize] @= @i;
-			@stackSize @= @stackSize + 1;
-		</action>
-		<draw>
-			@visualizer.drawCartesianTree(@i + 1, @stackSize);
-		</draw>
-		</step>
-
-		<step
-			id		= "CycleStep"
-			description	= "Cycle step"
-			level		= "-1"
-		>
-		<action>
-			@i @= @i + 1;
-		</action>
-		</step>
-
-	</while>
-
-	<step
-		id	= "TreeBuilt"
-		desription	= "Now we have the tree"
-		comment-ru	= "Теперь у нас есть построеное дерево"
-	>
-	<draw>
-		@visualizer.drawCartesianTree(@array.length, 0);
-	</draw>
-	</step>
-
-<!-- ******************************************************************** -->
-<!-- *************************** Обход дерева *************************** -->
-<!-- ******************************************************************** -->
-	
-	<step
-		id	= "DFSComment"
-		description	= "DFSCommnet"
-		comment-ru	= "Теперь обойдём дерево обходом в глубину. На каждом шаге будем запоминать своё местоположение и глубину"
-	>
-	<action>
-		@stackSize @= 1;
-		@root @= @stack[0];
-		@stack @= new int[2 * @array.length + 1];
-		@stack[0] @= @root;
-		@index[0] @= @root;
-		@depth[0] @= 1;
-		@pos @= 1;
-	</action>
-	<draw>
-		@visualizer.debug("root", @root);
-		@visualizer.debug("left", @leftSon);
-		@visualizer.debug("right", @rightSon);
-		@visualizer.drawCellsForDFS(0, -1);
-	</draw>
-	</step>
-
-	<step
-		id	= "ololo2"
-		description	= "ololo2"
-	>
-		<action>
-		</action>
-		<draw>
-			@visualizer.drawCellsForDFS(1, @root);
-		</draw>
-	</step>
-
-	<while
-		id	= "DFS"
-		description	= "Traversal over tree"
-		test		= "@stackSize &gt; 0"
-		true-comment-ru	= "Обрабатывыем вершину {0}({1})"
-		false-comment-ru	= "Обход закончен"
-		comment-args	= "new Integer(1 + (@stackSize == 0 ? 0 : @stack[@stackSize - 1])), new Integer(@array[@stackSize == 0 ? 0 : @stack[@stackSize - 1]])"
-	>
-	
-		<if
-			id	= "GoLeft"
-			description	= "Try to go left"
-			test	= "@passed[@stack[@stackSize - 1]] == 0 &amp;&amp; @leftSon[@stack[@stackSize - 1]] != -1"
-			true-comment-ru	= "Идём влево"
-			false-comment-ru	= "Не идём влево"
+			id	= "build"
+			description	= "build all auxillary structures"
+			test	= "!@ready"
 			level	= "-1"
 		>
 			<then>
-				<step
-					id	= "GoGoLeft"
-					description	= "go left"
-					comment-ru	= "Идём влево"
-					level = "0"
+					<step
+						id		= "Begin"
+						description	= "Start of cycle"
+						comment-ru	= "Построим декартово дерево из пар {0}. Воспользуемся алгоритмом построения декартова дерева с отсоритированными по x ключами за линейное время. Для этого будем хранить стек лежащих на правом пути вершин. При добавлении очередного элемента выкидываем из стека элементы с бóльшими ключами y, меньшие , после чего к вершине стека справа подвесим добавляемый элемент."
+						comment-args	= "FarachColtonBenderVisualizer.treeAsString(@array)"
+						level	= "1"
+					>
+						<action>
+							@i @= 0;
+							@stack @= new int[@array.length];
+							@stackSize @= 0;
+						</action>
+					</step>
+
+			<!-- ***************************************************************** -->
+			<!-- ********************** Построение дерева ************************ -->
+			<!-- ***************************************************************** -->
+
+				<while
+					id		= "CartesianTreeLoop"
+					description	= "Cycle over elements to build cartesian tree"
+					test		= "@i &lt; @array.length"
+					true-comment-ru	= "Добавим в дерево справа элемент {0}. Выкинем все меньшие {0} элементы."
+					false-comment-ru	= "Дерево построено!"
+					comment-args	= "new Integer((@i &lt; @array.length) ? (@array[@i]) : 0)"
 				>
+
+					<step
+						id	= "BackupStackSize"
+						description	= "Backup stack size"
+						level	= "-1"			
+					>
 					<action>
-						@stack[@stackSize] @= @leftSon[@stack[@stackSize - 1]];
-						@passed[@stack[@stackSize - 1]] @= @passed[@stack[@stackSize - 1]] + 1;
-						@depth[@pos] @= @depth[@pos - 1] + 1;
-						@index[@pos] @= @leftSon[@stack[@stackSize - 1]];
-						@pos @= @pos + 1;
+						@oldStackSize @= @stackSize;
+					</action>
+					</step>
+
+					<while
+						id	= "dropSmallElements"
+						description	= "Drop all elements above a[i]"
+						test	= "@stackSize &gt; 0 &amp;&amp; @array[@i] > @array[@stack[@stackSize - 1]]"
+						true-comment-ru	= "{0} &lt; {1}. Выкидываем {0}."
+						false-comment-ru	= "Останавливаемся."
+						comment-args	= "new Integer(@stackSize == 0 ? 0: (@array[@stack[@stackSize - 1]])), new Integer(@array[@i])"
+					>
+						<step
+							id	= "decrementStackSize"
+							description	= "decrementStackSize"
+						>
+						<action>
+							@stackSize @= @stackSize - 1;
+						</action>
+						<draw>
+							@visualizer.drawCartesianTree(@i, @stackSize);
+						</draw>
+						</step>
+					</while>
+
+					<if
+						id		= "checkHasRightSon"
+						description	= "check for new right son"
+						test		= "@stackSize != 0"
+						true-comment-ru	= "Чпок!"
+						false-comment-ru	= "Пыщь!"
+						level		= "-1"
+					>
+					<then>
+						<step
+							id	= "rightSonAssignment"
+							description	= "right son assignment"
+							level = "-1"
+						>
+						<action>
+							@rightSon[@stack[@stackSize - 1]] @= @i;
+						</action>
+						</step>
+					</then>
+					<else>
+					</else>
+					</if>
+
+					<if
+						id		= "checkHasLeftSon"
+						description	= "check for new left son"
+						test		= "@oldStackSize != @stackSize"
+						true-comment-ru	= "Ололо!"
+						false-comment-ru	= "Атата!"
+						level		= "-1"
+					>
+					<then>
+						<step
+							id	= "leftSonAssignment"
+							description	= "left son assignment"
+							level	= "-1"
+						>
+						<action>
+							@leftSon[@i] @= @stack[@stackSize];
+						</action>
+						</step>
+					</then>
+					<else>
+					</else>
+					</if>
+
+					<step
+						id		= "pushElementToStack"
+						description	= "push element to stack"
+						comment-ru	= "Добавим элемент {0} в стек"
+						comment-args	= "new Integer(@array[@i])"
+					>
+					<action>
+						@stack[@stackSize] @= @i;
 						@stackSize @= @stackSize + 1;
 					</action>
 					<draw>
-						@visualizer.drawCellsForDFS(@pos, @stack[@stackSize - 1]);
+						@visualizer.drawCartesianTree(@i + 1, @stackSize);
+					</draw>
+					</step>
+
+					<step
+						id		= "CycleStep"
+						description	= "Cycle step"
+						level		= "-1"
+					>
+					<action>
+						@i @= @i + 1;
+					</action>
+					</step>
+
+				</while>
+
+				<step
+					id	= "TreeBuilt"
+					desription	= "Now we have the tree"
+					comment-ru	= "Теперь у нас есть построеное дерево"
+				>
+				<draw>
+					@visualizer.drawCartesianTree(@array.length, 0);
+				</draw>
+				</step>
+
+			<!-- ******************************************************************** -->
+			<!-- *************************** Обход дерева *************************** -->
+			<!-- ******************************************************************** -->
+				
+				<step
+					id	= "DFSComment"
+					description	= "DFSCommnet"
+					comment-ru	= "Теперь обойдём дерево обходом в глубину. На каждом шаге будем запоминать своё местоположение и глубину"
+					level	= "1"
+				>
+				<action>
+					@stackSize @= 1;
+					@root @= @stack[0];
+					@stack @= new int[2 * @array.length + 1];
+					@stack[0] @= @root;
+					@index[0] @= @root;
+					@depth[0] @= 1;
+					@pos @= 1;
+				</action>
+				<draw>
+					@visualizer.drawCellsForDFS(0, -1);
+				</draw>
+				</step>
+
+				<step
+					id	= "ololo2"
+					description	= "ololo2"
+				>
+					<action>
+					</action>
+					<draw>
+						@visualizer.drawCellsForDFS(1, @root);
 					</draw>
 				</step>
-			</then>
-			<else>
-				<if
-					id	= "advancePointer"
-					description	= "advancePointer"
-					level	= "-1"
-					test	= "@leftSon[@stack[@stackSize - 1]] == -1"					
-				> 
-					<then>
-						<step
-							id	= "advancePointer1"
-							description	= "advancePointer1"
-							level	= "-1"							
-						>
-							<action>
-								@passed[@stack[@stackSize - 1]] @= @passed[@stack[@stackSize - 1]] + 1;
-							</action>
-						</step>
-					</then>
-					<else>
-					</else>				
-				</if>
+
+				<while
+					id	= "DFS"
+					description	= "Traversal over tree"
+					test		= "@stackSize &gt; 0"
+					true-comment-ru	= "Обрабатывыем вершину {0}({1})"
+					false-comment-ru	= "Обход закончен"
+					comment-args	= "new Integer(1 + (@stackSize == 0 ? 0 : @stack[@stackSize - 1])), new Integer(@array[@stackSize == 0 ? 0 : @stack[@stackSize - 1]])"
+				>
 				
-				<if
-					id	= "GoRight"
-					description	= "Try to go right"
-					test	= "@passed[@stack[@stackSize - 1]] == 1 &amp;&amp; @rightSon[@stack[@stackSize - 1]] != -1"
+					<if
+						id	= "GoLeft"
+						description	= "Try to go left"
+						test	= "@passed[@stack[@stackSize - 1]] == 0 &amp;&amp; @leftSon[@stack[@stackSize - 1]] != -1"
+						true-comment-ru	= "Идём влево"
+						false-comment-ru	= "Не идём влево"
+						level	= "-1"
+					>
+						<then>
+							<step
+								id	= "GoGoLeft"
+								description	= "go left"
+								comment-ru	= "Идём влево"
+								level = "0"
+							>
+								<action>
+									@stack[@stackSize] @= @leftSon[@stack[@stackSize - 1]];
+									@passed[@stack[@stackSize - 1]] @= @passed[@stack[@stackSize - 1]] + 1;
+									@depth[@pos] @= @depth[@pos - 1] + 1;
+									@index[@pos] @= @leftSon[@stack[@stackSize - 1]];
+									@pos @= @pos + 1;
+									@stackSize @= @stackSize + 1;
+								</action>
+								<draw>
+									@visualizer.drawCellsForDFS(@pos, @stack[@stackSize - 1]);
+								</draw>
+							</step>
+						</then>
+						<else>
+							<if
+								id	= "advancePointer"
+								description	= "advancePointer"
+								level	= "-1"
+								test	= "@leftSon[@stack[@stackSize - 1]] == -1"					
+							> 
+								<then>
+									<step
+										id	= "advancePointer1"
+										description	= "advancePointer1"
+										level	= "-1"							
+									>
+										<action>
+											@passed[@stack[@stackSize - 1]] @= @passed[@stack[@stackSize - 1]] + 1;
+										</action>
+									</step>
+								</then>
+								<else>
+								</else>				
+							</if>
+							
+							<if
+								id	= "GoRight"
+								description	= "Try to go right"
+								test	= "@passed[@stack[@stackSize - 1]] == 1 &amp;&amp; @rightSon[@stack[@stackSize - 1]] != -1"
+								level	= "-1"
+							>
+								<then>
+									<step
+										id	= "GoGoRight"
+										description	= "GoGoRight"
+										comment-ru	= "Идём вправо"
+									>
+										<action>
+											@stack[@stackSize] @= @rightSon[@stack[@stackSize - 1]];
+											@passed[@stack[@stackSize - 1]] @= @passed[@stack[@stackSize - 1]] + 1;
+											@depth[@pos] @= @depth[@pos - 1] + 1;
+											@index[@pos] @= @rightSon[@stack[@stackSize - 1]];
+											@pos @= @pos + 1;
+											@stackSize @= @stackSize + 1;
+										</action>
+										<draw>
+											@visualizer.drawCellsForDFS(@pos, @stack[@stackSize - 1]);
+										</draw>
+									</step>
+								</then>
+								<else>
+									<if
+										id	= "goUp"
+										description	= "check if we are not root"
+										test	= "@stackSize &gt; 1"
+										level	= "-1"
+									>
+										<then>
+											<step
+												id	= "goUp"
+												description	= "processing of vertex finished"
+												comment-ru	= "Поднимаемся наверх"
+												level	= "0"
+											>
+												<action>
+													@index[@pos] @= @stack[@stackSize - 2];
+													@depth[@pos] @= @depth[@pos - 1] - 1;
+													@pos @= @pos + 1;
+													@stackSize @= @stackSize - 1;
+												</action>
+												<draw>
+													@visualizer.drawCellsForDFS(@pos, @stack[@stackSize - 1]);
+												</draw>
+											</step>
+										</then>
+										<else>
+											<step
+												id	= "endOfDFS"
+												description	= "the end of DFS"
+												level	= "-1"
+											>
+												<action>
+													@stackSize @= @stackSize - 1;
+												</action>
+											</step>
+										</else>
+									</if>
+								</else>
+							</if>
+						</else>
+					</if>
+				</while>
+
+				<!-- **************************************************************** -->
+				<!-- ******************** Подготовка к запросам ********************* -->
+				<!-- **************************************************************** -->
+
+				<step
+					id	= "traversalFinished"
+					description	= "cleanup after traversal"
+					comment-ru	= "Отныне дерево нам больше не понадобится"
+					level	= "1"
+				>
+					<action>
+						@stage1 @= true;
+					</action>
+					<draw>
+						@visualizer.drawCellsForDFS(@pos, -1);
+						@visualizer.drawCartesianTree(0, 0);
+						@visualizer.redrawIndex();
+					</draw>
+				</step>
+
+				<step
+					id	= "ololo3"
+					description	= "ololo3"
+					level	 = "-1"
+				>
+					<action>
+						@i @= 0;
+					</action>
+				</step>
+
+				<while
+					id	= "searchFirstOccurence"
+					description	= "search for first occurence of number in index"
+					test	= "@i &lt; 2 * @array.length - 1"
+					true-comment-ru	= "Смотрим элемент {0}"
+					false-comment-ru	= "Первое вхождение найдено"
+					comment-args	= "new Integer((@i == 2 * @array.length - 1 ? 0 : @index[@i]) + 1)"
 					level	= "-1"
 				>
-					<then>
-						<step
-							id	= "GoGoRight"
-							description	= "GoGoRight"
-							comment-ru	= "Идём вправо"
-						>
-							<action>
-								@stack[@stackSize] @= @rightSon[@stack[@stackSize - 1]];
-								@passed[@stack[@stackSize - 1]] @= @passed[@stack[@stackSize - 1]] + 1;
-								@depth[@pos] @= @depth[@pos - 1] + 1;
-								@index[@pos] @= @rightSon[@stack[@stackSize - 1]];
-								@pos @= @pos + 1;
-								@stackSize @= @stackSize + 1;
-							</action>
-							<draw>
-								@visualizer.drawCellsForDFS(@pos, @stack[@stackSize - 1]);
-							</draw>
-						</step>
-					</then>
-					<else>
+					<if
+						id	= "checkIfNotUsed"
+						descrption	= "check if this cell is used first time"
+						test	= "@first[@index[@i]] == -1"
+						level	= "-1"
+					>
+						<then>
+							<step
+								id	= "newElementFound"
+								description	= "First occurence of index[i] found"
+								comment-ru	= "Первое вхождение элемента {0}"
+								comment-args	= "new Integer(@index[@i] + 1)"
+							>
+								<action>
+									@first[@index[@i]] @= @i;
+								</action>
+								<draw>
+									@visualizer.redrawIndex();
+								</draw>
+							</step>
+						</then>
+						<else>
+							<step
+								id	= "notNewElementFound"
+								description	= "index[i] already was used"
+								comment-ru	= "Уже не первое вхождение {0}"
+								comment-args	= "new Integer(@index[@i] + 1)"
+								level	= "-1"
+							>
+								<action>
+								</action>
+								<draw>						
+								</draw>
+							</step>
+						</else>
+					</if>
+					
+					<step
+						id	= "incrementLoopVariable2"
+						description	= "increment loop variable"
+						level	= "-1"
+					>
+						<action>
+							@i @= @i + 1;
+						</action>
+						<draw>
+						</draw>
+					</step>
+				</while>
+
+				<!-- ***************************************************************** -->
+				<!-- **************** Разбиение на куски ***************************** --> 
+				<!-- ***************************************************************** -->
+				
+				<step
+					id	= "splittingIntoPieces1"
+					description	= "splitting depth into pieces"
+					comment-ru	= "Теперь разобъём массивы на куски размера log_2(2 * n - 1) / 2. В данном случае положим размер куска равным 3. На каждом куске найдём максимум и на этих максимумах построим разреженную таблицу"
+					level	= "1"
+				>
+					<action>
+						@i @= 0;
+					</action>
+					<draw>
+						@visualizer.drawMaximums(0);
+						@visualizer.drawDepth(-1);
+						@visualizer.redrawIndex();
+					</draw>
+				</step>
+
+				<step
+					id	= "ololo4"
+					description	= "ololo4"
+					comment-ru	= "начнём, пожалуй"
+				>
+					<action>
+					</action>
+					<draw>
+						@visualizer.drawDepth(0);			
+					</draw>
+				</step>
+
+				<while
+					id	= "buildArrayForSparseTable"
+					description	= "build array for sparce table"
+					true-comment-ru	= "Считаем максимум на {0}-м куске"
+					false-comment-ru	= "Максимумы найдены"
+					test	= "@i &lt; @maximums.length"
+					comment-args	= "new Integer(@i + 1)"
+				>
+					<step
+						id	= "loopVariableInit3"
+						description	= "initialization of j"
+						level	= "-1"
+					>
+						<action>
+							@j @= 0;
+						</action>
+					</step>
+					
+					<while
+						id	= "findMaximumInPiece"
+						description	= "find maximum in piece"
+						test	= "@j &lt; @pieceSize &amp;&amp; @i * @pieceSize + @j &lt; @depth.length"
+						level	= "-1"
+					>
 						<if
-							id	= "goUp"
-							description	= "check if we are not root"
-							test	= "@stackSize &gt; 1"
+							id	= "checkIfBiggerThanCurrentMaximum"
+							description	= "ололошеньки"
+							test	= "@maximums[@i] &lt; @depth[@i * @pieceSize + @j]"
 							level	= "-1"
 						>
 							<then>
 								<step
-									id	= "goUp"
-									description	= "processing of vertex finished"
-									comment-ru	= "Поднимаемся наверх"
-									level	= "0"
+									id	= "improveMaximum"
+									description	= "new maximum found"
+									comment-ru	= "Уря! Новый максимум! {0} &gt; {1}"
+									comment-args	= "new Integer(@depth[@i * @pieceSize + @j]), new Integer(@maximums[@i])"
 								>
 									<action>
-										@index[@pos] @= @stack[@stackSize - 2];
-										@depth[@pos] @= @depth[@pos - 1] - 1;
-										@pos @= @pos + 1;
-										@stackSize @= @stackSize - 1;
+										@maximums[@i] @= @depth[@i * @pieceSize + @j];
 									</action>
 									<draw>
-										@visualizer.drawCellsForDFS(@pos, @stack[@stackSize - 1]);
+										@visualizer.drawMaximums(@i + 1);
+									</draw>
+								</step>
+							</then>
+							<else>					
+							</else>
+						</if>
+					
+						<step
+							id	= "advanceIterator"
+							description	= "increment j"
+							comment-ru	= "Переходим к следующему элементу…"
+						>
+							<action>
+								@j @= @j + 1;
+							</action>
+							<draw>
+								@visualizer.drawDepth(@i * @pieceSize + @j);
+							</draw>
+						</step>
+					</while>
+					
+					<step
+						id	= "advanceIteratorI"
+						descriptiojn	= "increment i"
+						level	= "-1"
+					>
+						<action>
+							@i @= @i + 1;
+						</action>
+					</step>
+				</while>
+
+				<!-- ****************************************************************** -->
+				<!-- ***************** Построение разреженной таблицы ***************** -->
+				<!-- ****************************************************************** -->
+				
+				<step
+					id	= "maximumsFound"
+					description	= "maximums found"
+					comment-ru	= "Максимумы найдены! Теперь построим на них разреженную таблицу (sparse table). В i-й строке, j-й клетке будет находиться максимальный среди элементов с j-го по j + 2^i"
+					level	= "1"
+				>
+					<action>
+						@i @= 1;
+					</action>
+					<draw>
+						@visualizer.drawDepth(-1);
+						@visualizer.drawTable(0, 0, -1, -1, -1, -1);
+					</draw>
+				</step>
+
+				<while
+					id	= "rowInSparseTable"
+					description	= "row in sparse table"
+					test	= "(1 &lt;&lt; @i) &lt;= @maximums.length"
+					level	= "-1"		
+				>
+					<step
+						id	= "initLoopVariable3"
+						description	= "init loop variable"
+						level	= "-1"
+					>
+						<action>
+							@j @= 0;
+						</action>
+					</step>
+					
+					<while
+						id	= "columnInSparseTable"
+						description	= "column in sparse table"	
+						test	= "(@j + (1 &lt;&lt; @i)) &lt;= @maximums.length"
+						level	= "-1"
+					>
+
+						<step
+							id	= "newVarInSparseTable"
+							description	= "compute next variable in sparse table"
+							comment-ru	= "Посчитаем очередное значение: t[{0}][{1}] = max(t[{2}][{1}] = {3}, t[{2}][{4}] = {5})"
+							comment-args	= "new Integer(@i), new Integer(@j + 1), new Integer(@i - 1), new Integer(@table[@i - 1][@j]), new Integer(@j + (1 &lt;&lt; (@i - 1))), new Integer(@table[@i - 1][@j + (1 &lt;&lt; (@i - 1))])"
+						>
+							<action>
+							</action>
+						</step>
+						
+						<if 
+							id	= "ololo5"
+							description	= "ololo5"
+							test	= "@table[@i - 1][@j] &lt; @table[@i - 1][@j + (1 &lt;&lt; (@i - 1))]"
+							true-comment-ru	= "Лево"
+							false-comment-ru	= "Право"
+							level	= "-1"
+						>
+							<then>
+								<step
+									id	= "ololo6"
+									description	= "ololo6"
+									comment-ru	= "Обрабатываем очередной элемент"
+								>
+									<action>
+										@table[@i][@j] @= @table[@i - 1][@j + (1 &lt;&lt; (@i - 1))];
+									</action>
+									<draw>
+										@visualizer.drawTable(@i + 1, @j + 1, @i - 1, @j + (1 &lt;&lt; (@i - 1)), @i - 1, @j);
 									</draw>
 								</step>
 							</then>
 							<else>
 								<step
-									id	= "endOfDFS"
-									description	= "the end of DFS"
-									level	= "-1"
+									id	= "ololo7"
+									description	= "ololo7"
+									comment-ru	= "Обрабатываем очередной элемент"
 								>
 									<action>
-										@stackSize @= @stackSize - 1;
+										@table[@i][@j] @= @table[@i - 1][@j];
 									</action>
+									<draw>
+										@visualizer.drawTable(@i + 1, @j + 1, @i - 1, @j, @i - 1, @j + (1 &lt;&lt; (@i - 1)));
+									</draw>
 								</step>
 							</else>
 						</if>
-					</else>
-				</if>
-			</else>
-		</if>
-	</while>
 
-	<!-- **************************************************************** -->
-	<!-- ******************** Подготовка к запросам ********************* -->
-	<!-- **************************************************************** -->
-
-	<step
-		id	= "traversalFinished"
-		description	= "cleanup after traversal"
-		comment-ru	= "Отныне дерево нам больше не понадобится"
-	>
-		<action>
-			@stage1 @= true;
-		</action>
-		<draw>
-			@visualizer.drawCellsForDFS(@pos, -1);
-			@visualizer.drawCartesianTree(0, 0);
-			@visualizer.redrawIndex();
-		</draw>
-	</step>
-
-	<step
-		id	= "ololo3"
-		description	= "ololo3"
-		level	 = "-1"
-	>
-		<action>
-			@i @= 0;
-		</action>
-	</step>
-
-	<while
-		id	= "searchFirstOccurence"
-		description	= "search for first occurence of number in index"
-		test	= "@i &lt; 2 * @array.length - 1"
-		true-comment-ru	= "Смотрим элемент {0}"
-		false-comment-ru	= "Первое вхождение найдено"
-		comment-args	= "new Integer((@i == 2 * @array.length - 1 ? 0 : @index[@i]) + 1)"
-		level	= "-1"
-	>
-		<if
-			id	= "checkIfNotUsed"
-			descrption	= "check if this cell is used first time"
-			test	= "@first[@index[@i]] == -1"
-			level	= "-1"
-		>
-			<then>
+						<step
+							id	= "ololo8"
+							description	= "ololo8"
+							level	= "-1"
+						>
+							<action>
+								@j @= @j + 1;
+							</action>
+						</step>
+						
+					</while>
+					
+					<step
+						id	= "ololo9"
+						description	= "ololo9"
+						level	= "-1"			
+					>
+						<action>
+							@i @= @i + 1;
+						</action>
+					</step>		
+				</while>
+					
+				<!-- ************************************************************** --> 
+				<!-- ***************** Вспомогательные массивы ******************** -->
+				<!-- ************************************************************** -->
+					
 				<step
-					id	= "newElementFound"
-					description	= "First occurence of index[i] found"
-					comment-ru	= "Первое вхождение элемента {0}"
-					comment-args	= "new Integer(@index[@i] + 1)"
+					id	 = "ololo10"
+					description	= "ololo10"
+					comment-ru	= "Sparse table построена! Теперь для каждого кусочка заметим, что соседние элементы в нём отличаются на 1. Значит, ему соответствует двоичный вектор. Для всех таких двоичных векторово псчитаем максимумы на всех подстроках. Также, для каждого блока нужно хранить первый его элемент"
+					level	= "1"
 				>
 					<action>
-						@first[@index[@i]] @= @i;
+						@i @= 0;
 					</action>
 					<draw>
-						@visualizer.redrawIndex();
+						@visualizer.drawTable(@maximums.length, @maximums.length, -1, -1, -1, -1);
+						@visualizer.drawTable2(0, 0);
+					</draw>
+				</step>
+				
+				<while
+					id	= "buildAdditionalArrays"
+					description	= "ololo11"
+					test	= "@i &lt; @maximums.length"
+					level	= "-1"
+				>
+					<step
+						id	= "ololo12"
+						description	= "ololo12"
+						level	= "-1"			
+					>
+						<action>
+							@j @= 0;
+							@table2[@i][0] @= @depth[@i * @pieceSize + @j];
+						</action>
+					</step>
+					
+					<while
+						id	= "ololo13"
+						description	= "ololo13"
+						test	= "@j &lt; @pieceSize - 1 &amp;&amp; @i * @pieceSize + @j &lt; @depth.length"
+						level	= "-1"
+					>
+						<step
+							id	= "ololo14"
+							description	= "ololo14"
+							comment-ru	= "Заполним очередную ячейку"		
+						>
+							<action>
+								@table2[@i][@j + 1] @= @depth[@i * @pieceSize + @j + 1] - @depth[@i * @pieceSize + @j];
+								@j @= @j + 1;
+							</action>
+							<draw>
+								@visualizer.drawTable2(@i + 1, @j + 1);
+							</draw>
+						</step>
+					</while>
+					
+					<step
+						id	= "ololo15"
+						description	= "ololo15"
+						level	= "-1"
+					>
+						<action>
+							@i @= @i + 1;
+						</action>
+					</step>
+				</while>
+				
+				<step
+					id	= "ololo15"
+					description	= "ololo15"
+					comment-ru	= "Ура! Мы строили, строили и наконец построли! Всё необходимое для нахождения ответа есть!"
+					level	= "1"
+				>
+					<action>
+						@ready @= true;
+					</action>
+					<draw>
+						@visualizer.drawTable2(@maximums.length, @depth.length % @pieceSize + 1);
 					</draw>
 				</step>
 			</then>
-			<else>
-				<step
-					id	= "notNewElementFound"
-					description	= "index[i] already was used"
-					comment-ru	= "Уже не первое вхождение {0}"
-					comment-args	= "new Integer(@index[@i] + 1)"
-					level	= "-1"
-				>
-					<action>
-					</action>
-					<draw>						
-					</draw>
-				</step>
-			</else>
 		</if>
 		
 		<step
-			id	= "incrementLoopVariable2"
-			description	= "increment loop variable"
-			level	= "-1"
+			id	= "buildingFinished"
+			description	= "building finished"
+			comment-ru	= "Можно приступать к обработке запроса"
+			level	= "1"			
 		>
 			<action>
-				@i @= @i + 1;
 			</action>
 			<draw>
+				@visualizer.drawMainArray();
+				@visualizer.drawCellsForDFSWithoutTree(@depth.length);
+				@visualizer.redrawIndex();
+				@visualizer.drawTable(@array.length, @array.length, -1, -1, -1, -1);
+				@visualizer.drawTable2(@maximums.length, @depth.length % @pieceSize + 1);
 			</draw>
 		</step>
-	</while>
-
-	<!-- ***************************************************************** -->
-	<!-- **************** Разбиение на куски ***************************** --> 
-	<!-- ***************************************************************** -->
-	
-	<step
-		id	= "splittingIntoPieces1"
-		description	= "splitting depth into pieces"
-		comment-ru	= "Теперь разобъём массивы на куски размера log_2(2 * n - 1) / 2. В данном случае положим размер куска равным 3. На каждом куске найдём максимум и на этих максимумах построим разреженную таблицу"
-	>
-		<action>
-			@i @= 0;
-		</action>
-		<draw>
-			@visualizer.drawMaximums(0);
-			@visualizer.drawDepth(-1);
-		</draw>
-	</step>
-
-	<step
-		id	= "ololo4"
-		description	= "ololo4"
-		comment-ru	= "начнём, пожалуй"
-	>
-		<action>
-		</action>
-		<draw>
-			@visualizer.drawDepth(0);			
-		</draw>
-	</step>
-
-	<while
-		id	= "buildArrayForSparseTable"
-		description	= "build array for sparce table"
-		true-comment-ru	= "Считаем максимум на {0}-м куске"
-		false-comment-ru	= "Максимумы найдены"
-		test	= "@i &lt; @maximums.length"
-		comment-args	= "new Integer(@i + 1)"
-	>
-		<step
-			id	= "loopVariableInit3"
-			description	= "initialization of j"
-			level	= "-1"
-		>
-			<action>
-				@j @= 0;
-			</action>
-		</step>
 		
-		<while
-			id	= "findMaximumInPiece"
-			description	= "find maximum in piece"
-			test	= "@j &lt; @pieceSize &amp;&amp; @i * @pieceSize + @j &lt; @depth.length"
-			level	= "-1"
-		>
-			<if
-				id	= "checkIfBiggerThanCurrentMaximum"
-				description	= "ололошеньки"
-				test	= "@maximums[@i] &lt; @depth[@i * @pieceSize + @j]"
-				level	= "-1"
-			>
-				<then>
-					<step
-						id	= "improveMaximum"
-						description	= "new maximum found"
-						comment-ru	= "Уря! Новый максимум! {0} &gt; {1}"
-						comment-args	= "new Integer(@depth[@i * @pieceSize + @j]), new Integer(@maximums[@i])"
-					>
-						<action>
-							@maximums[@i] @= @depth[@i * @pieceSize + @j];
-						</action>
-						<draw>
-							@visualizer.drawMaximums(@i + 1);
-						</draw>
-					</step>
-				</then>
-				<else>					
-				</else>
-			</if>
-		
-			<step
-				id	= "advanceIterator"
-				description	= "increment j"
-				comment-ru	= "Переходим к следующему элементу…"
-			>
-				<action>
-					@j @= @j + 1;
-				</action>
-				<draw>
-					@visualizer.drawDepth(@i * @pieceSize + @j);
-				</draw>
-			</step>
-		</while>
-		
-		<step
-			id	= "advanceIteratorI"
-			descriptiojn	= "increment i"
-			level	= "-1"
-		>
-			<action>
-				@i @= @i + 1;
-			</action>
-		</step>
-	</while>
-
-	<!-- ****************************************************************** -->
-	<!-- ***************** Построение разреженной таблицы ***************** -->
-	<!-- ****************************************************************** -->
-	
-	<step
-		id	= "maximumsFound"
-		description	= "maximums found"
-		comment-ru	= "Максимумы найдены! Теперь построим на них разреженную таблицу (sparse table). В i-й строке, j-й клетке будет находиться максимальный среди элементов с j-го по j + 2^i"
-	>
-		<action>
-			@i @= 1;
-		</action>
-		<draw>
-			@visualizer.drawDepth(-1);
-			@visualizer.drawTable(0, 0, -1, -1, -1, -1);
-		</draw>
-	</step>
-
-	<while
-		id	= "rowInSparseTable"
-		description	= "row in sparse table"
-		test	= "(1 &lt;&lt; @i) &lt;= @maximums.length"
-		level	= "-1"		
-	>
-		<step
-			id	= "initLoopVariable3"
-			description	= "init loop variable"
-			level	= "-1"
-		>
-			<action>
-				@j @= 0;
-			</action>
-		</step>
-		
-		<while
-			id	= "columnInSparseTable"
-			description	= "column in sparse table"	
-			test	= "(@j + (1 &lt;&lt; @i)) &lt;= @maximums.length"
-			level	= "-1"
-		>
-
-			<step
-				id	= "newVarInSparseTable"
-				description	= "compute next variable in sparse table"
-				comment-ru	= "Посчитаем очередное значение: t[{0}][{1}] = max(t[{2}][{1}] = {3}, t[{2}][{4}] = {5})"
-				comment-args	= "new Integer(@i), new Integer(@j + 1), new Integer(@i - 1), new Integer(@table[@i - 1][@j]), new Integer(@j + (1 &lt;&lt; (@i - 1))), new Integer(@table[@i - 1][@j + (1 &lt;&lt; (@i - 1))])"
-			>
-				<action>
-				</action>
-			</step>
-			
-			<if 
-				id	= "ololo5"
-				description	= "ololo5"
-				test	= "@table[@i - 1][@j] &lt; @table[@i - 1][@j + (1 &lt;&lt; (@i - 1))]"
-				true-comment-ru	= "Лево"
-				false-comment-ru	= "Право"
-				level	= "-1"
-			>
-				<then>
-					<step
-						id	= "ololo6"
-						description	= "ololo6"
-						comment-ru	= "Обрабатываем очередной элемент"
-					>
-						<action>
-							@table[@i][@j] @= @table[@i - 1][@j + (1 &lt;&lt; (@i - 1))];
-						</action>
-						<draw>
-							@visualizer.drawTable(@i + 1, @j + 1, @i - 1, @j + (1 &lt;&lt; (@i - 1)), @i - 1, @j);
-						</draw>
-					</step>
-				</then>
-				<else>
-					<step
-						id	= "ololo7"
-						description	= "ololo7"
-						comment-ru	= "Обрабатываем очередной элемент"
-					>
-						<action>
-							@table[@i][@j] @= @table[@i - 1][@j];
-						</action>
-						<draw>
-							@visualizer.drawTable(@i + 1, @j + 1, @i - 1, @j, @i - 1, @j + (1 &lt;&lt; (@i - 1)));
-						</draw>
-					</step>
-				</else>
-			</if>
-
-			<step
-				id	= "ololo8"
-				description	= "ololo8"
-				level	= "-1"
-			>
-				<action>
-					@j @= @j + 1;
-				</action>
-			</step>
-			
-		</while>
-		
-		<step
-			id	= "ololo9"
-			description	= "ololo9"
-			level	= "-1"			
-		>
-			<action>
-				@i @= @i + 1;
-			</action>
-		</step>		
-	</while>
-		
-	<!-- ************************************************************** --> 
-	<!-- ***************** Вспомогательные массивы ******************** -->
-	<!-- ************************************************************** -->
-		
-	<step
-		id	 = "ololo10"
-		description	= "ololo10"
-		comment-ru	= "Sparse table построена! Теперь для каждого кусочка заметим, что соседние элементы в нём отличаются на 1. Значит, ему соответствует двоичный вектор. Для всех таких двоичных векторово псчитаем максимумы на всех подстроках. Также, для каждого блока нужно хранить первый его элемент"
-	>
-		<action>
-			@i @= 0;
-		</action>
-		<draw>
-			@visualizer.drawTable(@maximums.length, @maximums.length, -1, -1, -1, -1);
-			@visualizer.drawTable2(0, 0);
-		</draw>
-	</step>
-	
-	<while
-		id	= "buildAdditionalArrays"
-		description	= "ololo11"
-		test	= "@i &lt; @maximums.length"
-		level	= "-1"
-	>
-		<step
-			id	= "ololo12"
-			description	= "ololo12"
-			level	= "-1"			
-		>
-			<action>
-				@j @= 0;
-				@table2[@i][0] @= @depth[@i * @pieceSize + @j];
-			</action>
-		</step>
-		
-		<while
-			id	= "ololo13"
-			description	= "ololo13"
-			test	= "@j &lt; @pieceSize - 1 &amp;&amp; @i * @pieceSize + @j &lt; @depth.length"
-			level	= "-1"
-		>
-			<step
-				id	= "ololo14"
-				description	= "ololo14"
-				comment-ru	= "Заполним очередную ячейку"		
-			>
-				<action>
-					@table2[@i][@j + 1] @= @depth[@i * @pieceSize + @j + 1] - @depth[@i * @pieceSize + @j];
-					@j @= @j + 1;
-				</action>
-				<draw>
-					@visualizer.drawTable2(@i + 1, @j + 1);
-				</draw>
-			</step>
-		</while>
-		
-		<step
-			id	= "ololo15"
-			description	= "ololo15"
-			level	= "-1"
-		>
-			<action>
-				@i @= @i + 1;
-			</action>
-		</step>
-	</while>
-	
-	<step
-		id	= "ololo15"
-		description	= "ololo15"
-		comment-ru	= "Ура! Мы строили, строили и наконец построли! Всё необходимое для нахождения ответа есть!"
-	>
-		<action>
-		</action>
-		<draw>
-			@visualizer.drawTable2(@maximums.length, @depth.length % @pieceSize + 1);
-		</draw>
-	</step>
-	
-	
         <finish
             comment-ru="Задача о назначениях решена {0}"
             comment-en="Problem solved"

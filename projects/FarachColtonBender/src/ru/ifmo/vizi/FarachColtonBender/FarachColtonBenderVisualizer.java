@@ -107,18 +107,14 @@ public final class FarachColtonBenderVisualizer extends Base implements
 		clientPane.setSize(2000, 1200);
 		createInterface(auto);
 	}
-
-	void initArrays() {
-		System.err.println("Init arrays");
-		Arrays.fill(data.leftSon, -1);
-		Arrays.fill(data.rightSon, -1);
-		Arrays.fill(data.index, -1);
-		Arrays.fill(data.depth, -1);
-		Arrays.fill(data.stack2, -1);
-	}
 	
 	void drawMainArray() {
 		for (int i = 0; i < array.length; i++) {
+			if (leftBorder.getValue() - 1 <= i && i <= rightBorder.getValue() - 1) {
+				array[i].setStyle(5);
+			} else {
+				array[i].setStyle(1);
+			}
 			clientPane.add(array[i]);
 		}
 	}
@@ -130,49 +126,38 @@ public final class FarachColtonBenderVisualizer extends Base implements
 	}
 	
 	void clear() {
-		System.err.println("Clearing...");
 		clientPane.removeAll();
-		layoutClientPane(windowWidth, windowHeight);
-		if (array == null)
-			return;
-		for (int i = 0; i < data.array.length; i++) {
-			if (array[i] != null)
-				clientPane.remove(array[i]);
-		}
-		
-		for (int i = 0; i < tree.length; i++) {
-			if (tree[i] != null)
-				clientPane.remove(tree[i]);
-		}
-
-		
-		for (Rect r : treeShown)
-			clientPane.remove(r);
-		for (Rect l : lines)
-			clientPane.remove(l);
-		
 	}
 
 	public void adjustmentValueChanged(AdjustmentEvent t) {
 		if (t.getSource() == size) {
-			System.err.println("========== Size changed ===============");
 			clear();
 			auto.getController().doRestart();
 			int n = t.getValue();
-			System.err.println("	... to " + n);
 			data.array = new int[n];
-			array = new Rect[n];
 			leftBorder.setMaximum(n);
 			leftBorder.setValue(1);
 			rightBorder.setMaximum(n);
 			rightBorder.setValue(n);
 			randomize();
 		}
+		if (t.getSource() == leftBorder) {
+			auto.toStart();
+			auto.getController().doNextBigStep();
+			data.left = leftBorder.getValue();
+			rightBorder.setMinimum(leftBorder.getValue());
+		}
+		if (t.getSource() == rightBorder) {
+			auto.toStart();
+			auto.getController().doNextBigStep();
+
+			data.right = rightBorder.getValue();
+			leftBorder.setMaximum(rightBorder.getValue());
+		}
 	}
 
 	public void randomize() {
 		int n = data.array.length;
-		System.err.println("randomize " + n);
 		for (int i = 0; i < n; i++) {
 			data.array[i] = (int) (Math.random() * 99) + 1;
 		}
@@ -193,6 +178,13 @@ public final class FarachColtonBenderVisualizer extends Base implements
 		data.index = new int[2 * n + 1];
 		data.first = new int[n];
 		data.table2 = new int[maximums.length][data.pieceSize];
+		Arrays.fill(data.leftSon, -1);
+		Arrays.fill(data.rightSon, -1);
+		Arrays.fill(data.index, -1);
+		Arrays.fill(data.depth, -1);
+		Arrays.fill(data.stack2, -1);
+
+		
 		table2 = new Rect[maximums.length][data.pieceSize];
 		Arrays.fill(data.maximums, -1);
 		Arrays.fill(data.first, -1);
@@ -228,12 +220,14 @@ public final class FarachColtonBenderVisualizer extends Base implements
 			}
 		}
 		
+		data.left = leftBorder.getValue();
+		data.right = rightBorder.getValue();
+		
 		layoutClientPane(windowWidth, windowHeight);
 		auto.getController().doRestart();
 	}
 
 	void layoutMainArray() {
-		System.err.println("Layout main array");
 		int n = data.array.length;
 		mainWidth = windowWidth / n;
 		int height = windowHeight / 10;
@@ -288,7 +282,8 @@ public final class FarachColtonBenderVisualizer extends Base implements
 		bottomPanel.add(rightBorder);
 		panel.add(bottomPanel, BorderLayout.CENTER);
 
-		panel.add(new AutoControlsPane(config, auto, forefather, false),
+		
+		panel.add(new AutoControlsPane(config, auto, forefather, true),
 				BorderLayout.SOUTH);
 
 		return panel;
@@ -355,7 +350,6 @@ public final class FarachColtonBenderVisualizer extends Base implements
 	}
 
 	void layoutTree() {
-		System.err.println("layoutTree");
 		int n = data.array.length;
 		Pair[] pairs = new Pair[n];
 		for (int i = 0; i < n; i++)
@@ -429,8 +423,6 @@ public final class FarachColtonBenderVisualizer extends Base implements
 		}
 		table2Shown.clear();
 		
-		System.err.println("2: " + x + ", " + y);
-		
 		for (int i = 0; i < x; i++) {
 			table2[i][0].setStyle(4);
 			for (int j = 0; (i != x - 1 && j < table2[i].length) || (i == x - 1 && j < y); j++) {
@@ -459,7 +451,6 @@ public final class FarachColtonBenderVisualizer extends Base implements
 		}
 		
 		for (int j = 0; j < column && (j <= table[0].length - (1 << (rows - 1))); j++) {
-			System.err.println(data.table[rows - 1][j] + " ");
 			table[rows - 1][j].setMessage("" + data.table[rows - 1][j]);
 			table[rows - 1][j].adjustFontSize();
 			table[rows - 1][j].setStyle(1);
@@ -497,8 +488,7 @@ public final class FarachColtonBenderVisualizer extends Base implements
 			depth[pos].setStyle(3);
 	}
 	
-	void drawCellsForDFS(int count, int colored) {
-		System.err.println("draw cells for DFS(" + count + ", " + colored + ")");
+	void drawCellsForDFSWithoutTree(int count) {
 		for (Rect r : DFSCells) {
 			clientPane.remove(r);
 		}
@@ -508,17 +498,23 @@ public final class FarachColtonBenderVisualizer extends Base implements
 			index[i].adjustFontSize();
 			depth[i].setMessage("" + data.depth[i]);
 			depth[i].adjustFontSize();
-			tree[data.index[i]].setStyle(0);
+			if (data.index[i] != -1)
+				tree[data.index[i]].setStyle(0);
 		}
-		drawCartesianTree(data.array.length, 0);
-		if (colored != -1) {
-			tree[colored].setStyle(3);
-		}
+
 		for (int i = 0; i < count; i++) {
 			DFSCells.add(index[i]);
 			DFSCells.add(depth[i]);
 			clientPane.add(index[i]);
 			clientPane.add(depth[i]);
+		}
+	}
+	
+	void drawCellsForDFS(int count, int colored) {
+		drawCellsForDFSWithoutTree(count);
+		drawCartesianTree(data.array.length, 0);
+		if (colored != -1) {
+			tree[colored].setStyle(3);
 		}
 	}
 	
