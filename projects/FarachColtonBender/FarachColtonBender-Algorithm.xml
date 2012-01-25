@@ -169,16 +169,30 @@
 		value	= "false"
 	/>
 	
-	<variable
-		description	= "Левая граница поиска"
-		name	= "left"
-		type	= "int"
+	<variable 
+		description	= "Левая граница поиска" 
+		name	= "left" 
+		type	= "int"	
 		value	= "-1"
 	/>
 	
 	<variable
 		description	= "Правая граница поиска"
 		name	= "right"
+		type	= "int"
+		value	= "-1"
+	/>
+	
+	<variable 
+		description	= "Левая граница поиска — 2" 
+		name	= "left2"
+		type	= "int"	
+		value	= "-1"
+	/>
+	
+	<variable
+		description	= "Правая граница поиска ­— 2"
+		name	= "right2"
 		type	= "int"
 		value	= "-1"
 	/>
@@ -193,6 +207,62 @@
 	<variable
 		description	= "Правый кусок"
 		name	= "rightPiece"
+		type	= "int"
+		value	= "-1"
+	/>
+	
+	<variable
+		description	= "Первая часть ответа"
+		name	= "ans1"
+		type	= "int"
+		value	= "-1"
+	/>
+	
+	<variable
+		description	= "Вторая часть ответа"
+		name	= "ans2"
+		type	= "int"
+		value	= "-1"
+	/>
+	
+	<variable
+		description	= "Третья часть ответа"
+		name	= "ans3"
+		type	= "int"
+		value	= "-1"
+	/>
+	
+	<variable
+		description	= "Первый индекс ответа"
+		name	= "index1"
+		type	= "int"
+		value	= "-1"
+	/>
+	
+	<variable
+		description	= "Второй индекс ответа"
+		name	= "index2"
+		type	= "int"
+		value	= "-1"
+	/>
+	
+	<variable
+		description	= "Третий часть ответа"
+		name	= "index3"
+		type	= "int"
+		value	= "-1"
+	/>
+	
+	<variable
+		description	= "Ответ на задачу"
+		name	= "ans"
+		type	= "int"
+		value	= "-1"
+	/>
+	
+	<variable
+		description	= "Логарифм"
+		name	= "log2"
 		type	= "int"
 		value	= "-1"
 	/>
@@ -669,7 +739,7 @@
 						<if
 							id	= "checkIfBiggerThanCurrentMaximum"
 							description	= "ололошеньки"
-							test	= "@maximums[@i] &lt; @depth[@i * @pieceSize + @j]"
+							test	= "@maximums[@i] &gt; @depth[@i * @pieceSize + @j]"
 							level	= "-1"
 						>
 							<then>
@@ -771,7 +841,7 @@
 						<if 
 							id	= "ololo5"
 							description	= "ololo5"
-							test	= "@table[@i - 1][@j] &lt; @table[@i - 1][@j + (1 &lt;&lt; (@i - 1))]"
+							test	= "@table[@i - 1][@j] &gt; @table[@i - 1][@j + (1 &lt;&lt; (@i - 1))]"
 							true-comment-ru	= "Лево"
 							false-comment-ru	= "Право"
 							level	= "-1"
@@ -916,26 +986,419 @@
 		<step
 			id	= "buildingFinished"
 			description	= "building finished"
-			comment-ru	= "Можно приступать к обработке запроса"
+			comment-ru	= "Можно приступать к обработке запроса. Для обработки запроса запустим поиск минимума в depth. Для этого разобьём отрезок на три части: левый «огрызок», правый «огразок» и то, что можно составить из целых кусочков. Отвтим на каждый запрос отдельно"
 			level	= "1"			
 		>
 			<action>
+				@left2 @= @first[@left - 1];
+				@right2 @= @first[@right - 1];
+				@leftPiece @= @left2 / @pieceSize;
+				@rightPiece @= @right2 / @pieceSize;
+				@i @= @left2;
+				@ans1 @= -1;
+				@ans2 @= -1;
+				@ans3 @= -1;
 			</action>
 			<draw>
 				@visualizer.drawMainArray();
-				@visualizer.drawCellsForDFSWithoutTree(@depth.length);
+				@visualizer.drawCellsForDFSWithoutTree(2 * @array.length - 1);
 				@visualizer.redrawIndex();
 				@visualizer.drawTable(@array.length, @array.length, -1, -1, -1, -1);
 				@visualizer.drawTable2(@maximums.length, @depth.length % @pieceSize + 1);
 			</draw>
 		</step>
 		
+		<if
+			id	= "atata1"
+			description	= "LR"
+			test	= "@left2 &gt; @right2"
+			level	= "-1"
+		>
+			<then>
+				<step
+					id	= "atata2"
+					description	= "atata2"
+					level	= "-1"
+				>
+					<action>
+						@tmp @= @left2;
+						@left2 @= @right2;
+						@right2 @= @tmp;
+						@tmp @= @leftPiece;
+						@leftPiece @= @rightPiece;
+						@rightPiece @= @tmp;
+					</action>
+				</step>
+			</then>
+		</if>
+		
+		<step
+			id	= "atata3"
+			description	= "atata3"
+		>
+			<action>
+			</action>
+			<draw>
+				@visualizer.debug("LP: ", @leftPiece);
+				@visualizer.debug("RP: ", @rightPiece);
+				@visualizer.debug("Left2: ", @left2);
+				@visualizer.debug("Right2: ", @right2);
+				@visualizer.debug("Left: ", @left);
+				@visualizer.debug("Right: ", @right);
+				@visualizer.debug("First: ", @first);
+			</draw>
+		</step>
+		
+		<if
+			id	= "ololo19"
+			description	= "ololo19"
+			test	= "@leftPiece == @rightPiece"
+			level	= "0"
+			true-comment-ru	= "Какая досада. Обе границы запроса внутри маленького отрезка. Для каждой подстроки каждого отрезка посчитано, какой там минимим. Возьмём его как ответ"
+			false-comment-ru	= "Посчитаем для левого, центральных и правого кусочков"
+		>
+			<then>
+				<step
+					id	= "ololo20"
+					description	= "ololo20"
+					level	= "-1"
+				>
+					<action>
+						@i @= @left2;
+						@ans @= 1000000;
+						@index1 @= -1;
+					</action>
+				</step>
+				
+				<while
+					id	= "ololo21"
+					description	= "ololo21"
+					test	= "@i &lt;= @right2"
+					true-comment-ru	= "Продолжаем-с {0}"
+					false-comment-ru	= "Всё ☹ {0}"
+					level	= "-1"
+					comment-args	= "new Integer(@i)"
+				>
+					<if 
+						id = "ololo22"
+						description	= "ololo22"
+						test	= "@depth[@i] &lt; @ans"
+						true-comment-ru	= "Улучшилось"
+						false-comment-ru	= "Не улучшилось"
+						level	= "-1"
+					>
+						<then>
+							<step
+								id	= "ololo23"
+								description	= "ololo23"
+							>
+								<action>
+									@ans @= @depth[@i];
+									@index1 @= @i;
+								</action>
+							</step>
+						</then>
+					</if>
+					<step
+						id	= "ololo24"
+						description	= "ololo24"
+						level	= "-1"
+					>
+						<action>
+							@i @= @i + 1;
+						</action>
+					</step>					
+				</while>
+				<step
+					id	= "ololo25"
+					description	= "ololo25"
+					level	= "-1"
+				>
+					<action>
+						@ans @= @array[@index[@index1]];
+					</action>
+				</step>
+							
+			</then>
+			<else>
+				<step
+					id	= "ololo30"
+					description	= "ololo30"
+					level	= "-1"
+				>
+					<action>
+						@log2 @= 0;
+						@tmp @= @rightPiece - @leftPiece - 2;
+						@i @= @left2;
+						@ans1 @= 1000000;
+						@ans2 @= 1000000;
+						@ans3 @= 1000000;
+						@index1 @= -1;
+						@index2 @= -1;
+						@index3 @= -1;
+					</action>
+				</step>
+				<while
+					id	= "ololo31"
+					description	= "ololo31"
+					test	= "@tmp != 0"
+					true-comment-ru	= "Продолжаем, {0}, {1}"
+					false-comment-ru	= "Всё, log = {0}"
+					level	= "-1"
+					comment-args	= "new Integer(@log2), new Integer(@tmp)"
+				>
+					<step
+						id	= "ololo32"
+						description	= "ololo32"
+						level	= "-1"
+						comment-ru	= "Оп оп"
+					>
+						<action>
+							@log2 @= @log2 + 1;
+							@tmp @= @tmp / 2;
+						</action>
+					</step>
+				</while>
+				
+				<while
+					id	= "ololo33"
+					description	= "ololo33"
+					test	= "@i &lt; (@leftPiece + 1) * @pieceSize"
+					level	= "-1"
+				>
+					<if 
+						id	= "ololo34"
+						description	= "ololo34"
+						test	= "@depth[@i] &lt; @ans1"
+						level	= "-1"
+					>
+						<then>
+							<step
+								id	= "ololo35"
+								description	= "ololo35"
+								level	= "-1"
+							>
+								<action>
+									@index1 @= @i;
+									@ans1 @= @depth[@i];
+								</action>
+							</step>
+						</then>
+					</if>
+					<step
+						id	= "ololo355"
+						description	= "ololo355"
+						level	= "-1"
+					>
+						<action>
+							@i @= @i + 1;
+						</action>
+					</step>
+				</while>
+				
+				<step
+					id	= "ololo36"
+					description	= "ololo36"
+					comment-ru	= "Максимум для левого куска найден — {0}"
+					level	= "0"
+					comment-args	= "new Integer(@array[@index[@index1]])"
+				>
+					<action>
+						@i @= (@rightPiece - 1) * @pieceSize;
+						@ans1 @= @array[@index[@index1]];
+					</action>
+				</step>
+				
+				<while
+					id	= "ololo37"
+					description	= "ololo37"
+					test	= "@i &lt;= @right2"
+					level	= "-1"
+				>
+					<if
+						id	= "ololo38"
+						description	= "ololo38"
+						test	= "@depth[@i] &lt; @ans3"
+						level	= "-1"
+					>
+						<then>
+							<step
+								id	= "ololo38"
+								description	= "ololo39"
+								level	= "-1"
+							>
+								<action>
+									@ans3 @= @depth[@i];
+									@index3 @= @i;
+								</action>
+							</step>
+						</then>
+					</if>
+					<step
+						id	= "ololo39"
+						description	= "ololo39"
+						level	= "-1"
+					>
+						<action>
+							@i @= @i + 1;
+						</action>
+					</step>
+				</while>
+				
+				<step
+					id	= "ololo40"
+					description	= "ololo40"
+					level	= "0"
+					comment-ru	= "Максимум для третьего куска найден — {0}. Для нахождения второго максимума обратимся в разреженную таблицу"
+					comment-args	= "new Integer(@array[@index[@index3]])"
+				>
+					<action>
+						@i @= (@leftPiece + 1) * @pieceSize;
+						@ans3 @= @array[@index[@index3]];
+					</action>	
+				</step>
+				
+				<while
+					id	= "ololo41"
+					description	= "ololo41"
+					test	= "@i &lt; @rightPiece * @pieceSize"
+					true-comment-ru	= "А не второй ли максимум тут? {0}"
+					false-comment-ru	= "Говно!"
+					comment-args	= "new Integer(@i)"
+					level	= "-1"
+				>
+					<if
+						id	= "ololo42"
+						description	= "ololo42"
+						test	= "@depth[@i] &lt; @ans2"
+						level	= "-1"
+					>
+						<then>
+							<step
+								id	= "ololo43"
+								description	= "ololo43"
+								level	= "-1"
+							>
+								<action>
+									@ans2 @= @depth[@i];
+									@index2 @= @i;
+								</action>
+							</step>
+						</then>
+					</if>
+					<step
+						id	= "ololo44"
+						description	= "ololo44"
+						level	= "-1"
+					>
+						<action>
+							@i @= @i + 1;
+						</action>
+					</step>
+				</while>
+				
+				<if
+					id	= "ololo444"
+					descrption	= "ololo444"
+					test	= "@index2 != -1"
+					level	= "-1"
+				>
+					<then>
+						<step
+							id	= "ololo45"
+							description	= "ololo45"
+							level	= "0"
+							comment-ru	= "Найден и второй максимум — {0}"
+							comment-args	= "new Integer(@array[@index[@index2]])"
+						>
+							<action>
+								@ans2 @= @array[@index[@index2]];
+							</action>
+						</step>
+					</then>
+					<else>
+						<step
+							id	= "ololo445"
+							description	= "445"
+							level	= "0"
+							comment-ru	= "Увы, второго максимума ввиду соседства левого и правого кусков, нет"
+						>
+							<action>
+								@ans2 @= -1;
+							</action>
+						</step>
+					</else>
+				</if>
+
+				<step
+					id	= "ololo458"
+					description	= "ololo458"
+					level	= "0"
+					comment-ru	= "Кандидаты: {0}, {1}, {2} :: {3}"
+					comment-args	= "new Integer(@ans1), new Integer(@ans2), new Integer(@ans3)"
+				>
+					<action>
+						@ans @= @ans1;
+					</action>
+				</step>
+					
+				
+				<if
+					id	= "ololo46"
+					description	= "ololo46"
+					test	= "@ans2 &gt; @ans"
+					level	= "-1"
+				>
+					<then>
+						<step
+							id	= "ololo47"
+							description	= "ololo47"
+							level	= "-1"
+						>
+							<action>
+								@ans @= @ans2;
+							</action>
+						</step>
+					</then>
+				</if>
+				
+				<if
+					id	= "ololo48"
+					description	= "ololo48"
+					test	= "@ans3 &gt; @ans"
+					level	= "-1"
+				>
+					<then>
+						<step
+							id	= "ololo49"
+							description	= "ololo49"
+							level	= "-1"
+						>
+							<action>
+								@ans @= @ans3;
+							</action>
+						</step>
+					</then>
+				</if>
+			</else>
+		</if>
+		
+		<!--while
+			id	= "ololo17"
+			description	= "ololo17"
+			test	= "@i &lt; @leftPiece * @pieceSize"
+			level	= "-1"
+		>
+		</while-->
+		
         <finish
-            comment-ru="Задача о назначениях решена {0}"
+            comment-ru="Задача решена! Максимум — {0}"
             comment-en="Problem solved"
-			comment-args = "new Integer(@i)" 
+			comment-args = "new Integer(@ans)"
         >
             <draw>
+				@visualizer.debug("index: ", @index1);
+				@visualizer.debug("ans: ", @ans);				
             </draw>
         </finish>
     </auto>

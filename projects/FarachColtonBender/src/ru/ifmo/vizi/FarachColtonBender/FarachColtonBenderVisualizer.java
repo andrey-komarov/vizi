@@ -143,14 +143,11 @@ public final class FarachColtonBenderVisualizer extends Base implements
 		}
 		if (t.getSource() == leftBorder) {
 			auto.toStart();
-			auto.getController().doNextBigStep();
 			data.left = leftBorder.getValue();
 			rightBorder.setMinimum(leftBorder.getValue());
 		}
 		if (t.getSource() == rightBorder) {
 			auto.toStart();
-			auto.getController().doNextBigStep();
-
 			data.right = rightBorder.getValue();
 			leftBorder.setMaximum(rightBorder.getValue());
 		}
@@ -178,15 +175,16 @@ public final class FarachColtonBenderVisualizer extends Base implements
 		data.index = new int[2 * n + 1];
 		data.first = new int[n];
 		data.table2 = new int[maximums.length][data.pieceSize];
+		data.ready = false;
 		Arrays.fill(data.leftSon, -1);
 		Arrays.fill(data.rightSon, -1);
 		Arrays.fill(data.index, -1);
-		Arrays.fill(data.depth, -1);
+		Arrays.fill(data.depth, 1000000);
 		Arrays.fill(data.stack2, -1);
 
 		
 		table2 = new Rect[maximums.length][data.pieceSize];
-		Arrays.fill(data.maximums, -1);
+		Arrays.fill(data.maximums, 1000000);
 		Arrays.fill(data.first, -1);
 		data.stage1 = false;
 		for (int i = 0; i < n; i++) {
