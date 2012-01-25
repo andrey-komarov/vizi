@@ -1031,24 +1031,7 @@
 				</step>
 			</then>
 		</if>
-		
-		<step
-			id	= "atata3"
-			description	= "atata3"
-		>
-			<action>
-			</action>
-			<draw>
-				@visualizer.debug("LP: ", @leftPiece);
-				@visualizer.debug("RP: ", @rightPiece);
-				@visualizer.debug("Left2: ", @left2);
-				@visualizer.debug("Right2: ", @right2);
-				@visualizer.debug("Left: ", @left);
-				@visualizer.debug("Right: ", @right);
-				@visualizer.debug("First: ", @first);
-			</draw>
-		</step>
-		
+
 		<if
 			id	= "ololo19"
 			description	= "ololo19"
@@ -1397,7 +1380,6 @@
 			comment-args = "new Integer(@ans)"
         >
             <draw>
-				@visualizer.debug("index: ", @index1);
 				@visualizer.debug("ans: ", @ans);				
             </draw>
         </finish>
