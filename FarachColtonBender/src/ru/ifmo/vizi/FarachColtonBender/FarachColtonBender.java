@@ -1,1 +1,0 @@
-../../../../../../projects/FarachColtonBender/src/ru/ifmo/vizi/FarachColtonBender/FarachColtonBender.java
